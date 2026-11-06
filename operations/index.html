@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<title>신희성 포트폴리오 · Operations</title>
+<style>
+  @font-face { font-family:"Paperlogy"; src:local("Paperlogy 4 Regular"), local("Paperlogy-4Regular"), url("../fonts/Paperlogy-4Regular.woff2") format("woff2"); font-weight:400; }
+  @font-face { font-family:"Paperlogy"; src:local("Paperlogy 6 SemiBold"), local("Paperlogy-6SemiBold"), url("../fonts/Paperlogy-6SemiBold.woff2") format("woff2"); font-weight:600; }
+  @font-face { font-family:"Paperlogy"; src:local("Paperlogy 7 Bold"), local("Paperlogy-7Bold"), url("../fonts/Paperlogy-7Bold.woff2") format("woff2"); font-weight:700; }
+  @font-face { font-family:"Paperlogy"; src:local("Paperlogy 8 ExtraBold"), local("Paperlogy-8ExtraBold"), url("../fonts/Paperlogy-8ExtraBold.woff2") format("woff2"); font-weight:800; }
+  @page { size: A4; margin: 0; }
+  :root { --ink:#191f28; --body:#333d4b; --grey:#6b7684; --grey3:#8b95a1; --line:#dfe3e8; --soft:#f4f6f9; --acc:#2350c8; --acc-soft:#e9eefb; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; font-size: 9.2pt; line-height: 1.62; color: var(--body); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: var(--acc); text-decoration: none; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  .nw { white-space: nowrap; }
+
+  .page { width: 210mm; height: 297mm; padding: 17mm 17mm 18mm; position: relative; overflow: hidden; page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .pf { position: absolute; left: 17mm; right: 17mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 7.2pt; color: var(--grey3); border-top: 0.6pt solid var(--line); padding-top: 4pt; }
+
+  .disp { font-family: "Paperlogy", "Noto Sans KR", sans-serif; }
+  .kick { font-family: "Paperlogy", sans-serif; font-weight: 800; font-size: 9.5pt; letter-spacing: .08em; color: var(--acc); }
+  .kick span { color: var(--grey); font-family: "Noto Sans KR", sans-serif; font-weight: 500; letter-spacing: 0; margin-left: 6pt; font-size: 8.5pt; }
+  h2.pt { font-family: "Paperlogy", sans-serif; font-weight: 700; font-size: 19pt; line-height: 1.3; color: var(--ink); margin: 3pt 0 8pt; letter-spacing: -.01em; }
+  .meta { display: flex; gap: 16pt; font-size: 8pt; color: var(--grey); border-top: 1.1pt solid var(--ink); border-bottom: 0.6pt solid var(--line); padding: 4pt 0; margin-bottom: 10pt; }
+  .meta b { color: var(--ink); font-weight: 700; margin-right: 5pt; }
+
+  .rows { display: grid; grid-template-columns: 17mm 1fr; column-gap: 8pt; row-gap: 7pt; }
+  .rows > .lb { font-weight: 700; color: var(--ink); font-size: 8.6pt; padding-top: .5pt; }
+  .bl li { position: relative; padding-left: 9pt; margin: 1.2pt 0; }
+  .bl li::before { content: ""; position: absolute; left: 1pt; top: 6.2pt; width: 3.2pt; height: 3.2pt; background: var(--ink); }
+  .bl b { color: var(--ink); }
+  .num { color: var(--acc); font-weight: 800; }
+
+  h3.sh { font-size: 10.5pt; font-weight: 700; color: var(--ink); margin: 13pt 0 6pt; display: flex; align-items: center; gap: 6pt; }
+  h3.sh::before { content: ""; width: 7pt; height: 7pt; background: var(--acc); display: inline-block; }
+
+  figure { margin: 0; }
+  figure img { display: block; width: 100%; border: 0.6pt solid #cfd5dc; }
+  figcaption { font-size: 7.6pt; color: var(--grey); margin-top: 3pt; display: flex; justify-content: space-between; gap: 8pt; }
+  figcaption a { white-space: nowrap; }
+  .figs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9pt; }
+
+  .touch { background: var(--soft); border-left: 2.4pt solid var(--acc); padding: 7pt 10pt 7pt 11pt; margin-top: 11pt; }
+  .touch .tt { font-size: 8pt; font-weight: 700; color: var(--acc); margin-bottom: 2pt; letter-spacing: .02em; }
+  .touch li { position: relative; padding-left: 9pt; margin: 1pt 0; }
+  .touch li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--acc); font-size: 8pt; }
+  .dummy { font-size: 7.4pt; color: var(--grey3); margin-top: 6pt; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.4pt; }
+  table.t th, table.t td { padding: 4.5pt 6pt; border-bottom: 0.6pt solid var(--line); text-align: left; vertical-align: top; }
+  table.t thead th { border-top: 1.1pt solid var(--ink); border-bottom: 0.8pt solid var(--ink); font-weight: 700; color: var(--ink); font-size: 8pt; background: #fff; }
+  table.t td.r, table.t th.r { text-align: right; white-space: nowrap; }
+  table.t td.k { font-weight: 700; color: var(--ink); }
+
+  /* 흐름도 */
+  .box { border: 0.8pt solid #aab3bd; background: #fff; padding: 5pt 7pt; font-size: 8.4pt; color: var(--ink); font-weight: 700; line-height: 1.4; }
+  .box small { display: block; font-weight: 400; color: var(--grey); font-size: 7.6pt; margin-top: 1pt; }
+  .box.acc { border-color: var(--acc); background: var(--acc-soft); }
+  .box.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .box.dark small { color: #c9d1db; }
+  .cap { font-size: 7.6pt; font-weight: 700; color: var(--grey); letter-spacing: .04em; margin-bottom: 4pt; }
+  .arr { display: flex; align-items: center; justify-content: center; color: var(--acc); font-size: 13pt; font-weight: 700; }
+
+  /* 1쪽 */
+  .cover-top { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.4pt solid var(--ink); padding-bottom: 10pt; }
+  .cover-top .name { font-family: "Paperlogy", sans-serif; font-weight: 800; font-size: 30pt; color: var(--ink); line-height: 1; letter-spacing: .02em; }
+  .cover-top .ct { text-align: right; font-size: 8.4pt; color: var(--grey); line-height: 1.7; }
+  .hero { margin: 18pt 0 6pt; }
+  .hero h1 { font-family: "Paperlogy", sans-serif; font-weight: 800; font-size: 25pt; line-height: 1.32; color: var(--ink); margin: 6pt 0 10pt; letter-spacing: -.01em; }
+  .hero p { font-size: 10pt; line-height: 1.75; color: var(--body); max-width: 150mm; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 0.6pt solid var(--line); border-bottom: 0.6pt solid var(--line); margin: 16pt 0 4pt; }
+  .stats div { padding: 8pt 8pt 7pt; border-left: 0.6pt solid var(--line); }
+  .stats div:first-child { border-left: 0; padding-left: 0; }
+  .stats b { display: block; font-family: "Paperlogy", sans-serif; font-weight: 800; font-size: 17pt; color: var(--ink); line-height: 1.2; }
+  .stats span { font-size: 7.8pt; color: var(--grey); line-height: 1.45; display: block; margin-top: 2pt; }
+  .toc li { display: grid; grid-template-columns: 9mm 1fr 14mm; padding: 4.2pt 0; border-bottom: 0.6pt solid var(--line); font-size: 9pt; color: var(--ink); }
+  .toc li i { font-style: normal; font-family: "Paperlogy", sans-serif; font-weight: 800; color: var(--acc); }
+  .toc li em { font-style: normal; color: var(--grey); font-size: 8pt; display: block; }
+  .toc li span.pg { text-align: right; color: var(--grey); font-size: 8pt; }
+
+  /* 카드 격자 */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+  .card { border: 0.8pt solid var(--line); border-top: 1.4pt solid var(--ink); padding: 8pt 10pt 9pt; }
+  .card h4 { margin: 0 0 1pt; font-size: 10pt; color: var(--ink); font-weight: 700; }
+  .card .when { font-size: 7.6pt; color: var(--grey); margin-bottom: 5pt; }
+  .card figure { margin-top: 7pt; }
+
+  /* 연혁 */
+  .tl li { display: grid; grid-template-columns: 30mm 1fr; column-gap: 10pt; padding: 8pt 0; border-bottom: 0.6pt solid var(--line); }
+  .tl li .d { font-size: 8pt; color: var(--grey); }
+  .tl li b { color: var(--ink); display: block; font-size: 9.2pt; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1.1pt solid var(--ink); }
+  .steps div { padding: 7pt 9pt 8pt; border-right: 0.6pt solid var(--line); }
+  .steps div:last-child { border-right: 0; }
+  .steps b { display: block; font-family: "Paperlogy", sans-serif; font-weight: 800; color: var(--acc); font-size: 9.5pt; margin-bottom: 2pt; }
+
+  /* 화면(웹)에서만: 회색 바탕 위 A4 종이, 휴대폰은 폭에 맞춰 축소 */
+  .bar { display: none; }
+  @media screen {
+    html { background: #e7eaee; }
+    body { background: transparent; }
+    .bar { display: flex; position: sticky; top: 0; z-index: 5; align-items: center; justify-content: space-between; gap: 12px; padding: 10px max(16px, calc(50% - 397px)); background: #fff; border-bottom: 1px solid #d5dae0; font-size: 13px; color: var(--ink); }
+    .bar b { font-weight: 700; }
+    .bar span { color: var(--grey); margin-left: 6px; }
+    .bar a { display: inline-block; padding: 7px 14px; border: 1px solid var(--acc); color: #fff; background: var(--acc); font-weight: 700; font-size: 13px; white-space: nowrap; transition: background .15s, transform .05s; }
+    .bar a:hover { background: #1b3fa3; }
+    .bar a:active { transform: translateY(1px); background: #15327f; }
+    .bar a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .page { zoom: var(--z, 1); margin: 20px auto; background: #fff; border: 1px solid #d5dae0; }
+    figcaption a:hover { text-decoration: underline; }
+  }
+  @media screen and (max-width: 560px) { .bar span { display: none; } }
+</style>
+</head>
+<body>
+<div class="bar"><div><b>신희성 포트폴리오</b><span>Operations Team 지원</span></div><a href="포트폴리오_신희성.pdf" download>PDF 내려받기</a></div>
+<script>(function(){function f(){document.documentElement.style.setProperty('--z',Math.min(1,(window.innerWidth-16)/795));}f();addEventListener('resize',f);})();</script>
+
+<!-- ───────── 1쪽: 표지 ───────── -->
+<section class="page">
+  <div class="cover-top">
+    <div>
+      <div class="kick">PORTFOLIO<span>㈜사제파트너스 Operations Team 지원</span></div>
+      <div class="name" style="margin-top:10pt">신희성</div>
+    </div>
+    <div class="ct">010-5911-8522<br>geniusnotstuffed@gmail.com<br>인하대 교육학 · 산업경영공학 복수전공</div>
+  </div>
+
+  <div class="hero">
+    <h1>흩어진 숫자를 하나의 기준으로,<br>보고까지 이어지게</h1>
+    <p>클래스인코리아에서 영업과 마케팅을 맡으며, 담당자별 엑셀로 흩어진 고객·매출 데이터를 하나의 데이터베이스와 보고 체계로 옮기는 일을 직접 기획하고 만들었습니다. 이 포트폴리오에는 그중 공고의 세 가지 업무와 닿는 작업만 골라 담았습니다.</p>
+  </div>
+
+  <div class="stats">
+    <div><b>3 → 1</b><span>팀별 엑셀 3곳을 데이터베이스 하나로 통합, 회사 전체 표준 도구로 정착</span></div>
+    <div><b>200여 곳</b><span>담당자 7명 계획서와 매출 장부를 고객 단위로 대조해 본사(VP) 보고</span></div>
+    <div><b>+63%</b><span>단계별 전환율 분석으로 병목 개선, 리드 유입 전년 동기 대비(4~8월)</span></div>
+    <div><b>700여 건</b><span>사내 문서를 검색·AI 질의가 되는 지식저장소로 구조화</span></div>
+  </div>
+
+  <h3 class="sh" style="margin-top:18pt">공고 업무와 제 경험</h3>
+  <table class="t">
+    <thead><tr><th style="width:31%">공고의 주요 업무</th><th>비슷한 일을 한 경험</th><th class="r" style="width:11%">쪽</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Fund Operations<br>LP Reporting</td><td>매출 장부와 담당자 계획서 대조, 본사(VP) 정기 보고, 주간 성과보고 자동 집계, 월별 광고 예산 사용표(달러·원화 결제 시점 관리)</td><td class="r">4 · 5</td></tr>
+      <tr><td class="k">Portfolio &amp; Investment<br>Data Management</td><td>고객 200여 곳의 단계·계약·결제 이력 관리, 리드별 통화·데모·견적·결제 타임라인</td><td class="r">2 · 3 · 4</td></tr>
+      <tr><td class="k">Database / AI Platform<br>구축 지원</td><td>엑셀에서 CRM 데이터베이스로 이관, 집계 기준과 판정 규칙 표준화, 본사 CRM 자동 연동, 보고서 생성 자동화, 사내 문서 지식저장소</td><td class="r">2 · 3 · 6</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sh" style="margin-top:16pt">차례</h3>
+  <ul class="toc">
+    <li><i>01</i><span>고객 데이터 표준화와 사내 CRM 「Compass」<em>엑셀 → 데이터베이스 이관, 집계 기준·판정 규칙 설계</em></span><span class="pg">2–3</span></li>
+    <li><i>02</i><span>매출 장부 대조와 본사(VP) 보고<em>계획서·장부 통합, 불일치 검증, 보고서 생성 자동화</em></span><span class="pg">4</span></li>
+    <li><i>03</i><span>정기 보고 자동화와 비용 관리<em>주간 성과보고 자동 집계, 월별 광고 예산 사용표</em></span><span class="pg">5</span></li>
+    <li><i>04</i><span>업무 시스템 구축과 데이터 수집<em>지식저장소, 신청 데이터 자동 수집, 공공데이터 리포트, 본사 API 요청서</em></span><span class="pg">6</span></li>
+    <li><i>05</i><span>데이터 분석 기초<em>연구실·공모전·사업계획서에서 다룬 데이터</em></span><span class="pg">7</span></li>
+    <li><i>06</i><span>제안: VC 운용 데이터 구조 초안<em>공고를 읽고 그려 본 항목 구조, 검증 규칙, 첫 3개월</em></span><span class="pg">8</span></li>
+  </ul>
+
+  <div class="pf"><span>화면 속 고객명·담당자명·금액은 모두 가상 데이터입니다. 실제 회사 수치는 비율(+63%)과 건수만 적었습니다.</span><span>1</span></div>
+</section>
+
+<!-- ───────── 2쪽: Compass (1) ───────── -->
+<section class="page">
+  <div class="kick">01<span>Database 구축 · 데이터 표준화</span></div>
+  <h2 class="pt">고객 데이터 표준화와 사내 CRM 「Compass」</h2>
+  <div class="meta"><span><b>소속</b>EEO ClassIn Korea</span><span><b>기간</b>재직 중</span><span><b>역할</b>기획 · 데이터 기준 설계 · 바이브 코딩(Claude Code)</span></div>
+
+  <div class="rows">
+    <div class="lb">배경</div>
+    <ul class="bl">
+      <li>마케팅·영업·BD 세 팀이 고객 데이터를 각자 엑셀로 관리, 같은 「리드」를 팀마다 다르게 집계해 보고 때마다 숫자가 달라지는 상황</li>
+      <li>어떤 광고가 실제 결제로 이어졌는지, 고객 이력과 담당이 어디서 끊겼는지 확인할 수 없는 구조</li>
+    </ul>
+    <div class="lb">주요 업무</div>
+    <ul class="bl">
+      <li><b>집계 기준 통일</b>: 리드는 광고 API에 들어온 시점 하나로 집계, 재유입·수동 등록 판정 규칙 문서화</li>
+      <li><b>데이터 구조 설계</b>: 리드·어카운트·데모·견적·결제 단위로 나누고 단계 이력과 담당자를 함께 기록</li>
+      <li><b>이관과 정리</b>: 흩어진 고객 기록을 한 데이터베이스로 옮기고 중복 고객 병합</li>
+      <li><b>자동 연결</b>: Meta 광고 API 웹훅으로 광고 리드 실시간 등록, 본사 CRM과 리드 자동 연동(항목 매핑)</li>
+      <li><b>보고 화면</b>: 팀원별 과정 지표(KPI), 마케팅 성과·매출 대시보드</li>
+    </ul>
+    <div class="lb">성과</div>
+    <ul class="bl">
+      <li>클래스인코리아 전체가 매일 쓰는 <b>표준 업무 도구</b>로 정착, 주간 성과보고 자동 집계</li>
+      <li>단계별 전환율을 근거로 병목 개선, 2026년 4~8월 리드 유입 전년 동기 대비 <span class="num">+63%</span></li>
+    </ul>
+  </div>
+
+  <h3 class="sh">정리 전과 정리 후</h3>
+  <div style="display:grid; grid-template-columns: 36mm 9mm 44mm 9mm 1fr; align-items:stretch;">
+    <div>
+      <div class="cap">정리 전</div>
+      <div style="display:grid; gap:5pt">
+        <div class="box">마케팅 엑셀</div>
+        <div class="box">영업 엑셀</div>
+        <div class="box">BD 엑셀</div>
+      </div>
+      <p style="font-size:7.6pt; color:var(--grey); margin-top:5pt; line-height:1.45">같은 「리드」를 팀마다 다르게 집계, 보고마다 숫자가 다름</p>
+    </div>
+    <div class="arr">→</div>
+    <div>
+      <div class="cap">기준 정의</div>
+      <div style="display:grid; gap:5pt">
+        <div class="box acc">집계 기준 1개<small>광고 API에 들어온 시점</small></div>
+        <div class="box acc">판정 규칙<small>신규 · 재유입 · 수동 등록 · 중복 병합</small></div>
+        <div class="box acc">단계 정의<small>유입 → 데모 → 견적 → 결제</small></div>
+      </div>
+    </div>
+    <div class="arr">→</div>
+    <div>
+      <div class="cap">정리 후: 데이터베이스 하나</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5pt">
+        <div class="box dark" style="grid-column:1 / span 2">리드 · 어카운트<small>학원, 연락처, 출처, 유입 시각, 담당</small></div>
+        <div class="box">데모 · 미팅<small>회차, 방식, 참석자</small></div>
+        <div class="box">견적 · 결제<small>품목, 금액, 결제 시점</small></div>
+        <div class="box">통화 · 활동 기록<small>타임라인</small></div>
+        <div class="box">과정 지표 · 대시보드<small>팀원별 KPI, 성과</small></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5pt; margin-top:5pt">
+        <div class="box acc" style="font-size:7.8pt">들어오는 쪽<small>Meta 광고 API 웹훅</small></div>
+        <div class="box acc" style="font-size:7.8pt">나가는 쪽<small>본사 CRM 연동, 주간 보고</small></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sh">판정 규칙</h3>
+  <table class="t">
+    <thead><tr><th style="width:34%">상황</th><th style="width:30%">처리</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td>광고 신청서로 새 문의가 들어옴</td><td class="k">신규 리드</td><td>집계 시점을 광고 API 기록 하나로 고정해 팀별 숫자 차이 제거</td></tr>
+      <tr><td>이미 등록된 고객이 다시 문의</td><td class="k">재유입</td><td>새 고객으로 세지 않아 리드 수가 부풀지 않게 함</td></tr>
+      <tr><td>담당자가 전화·현장에서 받아 직접 입력</td><td class="k">수동 등록</td><td>광고 성과와 섞이지 않게 출처를 따로 표시</td></tr>
+      <tr><td>같은 원장의 학원이 두 번 등록됨</td><td class="k">하나로 병합</td><td>이력·담당이 둘로 갈라지는 것을 막음</td></tr>
+    </tbody>
+  </table>
+
+  <div class="touch">
+    <div class="tt">공고 업무와 닿는 점</div>
+    <ul>
+      <li>기존 Spreadsheet·문서 기반 데이터의 표준화와 Database 이관을 실제로 해 본 경험</li>
+      <li>시스템보다 「무엇을 어떻게 셀지」를 먼저 정하는 순서: 펀드 데이터에서도 약정액·요청액·납입액처럼 비슷한 말을 항목으로 분리해 정의</li>
+    </ul>
+  </div>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>2</span></div>
+</section>
+
+<!-- ───────── 3쪽: Compass (2) ───────── -->
+<section class="page">
+  <div class="kick">01<span>Database 구축 · 데이터 표준화 (이어서)</span></div>
+  <h2 class="pt">실제 화면</h2>
+
+
+
+  <h3 class="sh" style="margin-top:6pt">전체 리드: 출처·단계·담당·본사 연동 상태를 한 표에서</h3>
+  <figure>
+    <img src="img/cx_leads_all_sheet_crop.jpg" alt="Compass 전체 리드 화면">
+    <figcaption><span>출처별(광고·설명회 등)·단계별 건수가 위 칩에 자동 집계되고, 오른쪽에서 기록·데모 예약·인계를 바로 처리</span><a href="https://geniusnotstuffed.github.io/portfolio/samples/compass/leads-all.html">직접 보기 ↗</a></figcaption>
+  </figure>
+
+  <h3 class="sh" style="margin-top:11pt">마케팅 성과: 광고에서 결제까지</h3>
+  <figure>
+    <img src="img/cx_dash_funnel_crop.jpg" alt="Compass 마케팅 성과 화면의 지표와 단계별 전환율">
+    <figcaption><span>리드·광고비·결제를 같은 데이터에서 집계하고, 유입 → 연락 → 어카운트 → 결제 단계별 전환율을 한 줄로</span><a href="https://geniusnotstuffed.github.io/portfolio/samples/compass/index.html">직접 보기 ↗</a></figcaption>
+  </figure>
+
+  <h3 class="sh" style="margin-top:11pt">리드 상세: 이력이 한 줄로</h3>
+  <figure>
+    <img src="img/cx_lead_timeline_crop.jpg" alt="Compass 리드 상세 화면의 기록 타임라인">
+    <figcaption><span>한 고객의 통화·데모·견적·결제 기록이 시간순으로 쌓임</span><a href="https://geniusnotstuffed.github.io/portfolio/samples/compass/leads-106.html">직접 보기 ↗</a></figcaption>
+  </figure>
+
+  <p class="dummy">화면은 실제 제품을 로컬 테스트 데이터로 띄운 읽기 전용 데모이며, 학원명·담당자명·수치는 모두 가상 데이터입니다.</p>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>3</span></div>
+</section>
+
+<!-- ───────── 4쪽: VP 보고 ───────── -->
+<section class="page">
+  <div class="kick">02<span>정기 보고 · 숫자 정합성</span></div>
+  <h2 class="pt">매출 장부 대조와 본사(VP) 보고</h2>
+  <div class="meta"><span><b>소속</b>EEO ClassIn Korea</span><span><b>기간</b>2026.09 ~ 2026.10</span><span><b>역할</b>매출 분석 · 데이터 대조 · 보고서 작성</span></div>
+
+  <div class="rows">
+    <div class="lb">배경</div>
+    <ul class="bl">
+      <li>본사(VP) 보고를 앞두고 상반기 실적 진단과 하반기 계획이 필요한 상황</li>
+      <li>담당자별 계획서와 매출 장부의 기준이 달라, 같은 고객의 금액·확정 여부가 문서마다 다르게 적힌 상태</li>
+    </ul>
+    <div class="lb">주요 업무</div>
+    <ul class="bl">
+      <li>담당자 7명의 하반기 계획서와 매출 장부를 <b>고객 200여 곳 단위</b>로 통합</li>
+      <li>담당자 간 중복 등재, 장부 「확정」과 계획서 「높음」의 불일치를 찾아 확인 필요 항목으로 분리</li>
+      <li>확정 100% · 높음 60% · 낮음 30% 확률 가중으로 확정·보수·낙관 3개 시나리오 산출</li>
+      <li>상반기 매출 진단: 전년 대비 감소분을 대형 HW 고객과 그 외 고객으로 나눠 원인 규명</li>
+      <li>장부 집계부터 보고서 생성까지 자동화, 인터랙티브 웹 보고서로 본사 보고</li>
+    </ul>
+    <div class="lb">성과</div>
+    <ul class="bl">
+      <li>본사 보고 자료 완성, 장부가 바뀔 때마다 같은 절차로 재생성해 <b>표·그림·본문 숫자 일치</b></li>
+      <li>매출·리드 데이터를 꾸준히 정리해 사내에서 「클래스인 통계청장」으로 불림</li>
+    </ul>
+  </div>
+
+  <h3 class="sh">처리 순서</h3>
+  <div style="display:grid; grid-template-columns: 1fr 7mm 1fr 7mm 1fr 7mm 1fr; align-items:stretch">
+    <div class="box dark">① 통합<small>장부 + 계획서 7건 → 고객 200여 곳</small></div>
+    <div class="arr">→</div>
+    <div class="box acc">② 대조<small>중복 등재, 등급 불일치 → 확인 항목</small></div>
+    <div class="arr">→</div>
+    <div class="box">③ 가중<small>확정 100 · 높음 60 · 낮음 30</small></div>
+    <div class="arr">→</div>
+    <div class="box">④ 생성<small>표 · 그림 · 본문을 같은 값으로</small></div>
+  </div>
+  <p style="font-size:7.8pt; color:var(--grey); margin-top:4pt">장부가 바뀌면 손으로 고치지 않고 ①부터 다시 실행 · 원칙: 숫자는 장부 한 곳에서만, 같은 숫자는 어디서나 같은 값, 확정 건에는 근거 한 줄</p>
+
+  <figure style="margin-top:10pt">
+    <img src="img/vp_waterfall.jpg" alt="확정·보수·낙관 시나리오 그림">
+    <figcaption><span>샘플 보고서 · 실적 + 확정 + 확률 가중 기대값으로 조정 목표 산출 · 본사(중국) 보고라 단위는 위안(元)</span><a href="https://geniusnotstuffed.github.io/portfolio/samples/vp-report/#fig-bridge">직접 보기 ↗</a></figcaption>
+  </figure>
+
+  <div class="touch">
+    <div class="tt">공고 업무와 닿는 점</div>
+    <ul>
+      <li>LP 정기·수시 보고: 원천 데이터 한 곳에서 보고서 숫자를 뽑고, 바뀌면 다시 생성하는 방식</li>
+      <li>여러 사람이 만든 표를 한 단위로 합칠 때 생기는 중복·불일치를 먼저 찾아 확인받는 습관</li>
+    </ul>
+  </div>
+  <p class="dummy">샘플 보고서의 금액·고객명·담당자명은 가상 데이터이며, 비율 구조만 실제와 같습니다.</p>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>4</span></div>
+</section>
+
+<!-- ───────── 5쪽: 정기 보고·비용 ───────── -->
+<section class="page">
+  <div class="kick">03<span>정기 보고 · 비용 관리</span></div>
+  <h2 class="pt">정기 보고 자동화와 비용 관리</h2>
+  <div class="meta"><span><b>소속</b>EEO ClassIn Korea</span><span><b>기간</b>재직 중</span><span><b>역할</b>보고 체계 설계 · 데이터 수집 자동화</span></div>
+
+  <h3 class="sh" style="margin-top:2pt">주간 성과보고 자동 집계</h3>
+  <ul class="bl">
+    <li>광고 성과, 단계별 퍼널, 매출 데이터를 매주 자동으로 다시 수집해 보고 재료를 만들고, 작성 가이드에 맞춰 본문을 쓴 뒤 사내 지식저장소에 발행하는 흐름 구축</li>
+    <li>보고서를 쓰는 사람이 숫자를 손으로 옮기지 않게 해 보고마다 숫자가 달라지는 문제를 없앰</li>
+  </ul>
+  <div style="display:grid; grid-template-columns: 1fr 7mm 1fr 7mm 1fr 7mm 1fr; align-items:stretch; margin-top:7pt">
+    <div class="box">데이터 다시 수집<small>광고 · 퍼널 · 매출</small></div>
+    <div class="arr">→</div>
+    <div class="box">브리핑 생성<small>이번 주 숫자 요약</small></div>
+    <div class="arr">→</div>
+    <div class="box">본문 작성<small>정해진 양식 그대로</small></div>
+    <div class="arr">→</div>
+    <div class="box dark">발행<small>사내 지식저장소</small></div>
+  </div>
+
+  <table class="t" style="margin-top:9pt">
+    <thead><tr><th>주간 보고 숫자 칸</th><th class="r">이번 주</th><th class="r">지난주</th><th class="r">증감</th><th>가져오는 곳</th></tr></thead>
+    <tbody>
+      <tr><td class="k">광고 리드</td><td class="r">42</td><td class="r">35</td><td class="r">+7</td><td>광고 API → CRM 유입 기록</td></tr>
+      <tr><td class="k">데모 진행</td><td class="r">9</td><td class="r">11</td><td class="r">−2</td><td>CRM 데모 회차 기록</td></tr>
+      <tr><td class="k">결제</td><td class="r">3</td><td class="r">2</td><td class="r">+1</td><td>CRM 결제 기록 · 매출 장부</td></tr>
+      <tr><td class="k">광고비</td><td class="r">$410</td><td class="r">$395</td><td class="r">+$15</td><td>광고 API 일별 집계</td></tr>
+    </tbody>
+  </table>
+  <p class="dummy">주간 보고에 들어가는 숫자 칸을 보여 주기 위한 예시이며, 값은 가상 수치입니다.</p>
+
+  <h3 class="sh">월별 광고 예산 사용표 (2026.10~)</h3>
+  <ul class="bl">
+    <li>메타 광고는 달러 카드 자동 청구, 구글 광고는 원화 선불 충전이라 팀 안에서 「언제 얼마가 나가는지」가 보이지 않던 상황</li>
+    <li>광고 API 집계 → 결제 화면 청구·충전 내역 → 카드 청구 기록 순으로 대조하고, 기준일 환율로 원화 환산해 한 표로 정리</li>
+    <li>팀 보고 페이지 맨 위 같은 자리를 매달 덮어써서, 출처·기준일·환율을 함께 남김</li>
+  </ul>
+  <table class="t" style="margin-top:7pt">
+    <thead><tr><th>채널</th><th>결제 방식</th><th>통화</th><th class="r">이번 달 사용액</th><th class="r">원화 환산</th><th>다음 결제 시점</th></tr></thead>
+    <tbody>
+      <tr><td class="k">메타 광고</td><td>카드 자동 청구</td><td>USD</td><td class="r">$1,200.00</td><td class="r">₩1,680,000</td><td>청구 한도 도달 시</td></tr>
+      <tr><td class="k">구글 광고</td><td>선불 충전</td><td>KRW</td><td class="r">₩300,000</td><td class="r">₩300,000</td><td>잔액 소진 전 충전</td></tr>
+      <tr><td class="k">유튜브 광고</td><td>구글 선불 잔액 공유</td><td>KRW</td><td class="r">₩15,000</td><td class="r">₩15,000</td><td>캠페인 종료일</td></tr>
+      <tr><td class="k" colspan="4">합계 · 기준일 환율 1 USD = 1,400원 · 출처: 광고 API, 결제 화면, 카드 청구 기록</td><td class="r k">₩1,995,000</td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="dummy">표의 금액과 환율은 구조를 보여 주기 위한 예시 수치입니다.</p>
+
+  <div class="touch">
+    <div class="tt">공고 업무와 닿는 점</div>
+    <ul>
+      <li>Capital Call · Distribution · Commitment 데이터: 금액과 함께 날짜·출처·원 통화·환산 기준일을 같이 남기는 방식</li>
+      <li>USD 펀드와 국내 펀드를 함께 다룰 때 필요한 통화별 기록과 원화 환산 기준 관리</li>
+      <li>정기 보고 자동화: 보고 재료를 사람이 옮기지 않고 원천에서 다시 뽑는 구조</li>
+    </ul>
+  </div>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>5</span></div>
+</section>
+
+<!-- ───────── 6쪽: 업무 시스템 ───────── -->
+<section class="page">
+  <div class="kick">04<span>업무 시스템 · AI 활용 · 데이터 수집</span></div>
+  <h2 class="pt">업무 시스템 구축과 데이터 수집</h2>
+  <p style="margin-bottom:10pt">업무에서 생긴 문제를 풀기 위해 직접 기획하고 바이브 코딩(Claude Code)으로 만든 도구입니다. 개발 전담이 아니라, 실제 업무를 하는 사람이 필요한 구조를 정하고 만든 사례입니다.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>업무 지식저장소</h4>
+      <div class="when">2026.07 ~ · EEO ClassIn Korea</div>
+      <ul class="bl">
+        <li>사내 노션 문서 <b>700여 건</b>을 한곳으로 옮겨 정리</li>
+        <li>주제 지도 14개로 문서끼리 연결</li>
+        <li>검색과 AI 질의로 문서 내용을 바로 확인, 주간보고 자동 발행처로 사용</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>본사 API 개발 요청서</h4>
+      <div class="when">2026.10 · EEO ClassIn Korea</div>
+      <ul class="bl">
+        <li>국내 고객 연동 요구를 본사 공식 API 문서와 전수 대조</li>
+        <li>이미 있는 기능과 새로 필요한 기능을 나눠 <b>요청 7건</b>으로 정리</li>
+        <li>문서와 다시 대조해 사실관계를 바로잡은 뒤 본사 전달</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>행사 신청 데이터 자동 수집</h4>
+      <div class="when">2026.05 ~ · EEO ClassIn Korea</div>
+      <ul class="bl">
+        <li>행사 초청·신청 페이지 6종을 외주 없이 1일 이내 제작</li>
+        <li>신청 즉시 행사별 전용 구글 시트에 자동 저장(웹훅)</li>
+      </ul>
+      <figure><img src="img/web_beijing.jpg" alt="베이징 초청 페이지"><figcaption><span>meets.classin.co.kr/beijing</span><a href="https://meets.classin.co.kr/beijing">보기 ↗</a></figcaption></figure>
+    </div>
+    <div class="card">
+      <h4>학군 리포트: 공공데이터 수집·정리</h4>
+      <div class="when">2026.10 · EEO ClassIn Korea</div>
+      <ul class="bl">
+        <li>카카오 로컬 API와 학교알리미 공시 데이터로 학원 반경 초·중·고 정보 수집</li>
+        <li>학생 수, 학급당 인원, 전출입, 입학생 3년 추세를 학교 카드로 자동 정리</li>
+      </ul>
+      <figure><img src="img/hakgun_cards.jpg" alt="학군 리포트 학교 카드"><figcaption><span>기획부터 배포까지 하루 만에 공개</span><a href="https://hakgun-report.vercel.app/">보기 ↗</a></figcaption></figure>
+    </div>
+    <div class="card" style="grid-column:1 / span 2">
+      <h4>사내 업무 관리 시스템</h4>
+      <div class="when">2024.07 ~ 2024.12 · 오오칠팔구</div>
+      <ul class="bl">
+        <li>체계가 없던 사내 업무 관리를 노션 기반 칸반으로 정립, 프로젝트·담당·진행 상태를 한 보드에서 추적</li>
+        <li>팀원 피드백을 반영해 계속 고치며 재택근무 환경의 업무 공유 문제 일부 개선</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="touch">
+    <div class="tt">공고 업무와 닿는 점</div>
+    <ul>
+      <li>실제 Fund Operations 업무를 기반으로 시스템 기능과 업무 프로세스를 개선하는 역할: 개발 담당에게 넘길 요구사항을 문서로 정리해 본 경험</li>
+      <li>Google Workspace(Sheets · Forms · Apps Script), Notion 등 클라우드 협업 도구를 업무 흐름에 연결해 쓴 경험</li>
+    </ul>
+  </div>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>6</span></div>
+</section>
+
+<!-- ───────── 7쪽: 데이터 분석 기초 ───────── -->
+<section class="page">
+  <div class="kick">05<span>학업 · 연구 · 이전 경력</span></div>
+  <h2 class="pt">데이터 분석 기초</h2>
+  <p style="margin-bottom:8pt">산업경영공학을 복수전공하고 교육빅데이터 연구센터와 AI 연구실에서 데이터를 다뤘습니다.</p>
+
+  <ul class="tl">
+    <li><span class="d">2017.02 ~ 2023.08</span><span><b>인하대학교 교육학 · 산업경영공학 복수전공</b>GPA 3.83 / 4.5</span></li>
+    <li><span class="d">2021.08 ~ 2022.08</span><span><b>교육빅데이터응용연구센터 · 학부연구생</b>Random Forest 기반 한국어 쓰기 시험 자동 채점 알고리즘 구현, 대한상공회의소 직업기초능력평가 보고서의 데이터 표 제작·차트 시각화·최종 편집</span></li>
+    <li><span class="d">2022.03 ~ 2022.12</span><span><b>교육빅데이터응용연구센터 · 수업조교</b>학부·대학원 수업에서 R 기반 Jamovi 데이터 분석 실습 강의 진행, 강의자료 제작, 한 학기 연임</span></li>
+    <li><span class="d">2022.08 ~ 2023.06</span><span><b>보이스인공지능연구소 · 학부연구생</b>인공지능핵심기술 원천 사업 연차보고서와 연구개발 기획안 2건 작성, Agile·WBS 기반 일정 관리</span></li>
+    <li><span class="d">2022.12</span><span><b>제4회 빅스타 경진대회 · KOGAS</b>팀 리더, FB Prophet 기반 장기 천연가스 수요 예측 모델 개발, 본선 최종 6위</span></li>
+    <li><span class="d">2022.12</span><span><b>생물다양성 데이터분석 경연 · SK하이닉스</b>팀 리더, Tableau 기반 지리산 생물다양성 데이터 시각화, 상위 10%</span></li>
+    <li><span class="d">2023.11 ~ 2024.02</span><span><b>코드잇 · 사업개발 인턴</b>참여기업 9곳 수요조사 설문·FGI 설계, 결과에서 역량·채용 수요 데이터를 도출해 「AI 활용 데이터 분석가 부트캠프」 사업계획서 작성, 심사 통과·우수 과정 선정</span></li>
+    <li><span class="d">2024.07 ~ 2024.12</span><span><b>오오칠팔구 · 사업개발 매니저</b>정부 지원사업·나라장터 용역 수주부터 수행까지 전 과정 관리, EDUTECH ASIA 2024(싱가포르) 전시 기획 및 운영</span></li>
+    <li><span class="d">2021.02 ~ 현재</span><span><b>동암청소년중고등학교 · 검정고시 야학</b>2021 교무주임, 교육청·시청 대상 사업보고서로 1,000만 원 이상 지원 확보·관리</span></li>
+  </ul>
+
+  <h3 class="sh">도구</h3>
+  <table class="t">
+    <tbody>
+      <tr><td class="k" style="width:24%">데이터</td><td>Python, SQL, R(Jamovi), SPSS, Tableau</td></tr>
+      <tr><td class="k">업무 도구</td><td>Google Workspace(Sheets · Forms · Apps Script 웹훅), Notion, MS Office, 한글</td></tr>
+      <tr><td class="k">AI · 자동화</td><td>Claude Code 바이브 코딩(CRM · 대시보드 · 보고서 생성), 생성형 AI 활용 문서 정리 · 요약</td></tr>
+      <tr><td class="k">영어</td><td>중국 본사 개발팀과 기능 요구사항·일정 실무 커뮤니케이션 (TEPS Level 3, 만료)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>7</span></div>
+</section>
+
+<!-- ───────── 8쪽: 제안 ───────── -->
+<section class="page">
+  <div class="kick">06<span>제안 · 공고를 읽고 그려 본 초안</span></div>
+  <h2 class="pt">VC 운용 데이터 구조 초안</h2>
+  <p style="margin-bottom:8pt">공고의 업무 목록을 데이터 항목으로 옮겨 보면 아래와 같은 구조가 됩니다. 실제 펀드 운영을 해 본 적은 없기 때문에, 입사 후 실무를 배우며 함께 고쳐 나갈 출발점으로 그렸습니다.</p>
+
+  <svg viewBox="0 0 700 300" width="100%" style="display:block" font-family="Noto Sans KR, sans-serif">
+    <defs>
+      <marker id="m" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8b95a1"/></marker>
+    </defs>
+    <!-- 연결선 -->
+    <g stroke="#8b95a1" stroke-width="1.2" fill="none">
+      <line x1="116" y1="62" x2="146" y2="62" marker-end="url(#m)"/>
+      <line x1="262" y1="62" x2="292" y2="62" marker-end="url(#m)"/>
+      <line x1="408" y1="62" x2="438" y2="62" marker-end="url(#m)"/>
+      <line x1="554" y1="62" x2="584" y2="62"/>
+      <line x1="350" y1="112" x2="350" y2="150"/>
+      <line x1="290" y1="150" x2="410" y2="150"/>
+      <line x1="290" y1="150" x2="290" y2="172" marker-end="url(#m)"/>
+      <line x1="410" y1="150" x2="410" y2="172" marker-end="url(#m)"/>
+      <line x1="496" y1="112" x2="496" y2="172" marker-end="url(#m)"/>
+      <line x1="642" y1="112" x2="642" y2="172" marker-end="url(#m)"/>
+      <line x1="58" y1="112" x2="58" y2="172" marker-end="url(#m)"/>
+    </g>
+    <!-- 1행 -->
+    <g font-size="11">
+      <rect x="2" y="12" width="114" height="100" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="12" y="32" font-weight="700" fill="#191f28">LP 출자자</text>
+      <text x="12" y="52" fill="#4e5968" font-size="10">출자자명</text>
+      <text x="12" y="68" fill="#4e5968" font-size="10">유형 · 국적</text>
+      <text x="12" y="84" fill="#4e5968" font-size="10">보고 연락처</text>
+
+      <rect x="148" y="12" width="114" height="100" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="158" y="32" font-weight="700" fill="#191f28">출자약정</text>
+      <text x="158" y="45" fill="#8b95a1" font-size="9">Commitment</text>
+      <text x="158" y="62" fill="#4e5968" font-size="10">LP × 펀드</text>
+      <text x="158" y="78" fill="#4e5968" font-size="10">약정액 · 통화</text>
+      <text x="158" y="94" fill="#4e5968" font-size="10">약정 비율</text>
+
+      <rect x="294" y="12" width="114" height="100" fill="#e9eefb" stroke="#2350c8" stroke-width="1.6"/>
+      <text x="304" y="32" font-weight="700" fill="#2350c8">펀드</text>
+      <text x="304" y="45" fill="#8b95a1" font-size="9">Fund</text>
+      <text x="304" y="62" fill="#4e5968" font-size="10">펀드명 · 결성일</text>
+      <text x="304" y="78" fill="#4e5968" font-size="10">통화(USD · KRW)</text>
+      <text x="304" y="94" fill="#4e5968" font-size="10">약정총액</text>
+
+      <rect x="440" y="12" width="114" height="100" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="450" y="32" font-weight="700" fill="#191f28">투자 거래</text>
+      <text x="450" y="45" fill="#8b95a1" font-size="9">Investment</text>
+      <text x="450" y="62" fill="#4e5968" font-size="10">투자일 · Round</text>
+      <text x="450" y="78" fill="#4e5968" font-size="10">투자금액 · 주식 수</text>
+      <text x="450" y="94" fill="#4e5968" font-size="10">Valuation · 지분율</text>
+
+      <rect x="586" y="12" width="112" height="100" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="596" y="32" font-weight="700" fill="#191f28">포트폴리오사</text>
+      <text x="596" y="45" fill="#8b95a1" font-size="9">Portfolio Company</text>
+      <text x="596" y="62" fill="#4e5968" font-size="10">회사명 · 국가</text>
+      <text x="596" y="78" fill="#4e5968" font-size="10">업종 · 담당</text>
+    </g>
+    <!-- 2행 -->
+    <g font-size="11">
+      <rect x="2" y="174" width="114" height="84" fill="#f4f6f9" stroke="#aab3bd"/>
+      <text x="12" y="194" font-weight="700" fill="#191f28">LP 보고 이력</text>
+      <text x="12" y="212" fill="#4e5968" font-size="10">정기 · 수시 구분</text>
+      <text x="12" y="228" fill="#4e5968" font-size="10">기준일 · 발송일</text>
+
+      <rect x="232" y="174" width="114" height="84" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="242" y="194" font-weight="700" fill="#191f28">Capital Call</text>
+      <text x="242" y="212" fill="#4e5968" font-size="10">회차 · 요청일 · 기한</text>
+      <text x="242" y="228" fill="#4e5968" font-size="10">LP별 요청액</text>
+      <text x="242" y="244" fill="#4e5968" font-size="10">LP별 납입액 · 납입일</text>
+
+      <rect x="354" y="174" width="114" height="84" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="364" y="194" font-weight="700" fill="#191f28">Distribution</text>
+      <text x="364" y="212" fill="#4e5968" font-size="10">회차 · 분배일</text>
+      <text x="364" y="228" fill="#4e5968" font-size="10">LP별 분배액</text>
+
+      <rect x="476" y="174" width="102" height="84" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="486" y="194" font-weight="700" fill="#191f28">외국환신고</text>
+      <text x="486" y="212" fill="#4e5968" font-size="10">투자 전 신고</text>
+      <text x="486" y="228" fill="#4e5968" font-size="10">투자 후 보고</text>
+      <text x="486" y="244" fill="#4e5968" font-size="10">기한 · 상태</text>
+
+      <rect x="586" y="174" width="112" height="84" fill="#fff" stroke="#191f28" stroke-width="1.2"/>
+      <text x="596" y="194" font-weight="700" fill="#191f28">모니터링 자료</text>
+      <text x="596" y="212" fill="#4e5968" font-size="10">기준일 · 재무 · KPI</text>
+      <text x="596" y="228" fill="#4e5968" font-size="10">수집 상태</text>
+    </g>
+    <text x="2" y="290" font-size="9.5" fill="#8b95a1">파란 상자가 기준 항목입니다. 모든 금액은 원 통화와 원화 환산 기준일을 함께 기록합니다.</text>
+  </svg>
+
+  <h3 class="sh" style="margin-top:8pt">이관 전에 걸러 낼 검증 규칙</h3>
+  <table class="t">
+    <thead><tr><th style="width:52%">규칙</th><th>막는 실수</th></tr></thead>
+    <tbody>
+      <tr><td>출자자별 약정액 합계(GP 출자 포함) = 펀드 약정총액</td><td>약정 누락, 같은 출자자 이중 입력</td></tr>
+      <tr><td>LP별 누적 납입액 ≤ 약정액</td><td>초과 요청, 입력 단위 오류</td></tr>
+      <tr><td>Capital Call 회차 금액 = LP별 요청액 합계</td><td>LP별 배분 계산 오류</td></tr>
+      <tr><td>투자 후 기업가치 = 투자 전 기업가치 + 라운드 전체 투자금액</td><td>우리 펀드 투자금만 더하는 실수, Valuation 입력 오류</td></tr>
+      <tr><td>지분율은 보유 주식 수 ÷ 발행주식 총수, 기준(희석 여부)을 함께 기록</td><td>건마다 다른 기준이 섞이는 문제</td></tr>
+      <tr><td>송금 전에 투자 전 외국환신고 완료 여부 확인</td><td>신고 누락, 기한 경과</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sh">입사 후 첫 3개월</h3>
+  <div class="steps">
+    <div><b>1개월</b>실제 펀드 운영 업무를 맡아 배우며, 지금 쓰는 스프레드시트와 문서를 목록으로 정리</div>
+    <div><b>2개월</b>같은 단어가 같은 숫자를 뜻하도록 항목 정의서와 검증 규칙을 작성해 팀과 공유</div>
+    <div><b>3개월</b>Database 이관 데이터 정리·검증 지원, LP 보고 자료 중 DB에서 바로 나올 수 있는 항목부터 전환</div>
+  </div>
+
+  <div class="pf"><span>신희성 · Operations Team 포트폴리오</span><span>8</span></div>
+</section>
+
+</body>
+</html>
