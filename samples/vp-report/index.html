@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>매출 보고서 시각화 샘플(가상 데이터)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: Korean Big-4 "insights" card report (reference: Deloitte Korea Insights 2025 금융산업 전망, EY한영 경제전망 요약). Full-bleed navy cover with glowing ring art and digit matrix, chapter pills, paper-grey pages, rounded grey cards with capsule tags that sit on the card edge, check-circle bullets, heavy centered headlines. */
+:root{
+  --bg:#efefea; --surface:#f8f8f4; --surface-2:#e9ebe5; --surface-3:#dfe2db;
+  --ink:#121c33; --ink-2:#3b4458; --muted:#737b8c; --rule:#d8dbd2; --rule-2:#c3c7bd;
+  --navy:#0b1d49; --navy-2:#132a66; --navy-ink:#0b1d49; --on-navy:#ffffff; --navy-dim:rgba(255,255,255,.72);
+  --accent:#0b1d49; --accent-soft:#e3e8f3; --on-accent:#ffffff; --cyan:#35c8f0; --green:#2e9e5b; --orange:#d9671f; --tag:#3a3f47;
+  --sure:#1b3a6b; --high:#4f7fc2; --low:#9ab5de; --opt:#e1e6ef; --actual:#121c33; --goal:#8a8f98; --last:#c9ccd2;
+  --crit:#b42318; --crit-soft:#fbe9e7; --warn:#9a5b00; --warn-soft:#fdf1dc; --good:#1f6b3a; --good-soft:#e4f3e9;
+  --font:"Noto Sans KR","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:20px; --shadow:0 2px 4px rgba(18,28,51,.05),0 10px 24px rgba(18,28,51,.07);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1420; --surface:#171d2b; --surface-2:#1e2535; --surface-3:#28303f; --ink:#eef1f6; --ink-2:#c2c8d4; --muted:#8c94a3; --rule:#2b3242; --rule-2:#3c4455;
+  --navy:#0b1d49; --navy-2:#132a66; --navy-ink:#9cc3f5; --accent:#8ab4f0; --accent-soft:#1d2a3f; --on-accent:#0f1420; --tag:#2b3240;
+  --sure:#8ab4f0; --high:#4f7fc2; --low:#3b5886; --opt:#222b38; --actual:#e6ebf5; --goal:#9aa0ab; --last:#4a505b;
+  --crit:#ff8a7a; --crit-soft:#3a1f1c; --warn:#f0b35a; --warn-soft:#3a2d14; --good:#6fcf97; --good-soft:#15301f; --shadow:none; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1420; --surface:#171d2b; --surface-2:#1e2535; --surface-3:#28303f; --ink:#eef1f6; --ink-2:#c2c8d4; --muted:#8c94a3; --rule:#2b3242; --rule-2:#3c4455;
+  --navy:#0b1d49; --navy-2:#132a66; --navy-ink:#9cc3f5; --accent:#8ab4f0; --accent-soft:#1d2a3f; --on-accent:#0f1420; --tag:#2b3240;
+  --sure:#8ab4f0; --high:#4f7fc2; --low:#3b5886; --opt:#222b38; --actual:#e6ebf5; --goal:#9aa0ab; --last:#4a505b;
+  --crit:#ff8a7a; --crit-soft:#3a1f1c; --warn:#f0b35a; --warn-soft:#3a2d14; --good:#6fcf97; --good-soft:#15301f; --shadow:none; color-scheme:dark }
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word;overflow-x:hidden}
+[hidden]{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding-block:0 128px;padding-inline:24px}
+@media (max-width:640px){.wrap{padding-inline:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:900;letter-spacing:-.01em}
+p{margin:0}
+a{color:var(--accent)}
+.num{font-variant-numeric:tabular-nums}
+.small{font-size:12.5px;color:var(--muted)}
+.muted{color:var(--muted)}
+.ink2{color:var(--ink-2)}
+strong{font-weight:700}
+mark.hl,.hl{background:none;color:var(--accent);font-weight:900}
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:#fff}
+.topbar .in{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+@media (max-width:640px){.topbar .in{padding:0 16px}}
+.brand{font-weight:900;letter-spacing:.02em;font-size:13.5px;color:#fff;padding:12px 0}
+.tabs{display:flex;gap:0;flex-wrap:wrap;margin-left:auto}
+.tabs button{appearance:none;font:inherit;font-size:13.5px;font-weight:700;padding:13px 2px 11px;margin-left:22px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--navy-dim);cursor:pointer;transition:color .15s,border-color .15s}
+.tabs button:hover{color:#fff}
+.tabs button:active{transform:translateY(1px)}
+.tabs button[aria-pressed="true"]{color:#fff;border-bottom-color:var(--cyan)}
+.tabs button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+@media (max-width:640px){.tabs{margin-left:0;width:100%}.tabs button{margin-left:0;margin-right:18px;padding-top:4px}}
+.chapter{min-width:0}
+.tophint{margin-left:auto;font-size:12px;color:var(--navy-dim);padding:12px 0}
+.tophint kbd{display:inline-block;min-width:18px;padding:0 5px;border:1px solid rgba(255,255,255,.35);border-radius:4px;font:inherit;font-size:11px;text-align:center;color:#fff;margin:0 1px}
+@media (max-width:640px){.tophint{display:none}}
+/* dynamic charts */
+.fig svg.anim-v rect:not([fill="transparent"]){transform-box:fill-box;transform-origin:50% 100%;animation:riseY .6s cubic-bezier(.2,.8,.2,1) both}
+.fig svg.anim-h rect:not([fill="transparent"]){transform-box:fill-box;transform-origin:0 50%;animation:riseX .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes riseY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes riseX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.what{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:10px;align-items:start}
+@media (max-width:860px){.what{grid-template-columns:1fr}}
+.what-ctl{display:grid;gap:12px}
+.what-ctl label{display:grid;gap:4px;font-size:13px;font-weight:700;color:var(--ink)}
+.what-ctl label output{font-weight:900;color:var(--navy-ink);margin-left:6px}
+.what-ctl input[type=range]{width:100%;accent-color:var(--navy-ink)}
+.what-ctl .chk{display:flex;align-items:center;gap:8px;font-weight:500;color:var(--ink-2)}
+.what-ctl .chk input{accent-color:var(--navy-ink);width:16px;height:16px}
+.what-toggles{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;font-weight:700}
+.what-out{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.what-out .kpi{border:1px solid var(--rule);border-radius:14px;background:var(--surface-2)}
+.what-out .kpi .v{font-size:24px}
+@media (max-width:480px){.what-out{grid-template-columns:1fr}}
+.seg-btn{appearance:none;font:inherit;font-size:12.5px;font-weight:700;padding:6px 14px;border:1px solid var(--rule-2);border-radius:999px;background:var(--surface);color:var(--ink-2);cursor:pointer;transition:background .15s,color .15s}
+.seg-btn:hover{background:var(--accent-soft);color:var(--navy-ink)}
+.seg-btn:active{transform:translateY(1px)}
+.scrub{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--ink-2)}
+.scrub input[type=range]{flex:1;min-width:140px;max-width:320px;accent-color:var(--navy-ink)}
+.scrub output{font-weight:700;color:var(--ink);min-width:120px}
+.scrub button[disabled],.scrub input[disabled]{opacity:.45;cursor:not-allowed}
+.map svg path.region{transition:fill .5s ease,stroke-width .15s}
+/* floating dock */
+.dock{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:2px;padding:6px;border-radius:999px;background:color-mix(in srgb,var(--navy) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 12px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.08) inset;max-width:calc(100vw - 24px)}
+.dock .ind{position:absolute;top:6px;bottom:6px;left:6px;width:0;border-radius:999px;background:rgba(255,255,255,.14);transition:left .35s cubic-bezier(.2,.8,.2,1),width .35s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.dock button{position:relative;appearance:none;border:0;background:transparent;color:var(--navy-dim);font:inherit;display:flex;align-items:center;gap:9px;padding:6px 14px 6px 8px;border-radius:999px;cursor:pointer;transition:color .2s,transform .08s}
+.dock button:hover{color:#fff}
+.dock button:active{transform:translateY(1px)}
+.dock button[aria-pressed="true"]{color:#fff}
+.dock button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.dock .ring{position:relative;width:30px;height:30px;flex:none}
+.dock .ring svg{width:30px;height:30px;transform:rotate(-90deg);display:block}
+.dock .ring .trk{fill:none;stroke:rgba(255,255,255,.18);stroke-width:2.5}
+.dock .ring .bar{fill:none;stroke:var(--cyan);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:81.68;stroke-dashoffset:81.68;transition:stroke-dashoffset .25s}
+.dock .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff}
+.dock .lbl{display:flex;flex-direction:column;line-height:1.15;text-align:left;font-size:12.5px;font-weight:700;white-space:nowrap}
+.dock .lbl em{font-style:normal;font-size:10px;letter-spacing:.08em;opacity:.7;font-weight:700}
+.dock .pos{margin-left:4px;padding:0 12px 0 12px;border-left:1px solid rgba(255,255,255,.15);font-size:11.5px;color:var(--navy-dim);white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.dock .pos b{color:var(--cyan);font-weight:900;margin-right:6px}
+@media (max-width:760px){.dock .lbl{display:none}.dock button{padding:6px 10px 6px 8px}.dock .pos{max-width:140px;font-size:11px}}
+@media (max-width:420px){.dock .pos{display:none}}
+@media (prefers-reduced-motion:reduce){.dock .ind,.dock .ring .bar{transition:none}}
+/* cover: full-bleed navy */
+.cover{background:linear-gradient(135deg,#071230 0%,#0a1a42 48%,#081533 100%);color:#fff;position:relative;overflow:hidden}
+.cover-in{max-width:1120px;margin:0 auto;padding:36px 24px 40px;position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+.cover-art{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+@media (max-width:860px){.cover-art{opacity:.45}.cover-in{grid-template-columns:1fr}}
+@media (max-width:640px){.cover-in{padding:24px 16px 32px}}
+.cover .wordmark{font-size:30px;font-weight:900;line-height:1.05;letter-spacing:-.01em}
+.cover .wordmark small{display:block;font-weight:400;font-size:26px;letter-spacing:0;opacity:.95}
+.cover .date{position:absolute;right:24px;top:40px;font-size:14px;color:var(--navy-dim);font-weight:500}
+@media (max-width:640px){.cover .date{top:28px;right:16px}}
+.cover .title-block{margin-top:140px}
+@media (max-width:860px){.cover .title-block{margin-top:40px}}
+.cover .eyebrow{font-size:17px;font-weight:700;color:#fff;letter-spacing:0;text-transform:none;margin-bottom:6px}
+.cover h1{font-size:clamp(28px,4vw,42px);line-height:1.22;font-weight:900;color:#fff;max-width:26ch}
+.cover .keyline{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.cover .keyline span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 14px;font-size:13.5px;color:var(--navy-dim)}
+.cover .keyline b{color:#fff;font-weight:900;margin-left:4px}
+.cover .sub{margin-top:18px;color:var(--navy-dim);font-size:15px;max-width:60ch}
+.cover .meta{margin-top:26px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--navy-dim);border-top:1px solid rgba(255,255,255,.3);padding-top:14px}
+.cover .meta b{color:#fff;font-weight:700}
+.cover .logo{grid-column:1/-1;text-align:right;margin-top:6px;font-weight:900;font-size:20px;color:#fff;letter-spacing:-.01em}
+.cover .logo i{color:var(--green);font-style:normal}
+@media (max-width:640px){.cover .logo{text-align:left}}
+/* chapter pills (table of contents) */
+.toc{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:28px}
+.toc button{appearance:none;font:inherit;text-align:left;background:var(--surface-2);color:var(--ink);border:0;border-radius:999px;padding:16px 26px;cursor:pointer;display:flex;align-items:center;gap:14px;box-shadow:0 6px 18px rgba(0,0,0,.25);transition:transform .12s,box-shadow .12s}
+.toc button:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.toc button:active{transform:translateY(0)}
+.toc button[aria-pressed="true"]{outline:3px solid var(--cyan)}
+.toc button:focus-visible{outline:3px solid var(--cyan)}
+.toc .ch{font-weight:900;color:var(--green);font-size:18px;white-space:nowrap}
+.toc .tt{font-weight:700;font-size:15px;line-height:1.3}
+.toc .tt small{display:block;font-weight:400;font-size:12.5px;color:var(--muted)}
+/* sections */
+.sec{padding-top:64px;scroll-margin-top:64px;text-align:center}
+.sec>*{text-align:left}
+.sec-head{display:block;text-align:center;max-width:860px;margin:0 auto}
+.sec-letter{display:none}
+.sec-kicker{display:inline-block;background:var(--navy);color:#fff;font-size:14px;font-weight:700;letter-spacing:.02em;padding:7px 20px;border-radius:999px;text-transform:none}
+.sec-kicker::before{content:attr(data-letter) " ";font-weight:900;color:var(--cyan)}
+.sec-head h2{font-size:clamp(23px,2.9vw,32px);line-height:1.3;margin-top:16px;color:var(--ink);font-weight:900;text-align:center}
+.sec-head .lead{margin:14px auto 0;color:var(--ink-2);max-width:68ch;text-align:left;font-size:14.5px}
+.block{margin-top:34px}
+.block h3{display:inline-block;background:var(--tag);color:#fff;font-size:14px;font-weight:700;padding:6px 18px;border-radius:999px;position:relative;z-index:2;margin:0 0 -16px 22px;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+.block h3::after{content:"";position:absolute;left:28px;bottom:-7px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--tag)}
+.block h3 .q{color:rgba(255,255,255,.75);font-weight:500;margin-left:8px;font-size:12.5px}
+.block>.fig,.block>.tbl-wrap,.block>.cols,.block>.road,.block>.scen,.block>ul.prose,.block>.callout{margin-top:0}
+.block>.cols,.block>.road,.block>.scen{padding-top:12px}
+.prose{max-width:72ch;color:var(--ink-2)}
+.prose+.prose{margin-top:8px}
+.prose b,.prose strong{color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+/* card base */
+.card,.fig,.tbl-wrap,.callout,.six,.kpis,.road .m,.scen>div,ul.prose{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow)}
+/* check-circle bullets */
+ul.prose{list-style:none;padding:18px 22px 16px 22px!important;margin:0!important}
+ul.prose li{position:relative;padding-left:30px;margin:0}
+ul.prose li+li{margin-top:8px}
+ul.prose li::before{content:"";position:absolute;left:0;top:4px;width:20px;height:20px;border-radius:50%;background:var(--navy) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/14px no-repeat}
+.cols>div>h3{margin-left:22px}
+.cols>div>ul.prose{margin-top:0!important}
+/* executive summary */
+.six{counter-reset:line;list-style:none;padding:22px 26px 14px;margin:22px 0 0;display:grid;gap:0}
+.six li{display:grid;grid-template-columns:30px 1fr;gap:14px;padding:10px 0;border-bottom:1px dashed var(--rule-2);align-items:start}
+.six li:last-child{border-bottom:0}
+.six li::before{counter-increment:line;content:counter(line,decimal-leading-zero);width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.six li b{color:var(--ink)}
+/* key figures */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-top:18px;overflow:hidden}
+.kpi{padding:18px 20px 16px;border-left:1px dashed var(--rule-2)}
+.kpi:first-child{border-left:0}
+@media (max-width:640px){.kpi{border-left:0;border-bottom:1px dashed var(--rule-2)}.kpi:last-child{border-bottom:0}}
+.kpi .l{font-size:12.5px;color:var(--muted);font-weight:500}
+.kpi .v{font-size:28px;font-weight:900;line-height:1.15;margin-top:4px;color:var(--navy-ink);letter-spacing:-.01em}
+.kpi .v small{font-size:13px;font-weight:500;color:var(--muted);margin-left:2px}
+.kpi .d{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.kpi.hero{background:var(--navy);color:#fff;border-left:0}
+.kpi.hero .l,.kpi.hero .d{color:var(--navy-dim)}
+.kpi.hero .v{font-size:36px;color:#fff}
+.kpi.hero .v small{color:var(--navy-dim)}
+.kpi .bar{height:6px;background:var(--surface-3);margin-top:10px;position:relative;overflow:hidden;border-radius:3px}
+.kpi .bar i{position:absolute;inset:0 auto 0 0;background:var(--navy-ink);border-radius:3px}
+.kpi.hero .bar{background:rgba(255,255,255,.2)}
+.kpi.hero .bar i{background:var(--cyan)}
+.kpi.hero .bar i.b2{background:rgba(255,255,255,.5)}
+.kpi .bar i.b2{left:auto;right:0}
+.pb{margin-top:8px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
+.pb i{display:block;height:6px;border-radius:3px;background:var(--navy-ink);max-width:100%;position:relative;z-index:1}
+.pb{position:relative}
+.pb::before{content:"";position:absolute;left:0;top:50%;height:6px;width:calc(100% - 100px);transform:translateY(-50%);background:var(--surface-3);border-radius:3px;z-index:0}
+.scen>div:first-child .pb{color:var(--navy-dim)}
+.scen>div:first-child .pb i{background:var(--cyan)}
+.scen>div:first-child .pb::before{background:rgba(255,255,255,.2)}
+/* figures */
+.chapter{counter-reset:fig}
+.fig{padding:22px 22px 14px;margin-top:18px;min-width:0;counter-increment:fig}
+.fig-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.fig-title{font-weight:900;font-size:16px;color:var(--ink)}
+.fig-title::before{content:"그림 " counter(fig);display:inline-block;background:var(--accent-soft);color:var(--navy-ink);font-size:11.5px;font-weight:700;padding:1px 9px;border-radius:999px;margin-right:8px;vertical-align:middle}
+.fig-sub{font-size:12.5px;color:var(--muted);margin-top:4px;max-width:80ch;font-weight:400}
+.fig-note{font-size:12.5px;color:var(--ink-2);margin-top:10px;border-top:1px dashed var(--rule-2);padding-top:8px}
+.fig::after{content:"";display:block;font-size:11.5px;color:var(--muted);margin-top:8px}
+.fig svg{display:block;width:100%;height:auto;font-family:var(--font)}
+.fig .axis text{fill:var(--muted);font-size:11px}
+.fig .axis line,.fig .axis path{stroke:var(--rule-2)}
+.fig .grid line{stroke:var(--rule);stroke-width:1}
+.rmgrid{display:grid;grid-template-columns:3fr 2fr;gap:18px;margin-top:8px}
+@media (max-width:860px){.rmgrid{grid-template-columns:1fr}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;display:inline-block;border-radius:3px}
+.legend i.line{height:2px;width:16px;border-radius:0}
+.legend i.tick{height:2px;width:14px;background:var(--goal)}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:12.5px;font-weight:700;padding:6px 14px;cursor:pointer;transition:background .15s,color .15s}
+.seg button+button{border-left:1px solid var(--rule-2)}
+.seg button:hover{background:var(--accent-soft);color:var(--navy-ink)}
+.seg button:active{transform:translateY(1px)}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+/* chips */
+.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 9px;line-height:1.6;white-space:nowrap;vertical-align:middle;border-radius:999px}
+.chip.sure{background:var(--sure);color:var(--on-accent)}
+.chip.high{background:var(--high);color:#fff}
+.chip.low{background:var(--low);color:var(--ink)}
+.chip.lbl{background:var(--surface-3);color:var(--ink-2);font-weight:500}
+.chip.crit{background:var(--orange);color:#fff}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.good{background:var(--good-soft);color:var(--good)}
+/* tables */
+.tbl-wrap{overflow-x:auto;margin-top:14px;overflow:auto}
+table.tbl{border-collapse:collapse;width:100%;font-size:13.5px}
+.tbl th,.tbl td{padding:10px 14px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.tbl th{font-size:12px;color:#fff;font-weight:700;background:var(--navy);white-space:nowrap;position:sticky;top:0}
+.tbl th:first-child{border-top-left-radius:var(--r)}
+.tbl th:last-child{border-top-right-radius:var(--r)}
+.tbl td.n,.tbl th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover td{background:var(--accent-soft)}
+.tbl tr.total td{font-weight:900;background:var(--surface-2);border-top:2px solid var(--rule-2)}
+.tbl td.k{font-weight:700;color:var(--ink);min-width:130px}
+.tbl th.gl{border-left:2px solid rgba(255,255,255,.4)}
+.tbl td.b{font-weight:900;color:var(--ink)}
+.tbl td.gl{border-left:2px solid var(--rule-2)}
+.tbl tr.total+tr td{border-top:2px solid var(--rule-2)}
+.tbl tr.grp td{background:var(--surface-2);color:var(--ink-2);font-size:12px;font-weight:700;text-align:left;padding:6px 14px;letter-spacing:.02em}
+.rf{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-top:14px}
+.rf>div{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13.5px;line-height:1.55}
+.rf>div:nth-last-child(-n+3){border-bottom:0}
+.rf .no{font-weight:900;color:var(--navy-ink);background:var(--surface-2);text-align:center;padding-left:0;padding-right:0}
+.rf .hd{background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:8px 14px}
+.rf .fx::before{content:"대책 ";font-weight:900;color:var(--navy-ink)}
+@media (max-width:640px){.rf{grid-template-columns:28px minmax(0,1fr)}.rf .hd:nth-child(3){display:none}.rf .fx{grid-column:2}}
+.tbl .sub{color:var(--muted);font-size:12px;display:block;font-weight:400}
+.tbl th.sortable{cursor:pointer;user-select:none}
+.tbl th.sortable:hover{text-decoration:underline}
+.tbl th.sortable[data-dir="asc"]::after{content:" ↑"}
+.tbl th.sortable[data-dir="desc"]::after{content:" ↓"}
+.tbl.compact th,.tbl.compact td{padding:8px 12px;font-size:13px}
+/* callouts */
+.callout{padding:18px 22px;margin-top:16px;border-left:6px solid var(--navy-ink)}
+.callout.crit{border-left-color:var(--orange)}
+.callout.warn{border-left-color:var(--warn)}
+.callout h4{font-size:14.5px;margin-bottom:6px;font-weight:900}
+.callout p{color:var(--ink-2)}
+.ask{display:grid;grid-template-columns:90px 1fr;gap:6px 14px;font-size:14px}
+.ask dt{color:var(--navy-ink);font-weight:900}
+.ask dd{margin:0;color:var(--ink)}
+/* map */
+.maprow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;margin-top:12px}
+@media (max-width:860px){.maprow{grid-template-columns:1fr}}
+.map-panel{min-width:0}
+.map-panel h4{font-size:14px;font-weight:900;margin-bottom:6px}
+.region-list{list-style:none;margin:0;padding:0;border-top:2px solid var(--navy-ink)}
+.region-list li{display:grid;grid-template-columns:1fr auto;gap:8px;padding:6px 4px;border-bottom:1px solid var(--rule);font-size:13px;cursor:pointer;transition:background .15s}
+.region-list li:hover,.region-list li.on{background:var(--accent-soft)}
+.region-list .bar{grid-column:1/-1;height:4px;background:var(--surface-3);position:relative;border-radius:2px}
+.region-list .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--high);border-radius:2px}
+.region-list li.more{display:none}
+.region-list li.toggle{color:var(--navy-ink);font-weight:900;font-size:12.5px}
+.map svg path.region{stroke:var(--surface);stroke-width:1;cursor:pointer;transition:opacity .15s}
+.map svg path.region:hover,.map svg path.region.on{stroke:var(--ink);stroke-width:1.4}
+.map .ramp{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);margin-top:8px}
+.map .ramp i{flex:1;height:8px;max-width:160px;border-radius:4px}
+/* tooltip */
+.tip{position:fixed;z-index:50;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--rule-2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:10px 12px;font-size:12.5px;line-height:1.5;min-width:180px;max-width:300px;opacity:0;transition:opacity .1s}
+.tip.on{opacity:1}
+.tip .t{font-weight:900;margin-bottom:4px;font-size:13px}
+.tip .r{display:flex;justify-content:space-between;gap:12px}
+.tip .r b{font-variant-numeric:tabular-nums;font-weight:700}
+.tip .r i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;border-radius:2px}
+.tip .sep{border-top:1px dashed var(--rule-2);margin:6px 0}
+.tip .m{color:var(--muted)}
+/* filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.filters input,.filters select{font:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--rule-2);border-radius:999px;background:var(--surface);color:var(--ink);min-width:0}
+.filters input{width:220px;max-width:100%}
+.filters input:focus,.filters select:focus{outline:2px solid var(--cyan);outline-offset:-1px}
+.count{font-size:12.5px;color:var(--muted)}
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px}
+.road .m{padding:14px 16px;min-width:0}
+.road .m:first-child{border-color:var(--navy-ink);box-shadow:0 0 0 2px var(--navy-ink) inset}
+.road .m h4{font-size:12.5px;color:#fff;background:var(--navy);display:inline-block;padding:2px 12px;border-radius:999px;font-weight:900}
+.road .m .v{font-size:15px;font-weight:900;margin-top:8px;font-variant-numeric:tabular-nums}
+.road .m .v small{color:var(--muted);font-weight:500;font-size:12px}
+.road .m ul{margin:8px 0 0;padding-left:16px;font-size:12.5px;color:var(--ink-2)}
+.road .m li+li{margin-top:3px}
+.road .m .chk{margin-top:8px;font-size:12px;color:var(--muted);border-top:1px dashed var(--rule-2);padding-top:6px}
+/* scenario */
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px}
+.scen>div{padding:14px 16px}
+.scen>div:first-child{background:var(--navy);color:#fff;border-color:var(--navy)}
+.scen>div:first-child .l,.scen>div:first-child .d{color:var(--navy-dim)}
+.scen>div:first-child .v{color:#fff}
+.scen .l{font-size:12.5px;color:var(--muted)}
+.scen .v{font-size:20px;font-weight:900;margin-top:2px}
+.scen .d{font-size:12.5px;color:var(--ink-2)}
+details.src{margin-top:16px}
+details.src summary{cursor:pointer;font-size:13px;color:var(--ink-2);font-weight:700}
+details.src ul{font-size:12.5px;color:var(--muted);padding-left:18px;margin:8px 0 0}
+.foot{margin-top:48px;border-top:1px solid var(--rule-2);padding-top:14px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot b{font-weight:900;color:var(--ink);font-size:14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.h1grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:14px}.h1p{min-width:0}.h1t{font-weight:800;font-size:13.5px;color:var(--ink);margin-bottom:4px}@media (max-width:760px){.h1grid{grid-template-columns:1fr}}
+</style>
+<div class="topbar"><div class="in"><span class="brand">매출 보고서 시각화 샘플</span>
+<span class="tophint">키보드 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 으로 장 이동</span></div></div>
+<header class="cover"><svg class="cover-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs><linearGradient id="cvb" gradientUnits="userSpaceOnUse" x1="640" y1="820" x2="1300" y2="20"><stop offset="0" stop-color="#1d86bf" stop-opacity=".78"/><stop offset=".55" stop-color="#1b5fa6" stop-opacity=".72"/><stop offset="1" stop-color="#143a78" stop-opacity=".55"/></linearGradient></defs>
+<path d="M 500,820 C 650,560 660,430 840,340 S 1060,200 1160,20" fill="none" stroke="#ffffff" stroke-opacity=".10" stroke-width="6"/>
+<path d="M 640,820 C 790,560 800,430 980,340 S 1200,200 1300,20" fill="none" stroke="url(#cvb)" stroke-width="150" stroke-linecap="butt"/>
+<path d="M 800,820 C 950,560 960,430 1140,340 S 1360,200 1460,20" fill="none" stroke="#35c8f0" stroke-opacity=".22" stroke-width="3"/>
+</svg><div class="cover-in">
+  <div><div class="wordmark">Company A KR<small>Insights</small></div><div class="date">Oct 2026</div>
+    <div class="title-block"><div class="eyebrow">시각화 샘플 · 수치는 모두 가상 데이터</div><h1>매출 계획 보고서 시각화 샘플</h1>
+    <div class="meta"><span>단위 <b>元(가상 데이터)</b></span><span>확률 <b>확정 100% · 높음 60% · 낮음 30%</b></span></div></div></div>
+  <div class="toc" role="group" aria-label="장 선택"><button type="button" data-ch="ch1" aria-pressed="true"><span class="ch">1장</span><span class="tt">실적·시나리오<small>월별 · 확률 반영 · 쌓아 보기</small></span></button><button type="button" data-ch="ch2" aria-pressed="false"><span class="ch">2장</span><span class="tt">지역·월별<small>지역 분포 · 월별 흐름</small></span></button><button type="button" data-ch="apx" aria-pressed="false"><span class="ch">부록</span><span class="tt">구성<small>KA/SME · 신규/기존 · HW/SW</small></span></button></div>
+  <div class="logo">Company <i>A</i> KR</div>
+</div></header>
+<div class="wrap">
+
+<div class="chapter" id="ch1">
+<section class="sec" id="secA">
+  <div class="sec-head"><div class="sec-letter">A</div><div><div class="sec-kicker" data-letter="A">실적</div><h2>월별 실적과 계획</h2>
+  <div class="fig" id="fig-months">
+    <div class="fig-head"><div><div class="fig-title">월별 실적과 하반기 계획 (가상)</div><div class="fig-sub">진한 막대는 실적(4~9월)과 확률 반영 금액(10~3월), 연한 막대는 낙관, 점선은 월 목표입니다.</div></div>
+      <div class="seg" role="group" aria-label="전년 표시"><button type="button" data-ly="0" aria-pressed="true">전년 숨김</button><button type="button" data-ly="1" aria-pressed="false">전년 비교</button></div></div>
+    <div class="chart" data-chart="months"></div>
+    <div class="legend"><span><i style="background:var(--actual)"></i>상반기 실적</span><span><i style="background:var(--high)"></i>하반기 보수</span><span><i style="background:var(--opt);border:1px solid var(--rule-2)"></i>낙관</span><span><i class="line" style="background:none;height:0;border-top:2px dashed var(--goal)"></i>월 목표</span><span class="ly-leg" hidden><i class="line" style="background:var(--last)"></i>전년 실적</span></div>
+  </div>
+</section>
+
+<section class="sec" id="secB">
+  <div class="sec-head"><div class="sec-letter">B</div><div><div class="sec-kicker" data-letter="B">시나리오</div><h2>확률을 반영한 시나리오</h2>
+  <div class="fig" id="fig-comp">
+    <div class="fig-head"><div><div class="fig-title">장부 금액과 확률 반영 금액 (가상)</div><div class="fig-sub">위 막대는 장부 금액, 아래 막대는 확정 100%·높음 60%·낮음 30%를 곱한 금액입니다.</div></div></div>
+    <div class="chart" data-chart="comp"></div>
+    <div class="legend"><span><i style="background:var(--sure)"></i>확정 (계약·구두 확약·정기 결제)</span><span><i style="background:var(--high)"></i>높음 (결재자·금액 협의 중)</span><span><i style="background:var(--low)"></i>낮음 (관심 단계)</span></div>
+    
+  </div>
+  <div class="fig" id="fig-bridge">
+    <div class="fig-head"><div><div class="fig-title">실적에서 연간 목표까지 쌓아 보기 (가상)</div><div class="fig-sub">높음·낮음은 확률을 반영한 기대값이고, 상향 여지는 나머지 금액입니다.</div></div></div>
+    <div class="chart" data-chart="bridge"></div>
+  </div>
+</section>
+
+</div>
+<div class="chapter" id="ch2" hidden>
+<section class="sec" id="secD">
+  <div class="sec-head"><div class="sec-letter">D</div><div><div class="sec-kicker" data-letter="D">지역 · 월별</div><h2>지역 분포와 월별 흐름</h2>
+
+  <div class="block"><h3>① 지역별 분포</h3>
+  <div class="fig" id="fig-map">
+    <div class="fig-head"><div><div class="fig-title">지역별 분포 (가상)</div><div class="fig-sub">지역에 마우스를 올리면 확정·높음·낮음 금액이 표시됩니다.</div></div>
+      <div class="seg" role="group" aria-label="지도 지표"><button type="button" data-metric="cons" aria-pressed="true">하반기 보수</button><button type="button" data-metric="opt" aria-pressed="false">하반기 낙관</button><button type="button" data-metric="h1" aria-pressed="false">상반기 실적</button></div></div>
+    
+    <div class="maprow"><div class="map" data-chart="map"></div>
+      <div class="map-panel"><h4 id="map-panel-title">지역 순위 · 하반기 보수</h4><ul class="region-list" id="region-list"></ul><div id="region-detail" class="small" style="margin-top:10px"></div></div></div>
+  </div>
+  </div>
+
+
+
+  <div class="block"><h3>② 월별 흐름 <span class="q">보수 · 낙관</span></h3>
+  <div class="fig" id="fig-roadmap">
+    <div class="fig-head"><div><div class="fig-title">월별 확정·높음·낮음 구성과 누적 (가상)</div><div class="fig-sub">왼쪽은 달마다 쌓이는 구성, 오른쪽은 누적 흐름입니다.</div></div></div>
+    <div class="rmgrid"><div class="chart" data-chart="rm-month"></div><div class="chart" data-chart="rm-cum"></div></div>
+    <div class="legend"><span><i style="background:var(--sure)"></i>확정</span><span><i style="background:var(--high)"></i>높음 ×0.6</span><span><i style="background:var(--low)"></i>낮음 ×0.3</span><span><i style="background:var(--opt);border:1px solid var(--rule-2)"></i>낙관</span><span><i class="line" style="background:var(--high);height:3px"></i>누적 보수</span><span><i class="line" style="background:none;height:0;border-top:2px dashed var(--goal)"></i>누적 낙관</span></div>
+  </div>
+  </div>
+</section>
+
+</div>
+<div class="chapter" id="apx" hidden>
+<section class="sec" id="apxsec">
+  <div class="sec-head apx"><div class="sec-letter">부록</div><div><div class="sec-kicker" data-letter="부록">구성</div><h2>고객 구성 비중</h2></div></div>
+
+  <div class="block"><h3>고객 구성 <span class="q">KA/SME · 신규/기존 · HW/SW · 팀</span></h3>
+  <div class="fig"><div class="fig-head"><div><div class="fig-title">고객 구분별 비중 (가상)</div><div class="fig-sub">대형/중소, 신규/기존, HW/SW, 팀 구분별 비중입니다.</div></div></div><div class="chart" data-chart="segments"></div></div>
+  </div>
+  <div class="foot"><span>시각화 샘플 · 수치는 모두 가상 데이터이며, 실제 보고서의 문장·고객·일정은 넣지 않았습니다.</span><b>Company A KR</b></div>
+</section>
+</div>
+</div>
+<nav class="dock" aria-label="장 이동"><span class="ind" aria-hidden="true"></span>
+<button type="button" data-ch="ch1" aria-pressed="true"><span class="ring"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="trk" cx="16" cy="16" r="13"/><circle class="bar" cx="16" cy="16" r="13"/></svg><b>1</b></span><span class="lbl"><em>1장</em>실적·시나리오</span></button>
+<button type="button" data-ch="ch2" aria-pressed="false"><span class="ring"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="trk" cx="16" cy="16" r="13"/><circle class="bar" cx="16" cy="16" r="13"/></svg><b>2</b></span><span class="lbl"><em>2장</em>지역·월별</span></button>
+<button type="button" data-ch="apx" aria-pressed="false"><span class="ring"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="trk" cx="16" cy="16" r="13"/><circle class="bar" cx="16" cy="16" r="13"/></svg><b>부</b></span><span class="lbl"><em>부록</em>구성</span></button>
+<span class="pos" id="dock-pos" aria-live="polite"></span></nav>
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const DATA = {"asOf":"가상 데이터","summary":{"annualGoal":3561800,"h1Goal":1690400,"h1":1636300,"h2Goal":1871400,"R":926300,"B":520200,"K":1091100,"cons":1565750,"opt":2537600,"sure":2562600,"annualCons":3202050,"annualOpt":4173900,"BD":{"annualGoal":1516554,"h1Goal":719743,"h1":696709,"h2Goal":796810,"R":394403,"B":221492,"K":464572,"cons":666670,"opt":1080467},"MKT":{"annualGoal":2045246,"h1Goal":970657,"h1":939591,"h2Goal":1074590,"R":531897,"B":298708,"K":626528,"cons":899080,"opt":1457133},"lastYearH1":1334600,"lastYearFY":2755500,"lastYearH2":1420900,"accountsH2":0,"newNoName":{"opt":0,"cons":0,"n":0},"conc":{}},"people":[],"months":[{"m":"4","goal":267300,"actual":248300,"lastYear":255200},{"m":"5","goal":276900,"actual":199100,"lastYear":297900},{"m":"6","goal":295000,"actual":329000,"lastYear":184800},{"m":"7","goal":268500,"actual":326000,"lastYear":177400},{"m":"8","goal":286000,"actual":304700,"lastYear":201400},{"m":"9","goal":296700,"actual":229200,"lastYear":217900},{"m":"10","goal":328500,"R":152600,"B":90300,"K":200100,"cons":266810,"opt":443000,"lastYear":181900},{"m":"11","goal":286600,"R":171500,"B":59000,"K":229100,"cons":275630,"opt":459600,"lastYear":203700},{"m":"12","goal":307600,"R":161300,"B":131900,"K":152200,"cons":286100,"opt":445400,"lastYear":181900},{"m":"1","goal":310600,"R":213000,"B":49500,"K":88900,"cons":269370,"opt":351400,"lastYear":266700},{"m":"2","goal":323600,"R":69400,"B":70900,"K":224100,"cons":179170,"opt":364400,"lastYear":312200},{"m":"3","goal":314500,"R":158500,"B":118600,"K":196700,"cons":288670,"opt":473800,"lastYear":274500}],"accounts":[],"regions":[{"name":"서울","h1":132749,"R":59439,"B":38676,"K":83618,"cons":107730,"opt":181733,"n":0},{"name":"경기","h1":179289,"R":123805,"B":48466,"K":102755,"cons":183711,"opt":275026,"n":0},{"name":"인천","h1":130848,"R":65119,"B":43780,"K":57499,"cons":108637,"opt":166398,"n":0},{"name":"울산","h1":76999,"R":34198,"B":15373,"K":49723,"cons":58339,"opt":99294,"n":0},{"name":"부산","h1":83853,"R":51564,"B":21375,"K":47315,"cons":78584,"opt":120254,"n":0},{"name":"경남","h1":126233,"R":88032,"B":60794,"K":135550,"cons":165173,"opt":284376,"n":0},{"name":"대전","h1":37546,"R":23604,"B":17833,"K":37690,"cons":45611,"opt":79127,"n":0},{"name":"대구","h1":133046,"R":77569,"B":58557,"K":159597,"cons":160582,"opt":295723,"n":0},{"name":"광주","h1":71669,"R":38966,"B":13375,"K":39043,"cons":58704,"opt":91384,"n":0},{"name":"온라인","h1":80624,"R":67013,"B":40627,"K":70211,"cons":112452,"opt":177851,"n":0},{"name":"충북","h1":44733,"R":35159,"B":14567,"K":41814,"cons":56443,"opt":91540,"n":0},{"name":"충남","h1":46930,"R":29097,"B":19657,"K":48115,"cons":55326,"opt":96869,"n":0},{"name":"제주","h1":74065,"R":32449,"B":22502,"K":38730,"cons":57569,"opt":93681,"n":0},{"name":"전북","h1":109388,"R":40744,"B":26802,"K":65045,"cons":76339,"opt":132591,"n":0},{"name":"경북","h1":170935,"R":91097,"B":52487,"K":103334,"cons":153589,"opt":246918,"n":0},{"name":"전남","h1":133101,"R":57124,"B":37005,"K":80826,"cons":103575,"opt":174955,"n":0}],"segments":[{"dim":"ka","key":"KA","h1":991788,"R":561446,"B":315302,"K":661334,"cons":949027,"opt":1538082},{"dim":"ka","key":"SME","h1":644512,"R":364854,"B":204898,"K":429766,"cons":616723,"opt":999518},{"dim":"prod","key":"HW","h1":882359,"R":499498,"B":280513,"K":588365,"cons":844315,"opt":1368376},{"dim":"prod","key":"SW","h1":753941,"R":426802,"B":239687,"K":502735,"cons":721435,"opt":1169224},{"dim":"status","key":"New","h1":918116,"R":519740,"B":291881,"K":612208,"cons":878531,"opt":1423829},{"dim":"status","key":"Renew","h1":718184,"R":406560,"B":228319,"K":478892,"cons":687219,"opt":1113771},{"dim":"team","key":"BD","h1":1000423,"R":566334,"B":318047,"K":667092,"cons":957290,"opt":1551473},{"dim":"team","key":"MK","h1":635877,"R":359966,"B":202153,"K":424008,"cons":608460,"opt":986127}],"teamGoalMonthly":[3561800,267300,276900,295000,268500,286000,296700,328500,286600,307600,310600,323600,314500]};
+const GEO = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"code":"39","name":"제주특별자치도","en":"Jeju-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.783,33.564],[126.802,33.554],[126.83,33.557],[126.833,33.543],[126.86,33.524],[126.874,33.528],[126.904,33.523],[126.918,33.498],[126.907,33.484],[126.915,33.47],[126.938,33.471],[126.942,33.459],[126.929,33.449],[126.91,33.403],[126.909,33.388],[126.893,33.384],[126.875,33.368],[126.871,33.35],[126.847,33.33],[126.851,33.322],[126.838,33.305],[126.811,33.298],[126.781,33.303],[126.747,33.275],[126.734,33.275],[126.694,33.266],[126.661,33.268],[126.644,33.262],[126.621,33.238],[126.6,33.233],[126.588,33.241],[126.55,33.234],[126.523,33.237],[126.511,33.227],[126.49,33.227],[126.472,33.219],[126.452,33.237],[126.433,33.229],[126.415,33.241],[126.387,33.228],[126.322,33.235],[126.3,33.219],[126.295,33.203],[126.274,33.191],[126.251,33.21],[126.234,33.231],[126.202,33.243],[126.184,33.256],[126.161,33.289],[126.168,33.296],[126.163,33.321],[126.169,33.343],[126.192,33.362],[126.215,33.373],[126.224,33.388],[126.238,33.393],[126.262,33.414],[126.262,33.431],[126.307,33.448],[126.31,33.463],[126.337,33.464],[126.388,33.487],[126.397,33.481],[126.482,33.507],[126.495,33.518],[126.517,33.513],[126.542,33.528],[126.551,33.518],[126.584,33.524],[126.599,33.535],[126.635,33.535],[126.646,33.553],[126.66,33.549],[126.72,33.553],[126.728,33.558],[126.758,33.556],[126.783,33.564]]]]}},{"type":"Feature","properties":{"code":"38","name":"경상남도","en":"Gyeongsangnam-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[128.239,34.837],[128.266,34.815],[128.249,34.797],[128.216,34.804],[128.202,34.82],[128.219,34.835],[128.239,34.837]]],[[[128.036,34.916],[128.039,34.895],[128.069,34.867],[128.063,34.843],[128.066,34.827],[128.027,34.843],[128.025,34.836],[127.989,34.833],[127.971,34.84],[127.964,34.867],[127.98,34.877],[127.998,34.907],[128.009,34.916],[128.036,34.916]]],[[[127.898,34.943],[127.92,34.937],[127.932,34.911],[127.925,34.896],[127.901,34.869],[127.926,34.828],[127.945,34.823],[127.957,34.802],[127.992,34.83],[128.035,34.827],[128.063,34.819],[128.064,34.796],[128.053,34.792],[128.059,34.742],[128.028,34.716],[128.016,34.721],[127.988,34.708],[127.958,34.706],[127.948,34.73],[127.951,34.774],[127.931,34.773],[127.906,34.763],[127.915,34.733],[127.889,34.719],[127.869,34.723],[127.858,34.74],[127.838,34.747],[127.854,34.766],[127.837,34.8],[127.815,34.832],[127.809,34.854],[127.829,34.871],[127.833,34.894],[127.853,34.9],[127.857,34.923],[127.873,34.939],[127.898,34.943]]],[[[128.682,35.037],[128.697,35.027],[128.715,35.029],[128.724,35.015],[128.705,35.003],[128.698,34.976],[128.73,34.944],[128.721,34.933],[128.726,34.912],[128.719,34.897],[128.698,34.886],[128.717,34.872],[128.737,34.888],[128.746,34.865],[128.704,34.837],[128.743,34.789],[128.712,34.791],[128.711,34.809],[128.694,34.804],[128.676,34.81],[128.669,34.79],[128.677,34.783],[128.641,34.76],[128.655,34.74],[128.671,34.743],[128.686,34.735],[128.626,34.729],[128.635,34.716],[128.612,34.698],[128.582,34.713],[128.606,34.724],[128.608,34.732],[128.579,34.738],[128.566,34.763],[128.545,34.772],[128.54,34.785],[128.581,34.791],[128.587,34.799],[128.588,34.829],[128.58,34.851],[128.547,34.831],[128.519,34.805],[128.504,34.83],[128.484,34.837],[128.474,34.874],[128.499,34.902],[128.518,34.907],[128.529,34.921],[128.55,34.905],[128.585,34.911],[128.6,34.898],[128.614,34.898],[128.599,34.933],[128.588,34.943],[128.622,34.959],[128.649,34.96],[128.652,34.976],[128.624,34.983],[128.633,35.006],[128.649,35.015],[128.655,34.985],[128.67,35.003],[128.682,35.037]]],[[[128.373,35.608],[128.384,35.604],[128.434,35.62],[128.449,35.635],[128.487,35.632],[128.507,35.636],[128.511,35.672],[128.529,35.679],[128.54,35.648],[128.539,35.621],[128.561,35.612],[128.587,35.583],[128.609,35.577],[128.66,35.595],[128.694,35.591],[128.706,35.575],[128.727,35.578],[128.763,35.565],[128.789,35.563],[128.803,35.585],[128.836,35.594],[128.856,35.594],[128.875,35.618],[128.914,35.635],[128.94,35.632],[128.984,35.605],[129.006,35.617],[129.023,35.612],[129.028,35.598],[129.022,35.581],[128.998,35.566],[128.973,35.558],[128.997,35.526],[129.025,35.522],[129.109,35.492],[129.112,35.477],[129.142,35.446],[129.163,35.432],[129.18,35.429],[129.199,35.436],[129.222,35.406],[129.205,35.385],[129.196,35.358],[129.177,35.348],[129.151,35.361],[129.13,35.342],[129.114,35.306],[129.091,35.3],[129.076,35.287],[129.062,35.292],[129.052,35.277],[129.015,35.27],[129.0,35.231],[128.926,35.213],[128.886,35.211],[128.873,35.199],[128.884,35.179],[128.868,35.164],[128.846,35.155],[128.796,35.155],[128.804,35.139],[128.834,35.126],[128.844,35.104],[128.825,35.096],[128.804,35.086],[128.781,35.099],[128.735,35.089],[128.705,35.102],[128.691,35.147],[128.665,35.127],[128.637,35.146],[128.616,35.142],[128.596,35.169],[128.588,35.207],[128.567,35.181],[128.603,35.13],[128.605,35.101],[128.625,35.087],[128.639,35.065],[128.606,35.052],[128.58,35.048],[128.562,35.066],[128.564,35.08],[128.536,35.109],[128.521,35.094],[128.491,35.104],[128.47,35.094],[128.464,35.068],[128.443,35.069],[128.43,35.052],[128.414,35.059],[128.383,35.046],[128.391,35.032],[128.447,35.048],[128.45,35.067],[128.485,35.061],[128.474,35.038],[128.505,35.011],[128.481,34.989],[128.465,34.984],[128.441,34.991],[128.442,34.959],[128.434,34.954],[128.436,34.929],[128.423,34.892],[128.434,34.874],[128.453,34.912],[128.471,34.884],[128.458,34.874],[128.454,34.843],[128.425,34.83],[128.444,34.824],[128.444,34.8],[128.438,34.776],[128.428,34.762],[128.409,34.759],[128.392,34.787],[128.379,34.792],[128.381,34.812],[128.341,34.825],[128.361,34.837],[128.378,34.823],[128.38,34.849],[128.396,34.861],[128.377,34.878],[128.366,34.867],[128.324,34.881],[128.301,34.899],[128.31,34.906],[128.358,34.906],[128.349,34.93],[128.336,34.941],[128.302,34.933],[128.303,34.909],[128.285,34.901],[128.268,34.91],[128.272,34.931],[128.243,34.941],[128.198,34.934],[128.206,34.921],[128.199,34.909],[128.205,34.891],[128.179,34.892],[128.124,34.901],[128.079,34.92],[128.057,34.925],[128.032,34.953],[128.054,34.975],[128.041,34.998],[128.052,35.013],[128.028,35.03],[128.01,35.021],[128.019,35.005],[128.018,34.989],[127.991,34.986],[127.985,34.975],[127.963,34.985],[127.95,34.974],[127.934,34.99],[127.93,35.01],[127.905,34.967],[127.906,34.955],[127.877,34.944],[127.839,34.947],[127.787,34.937],[127.767,34.97],[127.78,34.985],[127.789,35.014],[127.774,35.026],[127.771,35.047],[127.742,35.059],[127.74,35.075],[127.721,35.079],[127.697,35.1],[127.697,35.127],[127.624,35.185],[127.621,35.234],[127.612,35.259],[127.598,35.265],[127.58,35.306],[127.594,35.308],[127.623,35.329],[127.625,35.341],[127.612,35.363],[127.642,35.402],[127.664,35.414],[127.669,35.445],[127.647,35.447],[127.638,35.459],[127.639,35.475],[127.655,35.483],[127.628,35.522],[127.626,35.531],[127.593,35.551],[127.59,35.562],[127.613,35.582],[127.615,35.604],[127.63,35.615],[127.622,35.639],[127.63,35.66],[127.641,35.667],[127.647,35.695],[127.663,35.707],[127.664,35.756],[127.703,35.786],[127.722,35.794],[127.748,35.84],[127.774,35.836],[127.79,35.849],[127.811,35.851],[127.833,35.867],[127.843,35.864],[127.854,35.887],[127.89,35.912],[127.887,35.89],[127.895,35.884],[127.918,35.889],[127.933,35.875],[127.935,35.853],[127.953,35.858],[127.973,35.848],[127.988,35.854],[128.0,35.835],[128.014,35.826],[128.034,35.833],[128.053,35.826],[128.073,35.838],[128.126,35.819],[128.124,35.801],[128.131,35.786],[128.155,35.783],[128.166,35.76],[128.189,35.751],[128.204,35.72],[128.204,35.681],[128.182,35.671],[128.166,35.67],[128.166,35.65],[128.187,35.655],[128.203,35.641],[128.238,35.638],[128.246,35.653],[128.263,35.64],[128.281,35.649],[128.308,35.652],[128.357,35.639],[128.373,35.608]]]]}},{"type":"Feature","properties":{"code":"37","name":"경상북도","en":"Gyeongsangbuk-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[129.452,35.648],[129.415,35.661],[129.356,35.677],[129.305,35.645],[129.263,35.651],[129.257,35.663],[129.265,35.688],[129.256,35.698],[129.236,35.701],[129.21,35.718],[129.163,35.712],[129.148,35.722],[129.138,35.709],[129.091,35.699],[129.072,35.678],[129.07,35.656],[129.076,35.637],[129.05,35.647],[129.006,35.617],[128.984,35.605],[128.94,35.632],[128.914,35.635],[128.875,35.618],[128.856,35.594],[128.836,35.594],[128.803,35.585],[128.789,35.563],[128.763,35.565],[128.727,35.578],[128.706,35.575],[128.694,35.591],[128.66,35.595],[128.609,35.577],[128.587,35.583],[128.561,35.612],[128.539,35.621],[128.54,35.648],[128.529,35.679],[128.546,35.716],[128.582,35.736],[128.619,35.734],[128.612,35.722],[128.625,35.7],[128.64,35.703],[128.666,35.717],[128.686,35.719],[128.694,35.729],[128.698,35.755],[128.685,35.787],[128.719,35.803],[128.711,35.824],[128.754,35.854],[128.765,35.881],[128.759,35.912],[128.741,35.925],[128.747,35.941],[128.741,35.953],[128.748,35.968],[128.734,35.982],[128.728,36.002],[128.693,36.012],[128.62,36.003],[128.592,35.976],[128.558,35.968],[128.529,35.973],[128.537,35.937],[128.526,35.915],[128.495,35.893],[128.478,35.892],[128.47,35.904],[128.478,35.933],[128.443,35.932],[128.42,35.918],[128.406,35.886],[128.388,35.862],[128.392,35.847],[128.425,35.848],[128.462,35.838],[128.48,35.824],[128.471,35.805],[128.422,35.806],[128.41,35.794],[128.389,35.76],[128.395,35.743],[128.435,35.722],[128.435,35.7],[128.42,35.69],[128.362,35.704],[128.353,35.7],[128.358,35.678],[128.384,35.652],[128.405,35.639],[128.388,35.609],[128.373,35.608],[128.357,35.639],[128.308,35.652],[128.281,35.649],[128.263,35.64],[128.246,35.653],[128.238,35.638],[128.203,35.641],[128.187,35.655],[128.166,35.65],[128.166,35.67],[128.182,35.671],[128.204,35.681],[128.204,35.72],[128.189,35.751],[128.166,35.76],[128.155,35.783],[128.131,35.786],[128.124,35.801],[128.126,35.819],[128.073,35.838],[128.053,35.826],[128.034,35.833],[128.014,35.826],[128.0,35.835],[127.988,35.854],[127.973,35.848],[127.953,35.858],[127.935,35.853],[127.933,35.875],[127.918,35.889],[127.895,35.884],[127.887,35.89],[127.89,35.912],[127.884,35.925],[127.911,35.938],[127.897,35.982],[127.878,35.994],[127.879,36.019],[127.906,36.036],[127.919,36.051],[127.938,36.048],[127.964,36.065],[127.96,36.092],[127.969,36.115],[127.989,36.126],[127.998,36.15],[127.978,36.185],[127.988,36.197],[128.016,36.206],[128.041,36.191],[128.055,36.198],[128.053,36.212],[128.032,36.237],[128.049,36.254],[128.012,36.269],[127.984,36.261],[127.97,36.248],[127.951,36.254],[127.933,36.275],[127.894,36.289],[127.882,36.272],[127.853,36.273],[127.843,36.307],[127.854,36.327],[127.884,36.342],[127.893,36.354],[127.875,36.403],[127.885,36.419],[127.875,36.434],[127.885,36.458],[127.883,36.478],[127.909,36.505],[127.903,36.522],[127.876,36.535],[127.876,36.552],[127.864,36.565],[127.826,36.568],[127.8,36.588],[127.826,36.61],[127.852,36.61],[127.85,36.63],[127.865,36.632],[127.876,36.652],[127.892,36.627],[127.934,36.615],[127.941,36.648],[127.934,36.662],[127.89,36.688],[127.934,36.69],[127.934,36.703],[127.951,36.715],[127.963,36.734],[127.989,36.715],[128.005,36.714],[128.024,36.723],[128.05,36.705],[128.074,36.704],[128.071,36.719],[128.035,36.745],[128.057,36.79],[128.061,36.813],[128.086,36.801],[128.109,36.803],[128.114,36.816],[128.142,36.831],[128.167,36.817],[128.221,36.812],[128.216,36.846],[128.236,36.845],[128.244,36.87],[128.285,36.854],[128.299,36.832],[128.323,36.812],[128.336,36.814],[128.369,36.798],[128.384,36.811],[128.423,36.809],[128.451,36.846],[128.45,36.862],[128.427,36.874],[128.443,36.899],[128.444,36.925],[128.462,36.932],[128.465,36.945],[128.516,36.974],[128.517,36.984],[128.547,36.99],[128.574,37.013],[128.567,37.029],[128.586,37.041],[128.633,37.036],[128.654,37.063],[128.691,37.05],[128.702,37.038],[128.737,37.037],[128.754,37.026],[128.764,37.032],[128.754,37.055],[128.767,37.061],[128.787,37.085],[128.811,37.075],[128.829,37.075],[128.849,37.049],[128.878,37.042],[128.898,37.042],[128.925,37.089],[128.947,37.092],[128.963,37.075],[128.985,37.081],[129.067,37.065],[129.079,37.09],[129.098,37.098],[129.143,37.079],[129.197,37.038],[129.235,37.042],[129.228,37.071],[129.252,37.093],[129.268,37.099],[129.274,37.114],[129.297,37.112],[129.306,37.126],[129.342,37.142],[129.366,37.144],[129.384,37.117],[129.382,37.097],[129.407,37.075],[129.43,37.061],[129.417,37.05],[129.413,37.021],[129.421,37.003],[129.411,36.977],[129.422,36.948],[129.424,36.894],[129.418,36.886],[129.432,36.845],[129.46,36.812],[129.466,36.785],[129.481,36.765],[129.47,36.755],[129.48,36.73],[129.475,36.721],[129.479,36.696],[129.467,36.683],[129.44,36.667],[129.415,36.62],[129.413,36.592],[129.425,36.566],[129.443,36.549],[129.449,36.5],[129.437,36.48],[129.44,36.46],[129.439,36.426],[129.427,36.403],[129.398,36.363],[129.382,36.33],[129.385,36.32],[129.377,36.286],[129.384,36.272],[129.375,36.252],[129.387,36.237],[129.387,36.209],[129.375,36.204],[129.379,36.187],[129.395,36.177],[129.402,36.162],[129.4,36.132],[129.443,36.097],[129.421,36.086],[129.423,36.074],[129.383,36.057],[129.379,36.047],[129.386,36.027],[129.419,36.009],[129.432,35.994],[129.454,35.989],[129.476,36.01],[129.505,36.023],[129.506,36.034],[129.536,36.055],[129.549,36.082],[129.572,36.074],[129.586,36.017],[129.581,36.005],[129.559,35.988],[129.557,35.965],[129.536,35.933],[129.521,35.924],[129.53,35.902],[129.522,35.87],[129.53,35.861],[129.512,35.821],[129.517,35.813],[129.494,35.784],[129.499,35.768],[129.489,35.726],[129.475,35.7],[129.478,35.683],[129.452,35.648]]],[[[130.908,37.546],[130.911,37.526],[130.921,37.511],[130.916,37.479],[130.866,37.457],[130.834,37.463],[130.803,37.481],[130.806,37.5],[130.794,37.51],[130.848,37.533],[130.895,37.538],[130.908,37.546]]]]}},{"type":"Feature","properties":{"code":"36","name":"전라남도","en":"Jeollanam-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.551,34.176],[126.565,34.167],[126.586,34.167],[126.579,34.141],[126.55,34.123],[126.527,34.118],[126.507,34.134],[126.517,34.167],[126.542,34.179],[126.551,34.176]]],[[[126.663,34.192],[126.684,34.182],[126.671,34.16],[126.683,34.136],[126.665,34.108],[126.636,34.125],[126.629,34.142],[126.65,34.165],[126.636,34.176],[126.652,34.197],[126.663,34.192]]],[[[126.894,34.213],[126.927,34.171],[126.918,34.151],[126.886,34.148],[126.849,34.171],[126.874,34.207],[126.894,34.213]]],[[[126.57,34.231],[126.598,34.224],[126.617,34.213],[126.627,34.2],[126.612,34.193],[126.619,34.177],[126.589,34.169],[126.562,34.176],[126.55,34.186],[126.567,34.216],[126.57,34.231]]],[[[126.042,34.316],[126.057,34.301],[126.082,34.305],[126.097,34.274],[126.076,34.279],[126.056,34.271],[126.05,34.28],[126.03,34.28],[126.023,34.3],[126.042,34.316]]],[[[126.842,34.35],[126.85,34.342],[126.871,34.347],[126.882,34.334],[126.9,34.329],[126.886,34.307],[126.869,34.312],[126.847,34.295],[126.834,34.32],[126.811,34.323],[126.801,34.315],[126.782,34.324],[126.79,34.344],[126.805,34.33],[126.821,34.345],[126.842,34.35]]],[[[127.037,34.373],[127.056,34.358],[127.093,34.355],[127.099,34.332],[127.085,34.333],[127.052,34.326],[127.009,34.355],[127.013,34.373],[127.037,34.373]]],[[[126.687,34.399],[126.703,34.395],[126.734,34.373],[126.731,34.359],[126.751,34.318],[126.773,34.31],[126.762,34.289],[126.734,34.284],[126.72,34.294],[126.696,34.289],[126.679,34.311],[126.651,34.33],[126.641,34.379],[126.65,34.39],[126.687,34.399]]],[[[126.947,34.409],[126.953,34.399],[126.936,34.367],[126.92,34.353],[126.866,34.37],[126.874,34.392],[126.887,34.401],[126.906,34.399],[126.933,34.387],[126.947,34.409]]],[[[126.837,34.439],[126.848,34.426],[126.868,34.387],[126.838,34.38],[126.793,34.377],[126.775,34.351],[126.767,34.357],[126.777,34.378],[126.757,34.383],[126.766,34.403],[126.79,34.43],[126.803,34.429],[126.837,34.439]]],[[[127.466,34.469],[127.504,34.459],[127.509,34.465],[127.539,34.445],[127.537,34.426],[127.495,34.409],[127.493,34.43],[127.467,34.437],[127.457,34.452],[127.466,34.469]]],[[[127.225,34.49],[127.237,34.472],[127.215,34.429],[127.191,34.427],[127.17,34.432],[127.147,34.426],[127.127,34.428],[127.1,34.463],[127.127,34.486],[127.139,34.47],[127.159,34.476],[127.19,34.491],[127.201,34.485],[127.225,34.49]]],[[[127.461,34.543],[127.481,34.533],[127.464,34.507],[127.493,34.505],[127.504,34.492],[127.484,34.48],[127.454,34.476],[127.446,34.494],[127.461,34.5],[127.449,34.514],[127.436,34.516],[127.461,34.543]]],[[[127.743,34.55],[127.759,34.549],[127.764,34.532],[127.783,34.516],[127.799,34.49],[127.774,34.484],[127.769,34.493],[127.728,34.513],[127.716,34.536],[127.743,34.55]]],[[[126.253,34.586],[126.306,34.568],[126.309,34.549],[126.34,34.543],[126.384,34.502],[126.374,34.463],[126.36,34.453],[126.368,34.44],[126.339,34.413],[126.317,34.402],[126.295,34.406],[126.287,34.391],[126.267,34.394],[126.265,34.376],[126.246,34.375],[126.203,34.355],[126.175,34.35],[126.137,34.357],[126.136,34.371],[126.116,34.378],[126.111,34.392],[126.091,34.415],[126.104,34.438],[126.147,34.473],[126.175,34.482],[126.18,34.499],[126.2,34.505],[126.227,34.532],[126.257,34.534],[126.263,34.545],[126.243,34.566],[126.253,34.586]]],[[[126.07,34.632],[126.085,34.611],[126.105,34.603],[126.113,34.586],[126.098,34.571],[126.104,34.552],[126.088,34.551],[126.082,34.538],[126.05,34.526],[126.048,34.562],[126.067,34.558],[126.082,34.575],[126.065,34.606],[126.05,34.605],[126.051,34.626],[126.07,34.632]]],[[[126.051,34.656],[126.053,34.638],[126.039,34.612],[126.059,34.6],[126.067,34.581],[126.057,34.564],[126.021,34.561],[126.013,34.602],[126.012,34.628],[126.03,34.633],[126.03,34.644],[126.051,34.656]]],[[[126.149,34.671],[126.186,34.659],[126.193,34.629],[126.164,34.613],[126.13,34.617],[126.11,34.643],[126.119,34.661],[126.149,34.671]]],[[[125.444,34.697],[125.467,34.69],[125.45,34.677],[125.447,34.66],[125.429,34.656],[125.432,34.641],[125.417,34.635],[125.416,34.619],[125.395,34.625],[125.387,34.64],[125.4,34.674],[125.415,34.695],[125.444,34.697]]],[[[127.751,34.731],[127.788,34.714],[127.793,34.699],[127.779,34.678],[127.797,34.658],[127.803,34.627],[127.794,34.608],[127.808,34.587],[127.788,34.582],[127.752,34.589],[127.712,34.62],[127.727,34.634],[127.726,34.653],[127.75,34.667],[127.76,34.686],[127.76,34.709],[127.751,34.731]]],[[[125.971,34.727],[125.978,34.718],[126.017,34.707],[126.01,34.681],[125.99,34.675],[125.983,34.661],[125.968,34.653],[125.918,34.674],[125.917,34.707],[125.944,34.711],[125.963,34.734],[125.971,34.727]]],[[[126.083,34.776],[126.099,34.768],[126.126,34.773],[126.14,34.755],[126.165,34.755],[126.196,34.729],[126.198,34.716],[126.175,34.697],[126.147,34.683],[126.122,34.68],[126.111,34.693],[126.076,34.705],[126.07,34.714],[126.075,34.744],[126.082,34.75],[126.07,34.769],[126.083,34.776]]],[[[125.999,34.802],[126.001,34.757],[125.979,34.749],[125.944,34.75],[125.953,34.731],[125.944,34.718],[125.921,34.711],[125.896,34.723],[125.891,34.762],[125.911,34.773],[125.938,34.773],[125.969,34.788],[125.976,34.8],[125.999,34.802]]],[[[126.172,34.8],[126.177,34.759],[126.138,34.759],[126.125,34.776],[126.102,34.775],[126.102,34.789],[126.135,34.797],[126.158,34.82],[126.172,34.8]]],[[[126.117,34.88],[126.14,34.872],[126.153,34.842],[126.116,34.823],[126.122,34.8],[126.103,34.794],[126.095,34.808],[126.06,34.846],[126.084,34.856],[126.105,34.848],[126.117,34.88]]],[[[126.298,34.919],[126.313,34.906],[126.338,34.906],[126.345,34.891],[126.327,34.887],[126.327,34.858],[126.359,34.861],[126.374,34.844],[126.36,34.812],[126.334,34.816],[126.341,34.835],[126.336,34.845],[126.279,34.853],[126.257,34.837],[126.23,34.847],[126.244,34.856],[126.266,34.856],[126.284,34.864],[126.304,34.89],[126.283,34.907],[126.298,34.919]]],[[[126.065,34.933],[126.094,34.92],[126.106,34.898],[126.098,34.872],[126.087,34.861],[126.052,34.85],[125.999,34.862],[125.991,34.874],[126.016,34.91],[126.033,34.906],[126.042,34.916],[126.06,34.917],[126.065,34.933]]],[[[127.739,34.944],[127.741,34.929],[127.767,34.929],[127.787,34.912],[127.787,34.883],[127.763,34.89],[127.761,34.903],[127.706,34.909],[127.727,34.945],[127.739,34.944]]],[[[126.217,34.983],[126.233,34.977],[126.215,34.933],[126.197,34.912],[126.19,34.943],[126.203,34.975],[126.217,34.983]]],[[[126.136,35.024],[126.156,35.023],[126.174,35.012],[126.19,34.983],[126.177,34.943],[126.16,34.935],[126.125,34.948],[126.137,34.964],[126.135,34.998],[126.118,34.992],[126.1,34.998],[126.117,35.016],[126.136,35.024]]],[[[126.164,35.141],[126.147,35.134],[126.13,35.113],[126.123,35.094],[126.121,35.058],[126.093,35.049],[126.075,35.057],[126.05,35.058],[126.043,35.082],[126.05,35.099],[126.087,35.109],[126.12,35.14],[126.164,35.141]]],[[[127.58,35.306],[127.598,35.265],[127.612,35.259],[127.621,35.234],[127.624,35.185],[127.697,35.127],[127.697,35.1],[127.721,35.079],[127.74,35.075],[127.742,35.059],[127.771,35.047],[127.774,35.026],[127.789,35.014],[127.78,34.985],[127.767,34.975],[127.763,34.963],[127.73,34.95],[127.702,34.928],[127.693,34.912],[127.642,34.883],[127.62,34.913],[127.593,34.916],[127.616,34.889],[127.592,34.872],[127.613,34.846],[127.645,34.827],[127.664,34.841],[127.672,34.834],[127.701,34.856],[127.736,34.852],[127.764,34.862],[127.777,34.857],[127.772,34.809],[127.758,34.782],[127.747,34.773],[127.757,34.76],[127.752,34.733],[127.706,34.717],[127.684,34.738],[127.66,34.752],[127.642,34.712],[127.626,34.698],[127.626,34.684],[127.642,34.643],[127.623,34.636],[127.592,34.649],[127.572,34.64],[127.554,34.659],[127.553,34.686],[127.569,34.725],[127.581,34.73],[127.592,34.755],[127.582,34.759],[127.559,34.804],[127.526,34.807],[127.54,34.829],[127.525,34.847],[127.517,34.875],[127.504,34.871],[127.475,34.842],[127.403,34.822],[127.422,34.808],[127.397,34.793],[127.389,34.776],[127.403,34.764],[127.399,34.754],[127.375,34.738],[127.393,34.708],[127.454,34.692],[127.452,34.668],[127.48,34.669],[127.476,34.652],[127.489,34.649],[127.508,34.589],[127.489,34.575],[127.459,34.58],[127.447,34.573],[127.414,34.587],[127.396,34.578],[127.41,34.558],[127.436,34.549],[127.425,34.528],[127.403,34.501],[127.381,34.499],[127.379,34.483],[127.332,34.47],[127.341,34.442],[127.324,34.438],[127.289,34.474],[127.27,34.479],[127.285,34.494],[127.259,34.516],[127.212,34.517],[127.196,34.529],[127.171,34.519],[127.138,34.52],[127.125,34.526],[127.114,34.544],[127.115,34.556],[127.146,34.581],[127.174,34.592],[127.175,34.624],[127.202,34.645],[127.21,34.626],[127.23,34.64],[127.235,34.677],[127.253,34.707],[127.281,34.716],[127.288,34.695],[127.282,34.67],[127.317,34.662],[127.32,34.679],[127.336,34.705],[127.326,34.749],[127.306,34.746],[127.295,34.728],[127.273,34.738],[127.264,34.729],[127.241,34.764],[127.211,34.734],[127.2,34.703],[127.183,34.689],[127.143,34.691],[127.13,34.699],[127.109,34.674],[127.071,34.66],[127.056,34.639],[126.997,34.611],[127.011,34.602],[126.995,34.591],[126.985,34.567],[126.99,34.537],[126.974,34.54],[126.961,34.528],[126.975,34.513],[126.964,34.499],[126.979,34.484],[126.956,34.467],[126.939,34.445],[126.928,34.45],[126.879,34.454],[126.889,34.425],[126.852,34.444],[126.822,34.446],[126.792,34.463],[126.794,34.485],[126.789,34.51],[126.793,34.529],[126.795,34.567],[126.774,34.6],[126.768,34.56],[126.771,34.552],[126.761,34.523],[126.76,34.491],[126.743,34.485],[126.75,34.469],[126.73,34.442],[126.7,34.437],[126.683,34.423],[126.654,34.418],[126.62,34.399],[126.623,34.355],[126.605,34.344],[126.606,34.321],[126.588,34.317],[126.56,34.318],[126.547,34.3],[126.519,34.295],[126.514,34.316],[126.529,34.331],[126.522,34.358],[126.483,34.355],[126.483,34.378],[126.497,34.386],[126.492,34.4],[126.519,34.411],[126.51,34.424],[126.491,34.432],[126.479,34.423],[126.46,34.446],[126.469,34.459],[126.458,34.474],[126.473,34.504],[126.462,34.529],[126.434,34.541],[126.432,34.552],[126.404,34.541],[126.382,34.56],[126.365,34.558],[126.336,34.57],[126.316,34.563],[126.308,34.587],[126.281,34.593],[126.287,34.627],[126.272,34.63],[126.265,34.657],[126.257,34.661],[126.26,34.691],[126.276,34.709],[126.276,34.726],[126.288,34.755],[126.302,34.759],[126.337,34.735],[126.353,34.7],[126.342,34.692],[126.344,34.671],[126.371,34.637],[126.379,34.615],[126.437,34.587],[126.43,34.611],[126.376,34.641],[126.36,34.673],[126.346,34.683],[126.37,34.696],[126.391,34.728],[126.369,34.735],[126.382,34.75],[126.381,34.764],[126.451,34.78],[126.443,34.796],[126.403,34.78],[126.371,34.778],[126.364,34.788],[126.372,34.81],[126.39,34.834],[126.409,34.849],[126.397,34.866],[126.404,34.877],[126.391,34.887],[126.407,34.908],[126.394,34.917],[126.389,34.944],[126.396,34.959],[126.381,34.968],[126.369,34.925],[126.345,34.912],[126.332,34.917],[126.323,34.94],[126.297,34.962],[126.308,34.983],[126.335,34.968],[126.361,34.984],[126.346,34.999],[126.391,35.022],[126.383,35.044],[126.354,35.036],[126.346,35.067],[126.33,35.085],[126.303,35.045],[126.293,35.056],[126.262,35.05],[126.276,35.035],[126.258,35.01],[126.229,35.02],[126.237,35.041],[126.225,35.055],[126.188,35.055],[126.163,35.064],[126.169,35.101],[126.193,35.11],[126.235,35.095],[126.247,35.107],[126.259,35.139],[126.274,35.143],[126.327,35.131],[126.347,35.148],[126.346,35.112],[126.337,35.089],[126.37,35.068],[126.399,35.074],[126.409,35.061],[126.401,35.03],[126.443,35.053],[126.454,35.07],[126.442,35.081],[126.462,35.089],[126.448,35.103],[126.422,35.104],[126.405,35.132],[126.365,35.164],[126.342,35.19],[126.309,35.175],[126.3,35.224],[126.313,35.252],[126.326,35.25],[126.325,35.285],[126.36,35.286],[126.38,35.303],[126.38,35.326],[126.4,35.366],[126.408,35.406],[126.424,35.425],[126.45,35.427],[126.481,35.421],[126.491,35.408],[126.484,35.383],[126.522,35.347],[126.52,35.323],[126.533,35.304],[126.553,35.31],[126.594,35.302],[126.583,35.321],[126.606,35.332],[126.627,35.318],[126.647,35.317],[126.669,35.348],[126.701,35.347],[126.707,35.362],[126.721,35.362],[126.733,35.373],[126.732,35.392],[126.754,35.42],[126.75,35.447],[126.766,35.463],[126.815,35.466],[126.828,35.483],[126.853,35.463],[126.871,35.458],[126.907,35.438],[126.9,35.43],[126.911,35.414],[126.932,35.403],[126.935,35.392],[126.965,35.392],[126.979,35.4],[126.972,35.424],[127.015,35.455],[127.037,35.462],[127.04,35.433],[127.051,35.428],[127.044,35.396],[127.033,35.387],[127.049,35.374],[127.059,35.381],[127.072,35.363],[127.067,35.333],[127.054,35.337],[127.049,35.315],[127.064,35.314],[127.118,35.297],[127.149,35.312],[127.171,35.329],[127.203,35.313],[127.217,35.313],[127.225,35.334],[127.263,35.309],[127.29,35.311],[127.308,35.3],[127.358,35.318],[127.387,35.3],[127.433,35.356],[127.474,35.364],[127.504,35.356],[127.533,35.334],[127.58,35.306]],[[126.909,35.256],[126.892,35.244],[126.876,35.247],[126.841,35.227],[126.808,35.216],[126.758,35.231],[126.766,35.251],[126.739,35.249],[126.722,35.224],[126.72,35.209],[126.705,35.205],[126.689,35.212],[126.68,35.191],[126.662,35.189],[126.673,35.166],[126.656,35.162],[126.654,35.117],[126.68,35.103],[126.689,35.109],[126.742,35.104],[126.764,35.088],[126.78,35.05],[126.797,35.058],[126.821,35.049],[126.858,35.075],[126.874,35.071],[126.924,35.087],[126.934,35.071],[126.954,35.07],[126.969,35.086],[126.989,35.091],[127.011,35.121],[127.01,35.152],[127.023,35.164],[127.004,35.185],[126.978,35.184],[126.935,35.237],[126.933,35.248],[126.909,35.256]],[[126.425,34.736],[126.4,34.736],[126.39,34.717],[126.455,34.703],[126.453,34.684],[126.473,34.656],[126.481,34.677],[126.496,34.663],[126.545,34.652],[126.541,34.679],[126.53,34.704],[126.501,34.732],[126.473,34.735],[126.461,34.726],[126.437,34.728],[126.425,34.736]]]]}},{"type":"Feature","properties":{"code":"35","name":"전라북도","en":"Jeollabuk-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[127.64,36.065],[127.657,36.053],[127.662,36.036],[127.687,36.059],[127.699,36.053],[127.708,36.03],[127.733,36.029],[127.79,36.011],[127.803,36.024],[127.856,36.036],[127.879,36.019],[127.878,35.994],[127.897,35.982],[127.911,35.938],[127.884,35.925],[127.89,35.912],[127.854,35.887],[127.843,35.864],[127.833,35.867],[127.811,35.851],[127.79,35.849],[127.774,35.836],[127.748,35.84],[127.722,35.794],[127.703,35.786],[127.664,35.756],[127.663,35.707],[127.647,35.695],[127.641,35.667],[127.63,35.66],[127.622,35.639],[127.63,35.615],[127.615,35.604],[127.613,35.582],[127.59,35.562],[127.593,35.551],[127.626,35.531],[127.628,35.522],[127.655,35.483],[127.639,35.475],[127.638,35.459],[127.647,35.447],[127.669,35.445],[127.664,35.414],[127.642,35.402],[127.612,35.363],[127.625,35.341],[127.623,35.329],[127.594,35.308],[127.58,35.306],[127.533,35.334],[127.504,35.356],[127.474,35.364],[127.433,35.356],[127.387,35.3],[127.358,35.318],[127.308,35.3],[127.29,35.311],[127.263,35.309],[127.225,35.334],[127.217,35.313],[127.203,35.313],[127.171,35.329],[127.149,35.312],[127.118,35.297],[127.064,35.314],[127.049,35.315],[127.054,35.337],[127.067,35.333],[127.072,35.363],[127.059,35.381],[127.049,35.374],[127.033,35.387],[127.044,35.396],[127.051,35.428],[127.04,35.433],[127.037,35.462],[127.015,35.455],[126.972,35.424],[126.979,35.4],[126.965,35.392],[126.935,35.392],[126.932,35.403],[126.911,35.414],[126.9,35.43],[126.907,35.438],[126.871,35.458],[126.853,35.463],[126.828,35.483],[126.815,35.466],[126.766,35.463],[126.75,35.447],[126.754,35.42],[126.732,35.392],[126.733,35.373],[126.721,35.362],[126.707,35.362],[126.701,35.347],[126.669,35.348],[126.647,35.317],[126.627,35.318],[126.606,35.332],[126.583,35.321],[126.594,35.302],[126.553,35.31],[126.533,35.304],[126.52,35.323],[126.522,35.347],[126.484,35.383],[126.491,35.408],[126.481,35.421],[126.45,35.427],[126.431,35.435],[126.444,35.451],[126.485,35.516],[126.521,35.531],[126.544,35.524],[126.564,35.538],[126.605,35.54],[126.618,35.554],[126.619,35.567],[126.65,35.567],[126.667,35.552],[126.674,35.578],[126.638,35.59],[126.619,35.582],[126.577,35.587],[126.543,35.585],[126.53,35.576],[126.494,35.583],[126.47,35.601],[126.467,35.631],[126.486,35.653],[126.502,35.654],[126.535,35.684],[126.563,35.696],[126.573,35.692],[126.604,35.717],[126.629,35.745],[126.625,35.786],[126.645,35.795],[126.701,35.796],[126.73,35.791],[126.772,35.775],[126.779,35.798],[126.735,35.816],[126.701,35.837],[126.694,35.849],[126.733,35.864],[126.79,35.862],[126.801,35.871],[126.803,35.891],[126.786,35.899],[126.772,35.886],[126.738,35.889],[126.727,35.883],[126.701,35.891],[126.678,35.892],[126.67,35.88],[126.617,35.883],[126.612,35.914],[126.617,35.94],[126.597,35.945],[126.53,35.937],[126.523,35.968],[126.571,35.973],[126.645,35.976],[126.669,35.981],[126.682,35.996],[126.727,35.992],[126.737,35.998],[126.751,36.021],[126.777,36.029],[126.812,36.031],[126.832,36.044],[126.866,36.058],[126.877,36.089],[126.875,36.11],[126.894,36.138],[126.925,36.136],[126.959,36.153],[126.992,36.142],[127.006,36.146],[127.026,36.134],[127.052,36.139],[127.063,36.091],[127.084,36.075],[127.136,36.067],[127.139,36.084],[127.171,36.081],[127.181,36.091],[127.202,36.083],[127.207,36.097],[127.248,36.092],[127.254,36.11],[127.275,36.105],[127.297,36.11],[127.308,36.123],[127.341,36.128],[127.357,36.105],[127.362,36.087],[127.363,36.05],[127.377,36.031],[127.403,36.005],[127.428,36.023],[127.447,36.004],[127.458,35.981],[127.47,35.985],[127.49,35.975],[127.508,35.977],[127.536,35.989],[127.542,36.009],[127.54,36.03],[127.594,36.022],[127.603,36.009],[127.62,36.005],[127.633,36.038],[127.621,36.039],[127.626,36.064],[127.64,36.065]]]]}},{"type":"Feature","properties":{"code":"34","name":"충청남도","en":"Chungcheongnam-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.363,36.61],[126.387,36.603],[126.401,36.579],[126.393,36.548],[126.399,36.516],[126.429,36.459],[126.437,36.416],[126.421,36.402],[126.408,36.411],[126.383,36.415],[126.373,36.407],[126.34,36.436],[126.328,36.465],[126.336,36.488],[126.323,36.555],[126.312,36.566],[126.312,36.582],[126.342,36.606],[126.363,36.61]]],[[[126.911,36.902],[126.998,36.933],[127.034,36.925],[127.063,36.937],[127.076,36.936],[127.116,36.97],[127.132,36.962],[127.146,36.969],[127.192,36.95],[127.204,36.949],[127.222,36.927],[127.246,36.915],[127.272,36.91],[127.292,36.891],[127.31,36.882],[127.308,36.86],[127.338,36.852],[127.336,36.828],[127.358,36.826],[127.384,36.811],[127.404,36.792],[127.397,36.781],[127.414,36.769],[127.414,36.754],[127.399,36.744],[127.39,36.756],[127.339,36.75],[127.343,36.729],[127.327,36.73],[127.31,36.718],[127.31,36.702],[127.288,36.688],[127.25,36.692],[127.206,36.722],[127.165,36.731],[127.136,36.704],[127.145,36.689],[127.163,36.689],[127.167,36.675],[127.157,36.662],[127.16,36.633],[127.158,36.603],[127.184,36.593],[127.195,36.578],[127.196,36.562],[127.175,36.533],[127.184,36.519],[127.173,36.509],[127.207,36.456],[127.203,36.439],[127.228,36.419],[127.26,36.405],[127.284,36.412],[127.283,36.372],[127.273,36.358],[127.28,36.346],[127.262,36.324],[127.261,36.293],[127.252,36.28],[127.283,36.262],[127.285,36.233],[127.317,36.218],[127.326,36.2],[127.343,36.186],[127.355,36.209],[127.367,36.217],[127.362,36.261],[127.375,36.269],[127.392,36.262],[127.389,36.248],[127.403,36.23],[127.41,36.21],[127.445,36.191],[127.471,36.212],[127.47,36.22],[127.495,36.235],[127.52,36.238],[127.533,36.246],[127.551,36.236],[127.581,36.23],[127.6,36.214],[127.595,36.192],[127.604,36.159],[127.592,36.131],[127.62,36.102],[127.62,36.091],[127.64,36.065],[127.626,36.064],[127.621,36.039],[127.633,36.038],[127.62,36.005],[127.603,36.009],[127.594,36.022],[127.54,36.03],[127.542,36.009],[127.536,35.989],[127.508,35.977],[127.49,35.975],[127.47,35.985],[127.458,35.981],[127.447,36.004],[127.428,36.023],[127.403,36.005],[127.377,36.031],[127.363,36.05],[127.362,36.087],[127.357,36.105],[127.341,36.128],[127.308,36.123],[127.297,36.11],[127.275,36.105],[127.254,36.11],[127.248,36.092],[127.207,36.097],[127.202,36.083],[127.181,36.091],[127.171,36.081],[127.139,36.084],[127.136,36.067],[127.084,36.075],[127.063,36.091],[127.052,36.139],[127.026,36.134],[127.006,36.146],[126.992,36.142],[126.959,36.153],[126.925,36.136],[126.894,36.138],[126.875,36.11],[126.877,36.089],[126.866,36.058],[126.832,36.044],[126.812,36.031],[126.777,36.029],[126.751,36.021],[126.737,35.998],[126.663,36.008],[126.67,36.029],[126.646,36.053],[126.634,36.053],[126.635,36.09],[126.608,36.106],[126.579,36.135],[126.562,36.127],[126.54,36.145],[126.514,36.149],[126.526,36.182],[126.545,36.194],[126.532,36.219],[126.532,36.236],[126.549,36.261],[126.53,36.294],[126.52,36.297],[126.505,36.322],[126.554,36.345],[126.511,36.377],[126.482,36.38],[126.49,36.41],[126.499,36.424],[126.485,36.45],[126.475,36.5],[126.487,36.513],[126.464,36.536],[126.449,36.583],[126.453,36.594],[126.478,36.603],[126.476,36.614],[126.459,36.623],[126.47,36.651],[126.463,36.662],[126.444,36.664],[126.446,36.641],[126.426,36.597],[126.413,36.6],[126.397,36.615],[126.367,36.624],[126.363,36.666],[126.343,36.665],[126.349,36.636],[126.358,36.624],[126.322,36.594],[126.295,36.581],[126.284,36.593],[126.287,36.615],[126.298,36.627],[126.287,36.661],[126.265,36.671],[126.264,36.694],[126.274,36.702],[126.273,36.723],[126.255,36.715],[126.231,36.69],[126.214,36.69],[126.199,36.672],[126.175,36.675],[126.132,36.665],[126.132,36.685],[126.149,36.684],[126.148,36.701],[126.173,36.716],[126.21,36.703],[126.223,36.719],[126.205,36.724],[126.187,36.75],[126.167,36.755],[126.149,36.748],[126.154,36.728],[126.138,36.716],[126.124,36.724],[126.136,36.738],[126.104,36.77],[126.131,36.772],[126.144,36.786],[126.16,36.823],[126.148,36.836],[126.165,36.844],[126.177,36.833],[126.195,36.846],[126.19,36.865],[126.211,36.898],[126.251,36.909],[126.244,36.886],[126.223,36.878],[126.244,36.861],[126.255,36.877],[126.272,36.881],[126.286,36.9],[126.295,36.927],[126.286,36.961],[126.31,36.971],[126.316,36.952],[126.305,36.941],[126.304,36.919],[126.322,36.903],[126.323,36.889],[126.297,36.84],[126.319,36.836],[126.283,36.815],[126.299,36.806],[126.34,36.815],[126.323,36.835],[126.326,36.854],[126.344,36.846],[126.365,36.848],[126.373,36.862],[126.366,36.874],[126.397,36.89],[126.412,36.905],[126.383,36.941],[126.336,36.957],[126.341,36.972],[126.328,36.991],[126.377,37.009],[126.428,37.012],[126.453,37.003],[126.48,36.966],[126.489,36.98],[126.456,37.023],[126.5,37.062],[126.522,37.057],[126.531,37.041],[126.6,37.014],[126.642,36.995],[126.707,36.997],[126.721,36.99],[126.783,36.974],[126.782,36.965],[126.804,36.922],[126.814,36.922],[126.819,36.894],[126.829,36.884],[126.834,36.859],[126.85,36.875],[126.883,36.885],[126.914,36.888],[126.911,36.902]]]]}},{"type":"Feature","properties":{"code":"33","name":"충청북도","en":"Chungcheongbuk-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[128.654,37.063],[128.633,37.036],[128.586,37.041],[128.567,37.029],[128.574,37.013],[128.547,36.99],[128.517,36.984],[128.516,36.974],[128.465,36.945],[128.462,36.932],[128.444,36.925],[128.443,36.899],[128.427,36.874],[128.45,36.862],[128.451,36.846],[128.423,36.809],[128.384,36.811],[128.369,36.798],[128.336,36.814],[128.323,36.812],[128.299,36.832],[128.285,36.854],[128.244,36.87],[128.236,36.845],[128.216,36.846],[128.221,36.812],[128.167,36.817],[128.142,36.831],[128.114,36.816],[128.109,36.803],[128.086,36.801],[128.061,36.813],[128.057,36.79],[128.035,36.745],[128.071,36.719],[128.074,36.704],[128.05,36.705],[128.024,36.723],[128.005,36.714],[127.989,36.715],[127.963,36.734],[127.951,36.715],[127.934,36.703],[127.934,36.69],[127.89,36.688],[127.934,36.662],[127.941,36.648],[127.934,36.615],[127.892,36.627],[127.876,36.652],[127.865,36.632],[127.85,36.63],[127.852,36.61],[127.826,36.61],[127.8,36.588],[127.826,36.568],[127.864,36.565],[127.876,36.552],[127.876,36.535],[127.903,36.522],[127.909,36.505],[127.883,36.478],[127.885,36.458],[127.875,36.434],[127.885,36.419],[127.875,36.403],[127.893,36.354],[127.884,36.342],[127.854,36.327],[127.843,36.307],[127.853,36.273],[127.882,36.272],[127.894,36.289],[127.933,36.275],[127.951,36.254],[127.97,36.248],[127.984,36.261],[128.012,36.269],[128.049,36.254],[128.032,36.237],[128.053,36.212],[128.055,36.198],[128.041,36.191],[128.016,36.206],[127.988,36.197],[127.978,36.185],[127.998,36.15],[127.989,36.126],[127.969,36.115],[127.96,36.092],[127.964,36.065],[127.938,36.048],[127.919,36.051],[127.906,36.036],[127.879,36.019],[127.856,36.036],[127.803,36.024],[127.79,36.011],[127.733,36.029],[127.708,36.03],[127.699,36.053],[127.687,36.059],[127.662,36.036],[127.657,36.053],[127.64,36.065],[127.62,36.091],[127.62,36.102],[127.592,36.131],[127.604,36.159],[127.595,36.192],[127.6,36.214],[127.581,36.23],[127.551,36.236],[127.533,36.246],[127.52,36.238],[127.495,36.235],[127.488,36.256],[127.499,36.284],[127.503,36.33],[127.529,36.366],[127.527,36.384],[127.557,36.396],[127.545,36.418],[127.518,36.419],[127.505,36.405],[127.491,36.43],[127.505,36.446],[127.481,36.455],[127.455,36.447],[127.438,36.454],[127.405,36.453],[127.406,36.48],[127.398,36.489],[127.409,36.492],[127.411,36.521],[127.404,36.538],[127.386,36.539],[127.375,36.557],[127.339,36.56],[127.327,36.578],[127.31,36.581],[127.303,36.613],[127.281,36.632],[127.289,36.651],[127.303,36.656],[127.31,36.679],[127.288,36.688],[127.31,36.702],[127.31,36.718],[127.327,36.73],[127.343,36.729],[127.339,36.75],[127.39,36.756],[127.399,36.744],[127.414,36.754],[127.414,36.769],[127.397,36.781],[127.404,36.792],[127.384,36.811],[127.358,36.826],[127.336,36.828],[127.338,36.852],[127.308,36.86],[127.31,36.882],[127.292,36.891],[127.311,36.926],[127.346,36.941],[127.352,36.95],[127.381,36.949],[127.404,36.965],[127.387,36.982],[127.396,36.995],[127.432,36.999],[127.46,37.018],[127.46,37.041],[127.489,37.051],[127.501,37.045],[127.518,37.055],[127.555,37.041],[127.569,37.044],[127.568,37.06],[127.603,37.083],[127.633,37.093],[127.64,37.138],[127.689,37.132],[127.72,37.181],[127.729,37.18],[127.739,37.207],[127.75,37.214],[127.746,37.208],[127.756,37.173],[127.77,37.154],[127.791,37.142],[127.817,37.144],[127.864,37.154],[127.875,37.161],[127.904,37.149],[127.924,37.162],[127.939,37.186],[127.923,37.223],[127.95,37.244],[127.987,37.255],[128.021,37.242],[128.022,37.231],[128.041,37.213],[128.032,37.199],[128.042,37.186],[128.081,37.191],[128.114,37.205],[128.127,37.218],[128.157,37.213],[128.175,37.216],[128.176,37.23],[128.203,37.246],[128.223,37.237],[128.231,37.225],[128.255,37.225],[128.271,37.205],[128.318,37.221],[128.336,37.213],[128.328,37.194],[128.278,37.169],[128.267,37.158],[128.276,37.144],[128.296,37.135],[128.333,37.147],[128.339,37.155],[128.403,37.144],[128.399,37.126],[128.426,37.11],[128.474,37.107],[128.489,37.117],[128.515,37.111],[128.517,37.1],[128.54,37.087],[128.564,37.087],[128.594,37.075],[128.63,37.072],[128.654,37.063]]]]}},{"type":"Feature","properties":{"code":"32","name":"강원도","en":"Gangwon-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[129.366,37.144],[129.342,37.142],[129.306,37.126],[129.297,37.112],[129.274,37.114],[129.268,37.099],[129.252,37.093],[129.228,37.071],[129.235,37.042],[129.197,37.038],[129.143,37.079],[129.098,37.098],[129.079,37.09],[129.067,37.065],[128.985,37.081],[128.963,37.075],[128.947,37.092],[128.925,37.089],[128.898,37.042],[128.878,37.042],[128.849,37.049],[128.829,37.075],[128.811,37.075],[128.787,37.085],[128.767,37.061],[128.754,37.055],[128.764,37.032],[128.754,37.026],[128.737,37.037],[128.702,37.038],[128.691,37.05],[128.654,37.063],[128.63,37.072],[128.594,37.075],[128.564,37.087],[128.54,37.087],[128.517,37.1],[128.515,37.111],[128.489,37.117],[128.474,37.107],[128.426,37.11],[128.399,37.126],[128.403,37.144],[128.339,37.155],[128.333,37.147],[128.296,37.135],[128.276,37.144],[128.267,37.158],[128.278,37.169],[128.328,37.194],[128.336,37.213],[128.318,37.221],[128.271,37.205],[128.255,37.225],[128.231,37.225],[128.223,37.237],[128.203,37.246],[128.176,37.23],[128.175,37.216],[128.157,37.213],[128.127,37.218],[128.114,37.205],[128.081,37.191],[128.042,37.186],[128.032,37.199],[128.041,37.213],[128.022,37.231],[128.021,37.242],[127.987,37.255],[127.95,37.244],[127.923,37.223],[127.939,37.186],[127.924,37.162],[127.904,37.149],[127.875,37.161],[127.864,37.154],[127.817,37.144],[127.791,37.142],[127.77,37.154],[127.756,37.173],[127.746,37.208],[127.75,37.214],[127.751,37.245],[127.76,37.255],[127.757,37.295],[127.771,37.305],[127.762,37.327],[127.762,37.364],[127.78,37.368],[127.78,37.386],[127.797,37.421],[127.806,37.426],[127.798,37.461],[127.777,37.489],[127.776,37.503],[127.809,37.532],[127.845,37.536],[127.852,37.55],[127.815,37.562],[127.795,37.583],[127.768,37.58],[127.756,37.589],[127.71,37.584],[127.699,37.598],[127.656,37.62],[127.63,37.64],[127.605,37.649],[127.582,37.63],[127.561,37.626],[127.539,37.64],[127.555,37.659],[127.552,37.683],[127.565,37.718],[127.543,37.716],[127.51,37.728],[127.547,37.758],[127.524,37.789],[127.538,37.806],[127.528,37.821],[127.535,37.839],[127.565,37.853],[127.587,37.873],[127.603,37.872],[127.62,37.904],[127.616,37.937],[127.605,37.952],[127.546,37.965],[127.55,37.976],[127.542,37.998],[127.504,37.997],[127.474,38.003],[127.46,38.013],[127.446,38.056],[127.449,38.068],[127.443,38.105],[127.433,38.112],[127.415,38.099],[127.406,38.11],[127.386,38.112],[127.323,38.092],[127.313,38.113],[127.285,38.114],[127.278,38.134],[127.289,38.15],[127.291,38.174],[127.273,38.179],[127.258,38.16],[127.225,38.144],[127.192,38.158],[127.182,38.182],[127.169,38.197],[127.172,38.211],[127.165,38.229],[127.151,38.24],[127.132,38.23],[127.112,38.239],[127.116,38.263],[127.111,38.289],[127.139,38.307],[127.145,38.326],[127.161,38.332],[127.184,38.314],[127.199,38.316],[127.246,38.336],[127.261,38.329],[127.296,38.325],[127.313,38.314],[127.34,38.329],[127.35,38.326],[127.39,38.337],[127.427,38.332],[127.451,38.315],[127.478,38.315],[127.489,38.301],[127.511,38.301],[127.544,38.323],[127.59,38.337],[127.609,38.338],[127.641,38.326],[127.692,38.33],[127.702,38.341],[127.732,38.335],[127.749,38.345],[127.78,38.351],[127.804,38.323],[127.846,38.327],[127.887,38.341],[127.928,38.334],[127.98,38.318],[128.066,38.311],[128.153,38.349],[128.218,38.38],[128.245,38.4],[128.251,38.41],[128.284,38.433],[128.304,38.469],[128.318,38.562],[128.313,38.589],[128.323,38.607],[128.353,38.611],[128.399,38.564],[128.408,38.539],[128.426,38.52],[128.425,38.503],[128.442,38.475],[128.47,38.449],[128.458,38.444],[128.46,38.427],[128.474,38.408],[128.518,38.369],[128.529,38.336],[128.553,38.311],[128.571,38.266],[128.592,38.24],[128.589,38.228],[128.599,38.196],[128.612,38.181],[128.612,38.148],[128.638,38.114],[128.669,38.089],[128.68,38.063],[128.705,38.038],[128.729,38.021],[128.738,38.002],[128.775,37.952],[128.793,37.942],[128.793,37.932],[128.837,37.895],[128.833,37.882],[128.88,37.837],[128.882,37.827],[128.99,37.737],[129.016,37.706],[129.059,37.673],[129.06,37.658],[129.047,37.64],[129.057,37.619],[129.12,37.574],[129.124,37.554],[129.115,37.537],[129.125,37.518],[129.162,37.474],[129.19,37.453],[129.2,37.413],[129.224,37.394],[129.253,37.378],[129.254,37.361],[129.27,37.34],[129.272,37.32],[129.305,37.301],[129.303,37.29],[129.332,37.278],[129.329,37.263],[129.359,37.233],[129.344,37.223],[129.35,37.209],[129.342,37.192],[129.344,37.175],[129.366,37.144]]]]}},{"type":"Feature","properties":{"code":"31","name":"경기도","en":"Gyeonggi-do"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.61,37.306],[126.586,37.292],[126.572,37.277],[126.599,37.26],[126.611,37.26],[126.625,37.234],[126.652,37.223],[126.649,37.208],[126.614,37.216],[126.605,37.205],[126.587,37.218],[126.571,37.201],[126.546,37.204],[126.544,37.222],[126.563,37.239],[126.565,37.253],[126.551,37.277],[126.57,37.279],[126.581,37.293],[126.61,37.306]]],[[[127.75,37.214],[127.739,37.207],[127.729,37.18],[127.72,37.181],[127.689,37.132],[127.64,37.138],[127.633,37.093],[127.603,37.083],[127.568,37.06],[127.569,37.044],[127.555,37.041],[127.518,37.055],[127.501,37.045],[127.489,37.051],[127.46,37.041],[127.46,37.018],[127.432,36.999],[127.396,36.995],[127.387,36.982],[127.404,36.965],[127.381,36.949],[127.352,36.95],[127.346,36.941],[127.311,36.926],[127.292,36.891],[127.272,36.91],[127.246,36.915],[127.222,36.927],[127.204,36.949],[127.192,36.95],[127.146,36.969],[127.132,36.962],[127.116,36.97],[127.076,36.936],[127.063,36.937],[127.034,36.925],[126.998,36.933],[126.911,36.902],[126.907,36.923],[126.889,36.933],[126.866,36.93],[126.864,36.946],[126.848,36.957],[126.827,36.984],[126.826,36.993],[126.8,37.005],[126.791,37.026],[126.753,37.026],[126.75,37.046],[126.763,37.065],[126.772,37.1],[126.761,37.108],[126.771,37.125],[126.797,37.126],[126.807,37.149],[126.792,37.172],[126.78,37.162],[126.749,37.163],[126.73,37.136],[126.691,37.113],[126.675,37.135],[126.685,37.146],[126.663,37.159],[126.668,37.206],[126.679,37.221],[126.667,37.234],[126.689,37.26],[126.736,37.248],[126.759,37.252],[126.791,37.242],[126.792,37.264],[126.828,37.286],[126.806,37.293],[126.775,37.287],[126.728,37.299],[126.725,37.311],[126.695,37.331],[126.691,37.346],[126.703,37.352],[126.739,37.393],[126.755,37.42],[126.771,37.425],[126.78,37.448],[126.77,37.469],[126.744,37.484],[126.747,37.511],[126.762,37.514],[126.77,37.551],[126.773,37.546],[126.824,37.538],[126.831,37.524],[126.816,37.49],[126.824,37.473],[126.842,37.473],[126.87,37.491],[126.905,37.431],[126.928,37.446],[126.942,37.433],[126.965,37.438],[127.006,37.464],[127.013,37.453],[127.039,37.454],[127.038,37.438],[127.054,37.426],[127.068,37.426],[127.1,37.456],[127.12,37.459],[127.149,37.474],[127.163,37.497],[127.142,37.506],[127.165,37.542],[127.181,37.544],[127.184,37.558],[127.176,37.577],[127.103,37.557],[127.104,37.581],[127.12,37.602],[127.11,37.642],[127.094,37.647],[127.097,37.686],[127.084,37.694],[127.052,37.685],[127.018,37.698],[127.01,37.682],[126.995,37.675],[126.982,37.652],[126.987,37.634],[126.977,37.629],[126.949,37.656],[126.915,37.642],[126.903,37.61],[126.904,37.592],[126.878,37.577],[126.853,37.573],[126.823,37.588],[126.808,37.601],[126.796,37.579],[126.746,37.591],[126.727,37.589],[126.701,37.615],[126.659,37.635],[126.638,37.625],[126.63,37.604],[126.611,37.601],[126.575,37.585],[126.556,37.607],[126.552,37.624],[126.531,37.65],[126.537,37.664],[126.525,37.674],[126.529,37.7],[126.521,37.71],[126.528,37.735],[126.53,37.746],[126.517,37.764],[126.538,37.769],[126.557,37.766],[126.569,37.753],[126.612,37.75],[126.641,37.776],[126.664,37.787],[126.676,37.828],[126.662,37.836],[126.693,37.864],[126.674,37.884],[126.679,37.895],[126.668,37.918],[126.675,37.953],[126.693,37.941],[126.716,37.937],[126.747,37.949],[126.742,37.97],[126.765,37.982],[126.782,37.98],[126.798,37.991],[126.832,37.99],[126.825,38.009],[126.834,38.031],[126.856,38.029],[126.875,38.016],[126.883,38.036],[126.895,38.049],[126.895,38.072],[126.869,38.078],[126.852,38.092],[126.83,38.076],[126.824,38.085],[126.798,38.079],[126.787,38.096],[126.75,38.125],[126.772,38.152],[126.828,38.195],[126.875,38.22],[126.897,38.202],[126.928,38.201],[126.955,38.208],[126.967,38.195],[126.986,38.209],[126.977,38.231],[126.993,38.234],[127.028,38.255],[127.072,38.268],[127.111,38.289],[127.116,38.263],[127.112,38.239],[127.132,38.23],[127.151,38.24],[127.165,38.229],[127.172,38.211],[127.169,38.197],[127.182,38.182],[127.192,38.158],[127.225,38.144],[127.258,38.16],[127.273,38.179],[127.291,38.174],[127.289,38.15],[127.278,38.134],[127.285,38.114],[127.313,38.113],[127.323,38.092],[127.386,38.112],[127.406,38.11],[127.415,38.099],[127.433,38.112],[127.443,38.105],[127.449,38.068],[127.446,38.056],[127.46,38.013],[127.474,38.003],[127.504,37.997],[127.542,37.998],[127.55,37.976],[127.546,37.965],[127.605,37.952],[127.616,37.937],[127.62,37.904],[127.603,37.872],[127.587,37.873],[127.565,37.853],[127.535,37.839],[127.528,37.821],[127.538,37.806],[127.524,37.789],[127.547,37.758],[127.51,37.728],[127.543,37.716],[127.565,37.718],[127.552,37.683],[127.555,37.659],[127.539,37.64],[127.561,37.626],[127.582,37.63],[127.605,37.649],[127.63,37.64],[127.656,37.62],[127.699,37.598],[127.71,37.584],[127.756,37.589],[127.768,37.58],[127.795,37.583],[127.815,37.562],[127.852,37.55],[127.845,37.536],[127.809,37.532],[127.776,37.503],[127.777,37.489],[127.798,37.461],[127.806,37.426],[127.797,37.421],[127.78,37.386],[127.78,37.368],[127.762,37.364],[127.762,37.327],[127.771,37.305],[127.757,37.295],[127.76,37.255],[127.751,37.245],[127.75,37.214]]]]}},{"type":"Feature","properties":{"code":"29","name":"세종특별자치시","en":"Sejongsi"},"geometry":{"type":"MultiPolygon","coordinates":[[[[127.288,36.688],[127.31,36.679],[127.303,36.656],[127.289,36.651],[127.281,36.632],[127.303,36.613],[127.31,36.581],[127.327,36.578],[127.339,36.56],[127.375,36.557],[127.386,36.539],[127.404,36.538],[127.411,36.521],[127.409,36.492],[127.398,36.489],[127.383,36.497],[127.361,36.482],[127.363,36.468],[127.355,36.445],[127.329,36.419],[127.296,36.419],[127.284,36.412],[127.26,36.405],[127.228,36.419],[127.203,36.439],[127.207,36.456],[127.173,36.509],[127.184,36.519],[127.175,36.533],[127.196,36.562],[127.195,36.578],[127.184,36.593],[127.158,36.603],[127.16,36.633],[127.157,36.662],[127.167,36.675],[127.163,36.689],[127.145,36.689],[127.136,36.704],[127.165,36.731],[127.206,36.722],[127.25,36.692],[127.288,36.688]]]]}},{"type":"Feature","properties":{"code":"26","name":"울산광역시","en":"Ulsan"},"geometry":{"type":"MultiPolygon","coordinates":[[[[129.452,35.648],[129.444,35.628],[129.465,35.601],[129.467,35.583],[129.455,35.569],[129.461,35.556],[129.448,35.519],[129.442,35.483],[129.387,35.472],[129.352,35.445],[129.367,35.439],[129.365,35.408],[129.348,35.373],[129.361,35.353],[129.325,35.343],[129.307,35.326],[129.282,35.338],[129.286,35.36],[129.268,35.383],[129.22,35.376],[129.205,35.385],[129.222,35.406],[129.199,35.436],[129.18,35.429],[129.163,35.432],[129.142,35.446],[129.112,35.477],[129.109,35.492],[129.025,35.522],[128.997,35.526],[128.973,35.558],[128.998,35.566],[129.022,35.581],[129.028,35.598],[129.023,35.612],[129.006,35.617],[129.05,35.647],[129.076,35.637],[129.07,35.656],[129.072,35.678],[129.091,35.699],[129.138,35.709],[129.148,35.722],[129.163,35.712],[129.21,35.718],[129.236,35.701],[129.256,35.698],[129.265,35.688],[129.257,35.663],[129.263,35.651],[129.305,35.645],[129.356,35.677],[129.415,35.661],[129.452,35.648]]]]}},{"type":"Feature","properties":{"code":"25","name":"대전광역시","en":"Daejeon"},"geometry":{"type":"MultiPolygon","coordinates":[[[[127.495,36.235],[127.47,36.22],[127.471,36.212],[127.445,36.191],[127.41,36.21],[127.403,36.23],[127.389,36.248],[127.392,36.262],[127.375,36.269],[127.362,36.261],[127.367,36.217],[127.355,36.209],[127.343,36.186],[127.326,36.2],[127.317,36.218],[127.285,36.233],[127.283,36.262],[127.252,36.28],[127.261,36.293],[127.262,36.324],[127.28,36.346],[127.273,36.358],[127.283,36.372],[127.284,36.412],[127.296,36.419],[127.329,36.419],[127.355,36.445],[127.363,36.468],[127.361,36.482],[127.383,36.497],[127.398,36.489],[127.406,36.48],[127.405,36.453],[127.438,36.454],[127.455,36.447],[127.481,36.455],[127.505,36.446],[127.491,36.43],[127.505,36.405],[127.518,36.419],[127.545,36.418],[127.557,36.396],[127.527,36.384],[127.529,36.366],[127.503,36.33],[127.499,36.284],[127.488,36.256],[127.495,36.235]]]]}},{"type":"Feature","properties":{"code":"24","name":"광주광역시","en":"Gwangju"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.909,35.256],[126.933,35.248],[126.935,35.237],[126.978,35.184],[127.004,35.185],[127.023,35.164],[127.01,35.152],[127.011,35.121],[126.989,35.091],[126.969,35.086],[126.954,35.07],[126.934,35.071],[126.924,35.087],[126.874,35.071],[126.858,35.075],[126.821,35.049],[126.797,35.058],[126.78,35.05],[126.764,35.088],[126.742,35.104],[126.689,35.109],[126.68,35.103],[126.654,35.117],[126.656,35.162],[126.673,35.166],[126.662,35.189],[126.68,35.191],[126.689,35.212],[126.705,35.205],[126.72,35.209],[126.722,35.224],[126.739,35.249],[126.766,35.251],[126.758,35.231],[126.808,35.216],[126.841,35.227],[126.876,35.247],[126.892,35.244],[126.909,35.256]]]]}},{"type":"Feature","properties":{"code":"23","name":"인천광역시","en":"Incheon"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.11,37.27],[126.121,37.255],[126.147,37.236],[126.163,37.233],[126.144,37.211],[126.119,37.206],[126.115,37.219],[126.093,37.227],[126.092,37.244],[126.11,37.27]]],[[[126.473,37.285],[126.491,37.28],[126.504,37.255],[126.484,37.247],[126.46,37.223],[126.433,37.232],[126.44,37.27],[126.473,37.285]]],[[[126.581,37.498],[126.587,37.487],[126.569,37.477],[126.544,37.475],[126.509,37.463],[126.498,37.445],[126.444,37.418],[126.422,37.419],[126.418,37.43],[126.397,37.443],[126.374,37.445],[126.358,37.464],[126.375,37.469],[126.434,37.501],[126.467,37.497],[126.485,37.501],[126.5,37.529],[126.528,37.525],[126.568,37.512],[126.581,37.498]]],[[[126.796,37.579],[126.77,37.551],[126.762,37.514],[126.747,37.511],[126.744,37.484],[126.77,37.469],[126.78,37.448],[126.771,37.425],[126.755,37.42],[126.739,37.393],[126.731,37.385],[126.663,37.34],[126.619,37.34],[126.614,37.371],[126.6,37.382],[126.6,37.426],[126.595,37.461],[126.606,37.494],[126.605,37.525],[126.608,37.551],[126.595,37.557],[126.575,37.585],[126.611,37.601],[126.63,37.604],[126.638,37.625],[126.659,37.635],[126.701,37.615],[126.727,37.589],[126.746,37.591],[126.796,37.579]]],[[[126.331,37.747],[126.323,37.713],[126.348,37.696],[126.374,37.692],[126.379,37.665],[126.345,37.641],[126.327,37.639],[126.329,37.659],[126.319,37.679],[126.287,37.693],[126.272,37.706],[126.287,37.715],[126.291,37.741],[126.331,37.747]]],[[[126.268,37.813],[126.295,37.802],[126.33,37.802],[126.337,37.796],[126.319,37.772],[126.294,37.762],[126.274,37.767],[126.25,37.763],[126.229,37.75],[126.209,37.766],[126.224,37.788],[126.225,37.803],[126.239,37.814],[126.268,37.813]]],[[[126.528,37.735],[126.521,37.71],[126.529,37.7],[126.525,37.674],[126.537,37.664],[126.531,37.65],[126.533,37.636],[126.549,37.602],[126.526,37.594],[126.518,37.577],[126.503,37.587],[126.482,37.581],[126.475,37.595],[126.438,37.59],[126.406,37.591],[126.38,37.607],[126.374,37.63],[126.407,37.648],[126.389,37.687],[126.354,37.703],[126.345,37.718],[126.344,37.746],[126.357,37.756],[126.351,37.789],[126.374,37.803],[126.396,37.823],[126.439,37.828],[126.467,37.802],[126.51,37.781],[126.514,37.761],[126.528,37.735]]],[[[124.687,37.979],[124.708,37.981],[124.731,37.976],[124.733,37.951],[124.71,37.941],[124.698,37.913],[124.639,37.921],[124.613,37.958],[124.617,37.974],[124.64,37.966],[124.687,37.979]]]]}},{"type":"Feature","properties":{"code":"22","name":"대구광역시","en":"Daegu"},"geometry":{"type":"MultiPolygon","coordinates":[[[[128.529,35.679],[128.511,35.672],[128.507,35.636],[128.487,35.632],[128.449,35.635],[128.434,35.62],[128.384,35.604],[128.373,35.608],[128.388,35.609],[128.405,35.639],[128.384,35.652],[128.358,35.678],[128.353,35.7],[128.362,35.704],[128.42,35.69],[128.435,35.7],[128.435,35.722],[128.395,35.743],[128.389,35.76],[128.41,35.794],[128.422,35.806],[128.471,35.805],[128.48,35.824],[128.462,35.838],[128.425,35.848],[128.392,35.847],[128.388,35.862],[128.406,35.886],[128.42,35.918],[128.443,35.932],[128.478,35.933],[128.47,35.904],[128.478,35.892],[128.495,35.893],[128.526,35.915],[128.537,35.937],[128.529,35.973],[128.558,35.968],[128.592,35.976],[128.62,36.003],[128.693,36.012],[128.728,36.002],[128.734,35.982],[128.748,35.968],[128.741,35.953],[128.747,35.941],[128.741,35.925],[128.759,35.912],[128.765,35.881],[128.754,35.854],[128.711,35.824],[128.719,35.803],[128.685,35.787],[128.698,35.755],[128.694,35.729],[128.686,35.719],[128.666,35.717],[128.64,35.703],[128.625,35.7],[128.612,35.722],[128.619,35.734],[128.582,35.736],[128.546,35.716],[128.529,35.679]]]]}},{"type":"Feature","properties":{"code":"21","name":"부산광역시","en":"Busan"},"geometry":{"type":"MultiPolygon","coordinates":[[[[129.307,35.326],[129.268,35.316],[129.263,35.278],[129.245,35.261],[129.256,35.244],[129.236,35.211],[129.227,35.183],[129.201,35.175],[129.196,35.158],[129.139,35.151],[129.123,35.131],[129.13,35.107],[129.125,35.097],[129.097,35.096],[129.069,35.105],[129.068,35.12],[129.052,35.12],[129.043,35.105],[129.071,35.093],[129.082,35.068],[129.098,35.057],[129.085,35.047],[129.037,35.082],[129.025,35.059],[129.004,35.045],[128.984,35.045],[128.969,35.03],[128.953,35.075],[128.923,35.083],[128.914,35.076],[128.837,35.077],[128.852,35.049],[128.852,35.03],[128.838,35.01],[128.808,35.017],[128.814,35.037],[128.799,35.051],[128.823,35.058],[128.833,35.07],[128.825,35.096],[128.844,35.104],[128.834,35.126],[128.804,35.139],[128.796,35.155],[128.846,35.155],[128.868,35.164],[128.884,35.179],[128.873,35.199],[128.886,35.211],[128.926,35.213],[129.0,35.231],[129.015,35.27],[129.052,35.277],[129.062,35.292],[129.076,35.287],[129.091,35.3],[129.114,35.306],[129.13,35.342],[129.151,35.361],[129.177,35.348],[129.196,35.358],[129.205,35.385],[129.22,35.376],[129.268,35.383],[129.286,35.36],[129.282,35.338],[129.307,35.326]]]]}},{"type":"Feature","properties":{"code":"11","name":"서울특별시","en":"Seoul"},"geometry":{"type":"MultiPolygon","coordinates":[[[[126.77,37.551],[126.796,37.579],[126.808,37.601],[126.823,37.588],[126.853,37.573],[126.878,37.577],[126.904,37.592],[126.903,37.61],[126.915,37.642],[126.949,37.656],[126.977,37.629],[126.987,37.634],[126.982,37.652],[126.995,37.675],[127.01,37.682],[127.018,37.698],[127.052,37.685],[127.084,37.694],[127.097,37.686],[127.094,37.647],[127.11,37.642],[127.12,37.602],[127.104,37.581],[127.103,37.557],[127.176,37.577],[127.184,37.558],[127.181,37.544],[127.165,37.542],[127.142,37.506],[127.163,37.497],[127.149,37.474],[127.12,37.459],[127.1,37.456],[127.068,37.426],[127.054,37.426],[127.038,37.438],[127.039,37.454],[127.013,37.453],[127.006,37.464],[126.965,37.438],[126.942,37.433],[126.928,37.446],[126.905,37.431],[126.87,37.491],[126.842,37.473],[126.824,37.473],[126.816,37.49],[126.831,37.524],[126.824,37.538],[126.773,37.546],[126.77,37.551]]]]}}]};
+</script>
+<script>
+(function(){
+const S=DATA.summary, MG={Dohyun:'김도현',Seojun:'이서준',Jiho:'박지호',Yuna:'최유나',Harin:'정하린',Seungmin:'한승민',Jian:'오지안'};
+const fmt=v=>d3.format(',')(Math.round(v)), man=v=>d3.format(',.1f')(v/1e4)+'만', pct=(a,b)=>b?(a/b*100).toFixed(1)+'%':'–';
+const mName=m=>m+'월';
+/* tooltip */
+const tip=document.getElementById('tip');
+function tipShow(html,ev){tip.innerHTML=html;tip.classList.add('on');tipMove(ev)}
+function tipMove(ev){const w=tip.offsetWidth,h=tip.offsetHeight;let x=ev.clientX+14,y=ev.clientY+14;if(x+w>innerWidth-8)x=ev.clientX-w-14;if(y+h>innerHeight-8)y=ev.clientY-h-14;tip.style.left=x+'px';tip.style.top=y+'px'}
+function tipHide(){tip.classList.remove('on')}
+const row=(l,v,c)=>`<div class="r"><span>${c?`<i style="background:${c}"></i>`:''}${l}</span><b>${v}</b></div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function hover(sel,html){sel.on('pointerenter',(e,d)=>tipShow(html(d),e)).on('pointermove',e=>tipMove(e)).on('pointerleave',tipHide)}
+let animate=true;function svgIn(el,w,h,anim){d3.select(el).selectAll('*').remove();const sv=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`).attr('width',w).attr('height',h).attr('role','img');if(anim&&animate)sv.attr('class','anim-'+anim);return sv}
+const W=el=>Math.max(320,el.clientWidth||640);
+const yAxisMan=(g,y,ticks)=>{g.attr('class','axis').call(d3.axisLeft(y).ticks(ticks||5).tickFormat(v=>v?(v/1e4)+'만':'0').tickSize(0)).call(a=>a.select('.domain').remove())};
+const grid=(g,y,x0,x1,ticks)=>{g.attr('class','grid').selectAll('line').data(y.ticks(ticks||5)).join('line').attr('x1',x0).attr('x2',x1).attr('y1',d=>y(d)).attr('y2',d=>y(d))};
+
+/* ---------- monthly (simple: bar = 실적/보수, light = 낙관, dashed line = 목표) ---------- */
+let showLY=false;
+function drawMonths(){
+  const el=document.querySelector('[data-chart="months"]');const w=W(el),h=300,m={t:22,r:12,b:30,l:52};
+  const svg=svgIn(el,w,h,'v');const M=DATA.months;
+  const x=d3.scaleBand().domain(M.map(d=>d.m)).range([m.l,w-m.r]).paddingInner(.36).paddingOuter(.15);
+  const ymax=d3.max(M,d=>Math.max(d.goal,d.opt||d.actual,showLY?d.lastYear:0))*1.1;
+  const y=d3.scaleLinear().domain([0,ymax]).range([h-m.b,m.t]);
+  grid(svg.append('g'),y,m.l,w-m.r,5);yAxisMan(svg.append('g').attr('transform',`translate(${m.l},0)`),y,5);
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).tickFormat(mName).tickSize(0)).call(a=>a.select('.domain').attr('stroke','var(--rule-2)'));
+  const bw=Math.min(x.bandwidth(),42), bx=d=>x(d.m)+(x.bandwidth()-bw)/2, cx=d=>bx(d)+bw/2;
+  const g=svg.append('g');
+  M.forEach(d=>{const gx=g.append('g');
+    if(d.actual!=null){gx.append('rect').attr('x',bx(d)).attr('width',bw).attr('y',y(d.actual)).attr('height',y(0)-y(d.actual)).attr('fill','var(--actual)').attr('rx',3);}
+    else{gx.append('rect').attr('x',bx(d)).attr('width',bw).attr('y',y(d.opt)).attr('height',y(0)-y(d.opt)).attr('fill','var(--opt)').attr('rx',3);
+      gx.append('rect').attr('x',bx(d)).attr('width',bw).attr('y',y(d.cons)).attr('height',y(0)-y(d.cons)).attr('fill','var(--high)').attr('rx',3);}
+  });
+  svg.append('path').datum(M).attr('d',d3.line().x(cx).y(d=>y(d.goal))).attr('fill','none').attr('stroke','var(--goal)').attr('stroke-width',2).attr('stroke-dasharray','5 4');
+  svg.append('g').selectAll('circle').data(M).join('circle').attr('cx',cx).attr('cy',d=>y(d.goal)).attr('r',3.5).attr('fill','var(--goal)').attr('stroke','var(--surface)').attr('stroke-width',2);
+  if(showLY){svg.append('path').datum(M).attr('d',d3.line().x(cx).y(d=>y(d.lastYear))).attr('fill','none').attr('stroke','var(--last)').attr('stroke-width',2);
+    svg.append('g').selectAll('circle').data(M).join('circle').attr('cx',cx).attr('cy',d=>y(d.lastYear)).attr('r',4).attr('fill','var(--last)').attr('stroke','var(--surface)').attr('stroke-width',2);}
+  if(bw>=30){const lab=svg.append('g').attr('pointer-events','none');M.forEach(d=>{const v=d.actual!=null?d.actual:d.cons;lab.append('text').attr('x',cx(d)).attr('y',y(v)-6).attr('text-anchor','middle').attr('font-size',10.5).attr('font-weight',700).attr('fill','var(--ink)').attr('paint-order','stroke').attr('stroke','var(--surface)').attr('stroke-width',3.5).text(man(v));});}
+  const sx=x(M[6].m)-x.step()*.18;svg.append('line').attr('x1',sx).attr('x2',sx).attr('y1',m.t-6).attr('y2',h-m.b).attr('stroke','var(--rule-2)').attr('stroke-dasharray','3 3');
+  svg.append('text').attr('x',sx+6).attr('y',m.t-8).attr('fill','var(--muted)').attr('font-size',11).text('하반기 예측 →');
+  svg.append('text').attr('x',m.l+4).attr('y',m.t-8).attr('fill','var(--muted)').attr('font-size',11).text('← 상반기 실적');
+  hover(svg.append('g').selectAll('rect').data(M).join('rect').attr('x',d=>x(d.m)-x.step()*.18).attr('width',x.step()).attr('y',m.t-6).attr('height',h-m.b-m.t+6).attr('fill','transparent'),d=>{
+    let s=`<div class="t">${mName(d.m)} ${d.actual!=null?'실적':'예측'}</div>`+row('기존 월 목표',fmt(d.goal),'var(--goal)');
+    if(d.actual!=null){s+=row('실적',fmt(d.actual),'var(--actual)')+row('달성률',pct(d.actual,d.goal));}
+    else{s+=row('보수',fmt(d.cons),'var(--high)')+row('낙관',fmt(d.opt),'var(--opt)')+row('기존 월 목표 대비',pct(d.cons,d.goal))+'<div class="sep"></div><div class="m">보수의 구성</div>'+row('확정',fmt(d.R),'var(--sure)')+row('높음 ×0.6',fmt(d.B*0.6)+' <span class="m">/ '+fmt(d.B)+'</span>')+row('낮음 ×0.3',fmt(d.K*0.3)+' <span class="m">/ '+fmt(d.K)+'</span>');}
+    s+='<div class="sep"></div>'+row('전년 같은 달',fmt(d.lastYear),'var(--last)');return s;});
+}
+document.querySelectorAll('#fig-months [data-ly]').forEach(b=>b.addEventListener('click',()=>{showLY=b.dataset.ly==='1';document.querySelectorAll('#fig-months [data-ly]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelector('.ly-leg').hidden=!showLY;drawMonths();}));
+
+/* ---------- composition: 낙관 → 보수 (two bars on one scale) ---------- */
+function drawComposition(){
+  const el=document.querySelector('[data-chart="comp"]');if(!el)return;const w=W(el),m={l:64,r:84},rh=40,gap=18,h=rh*2+gap+8;
+  const svg=svgIn(el,w,h,'h');const x=d3.scaleLinear().domain([0,S.opt]).range([m.l,w-m.r]);
+  const rows=[{l:'낙관',tot:S.opt,segs:[['확정',S.R,'var(--sure)',S.R],['높음',S.B,'var(--high)',S.B],['낮음',S.K,'var(--low)',S.K]]},
+              {l:'보수',tot:S.cons,segs:[['확정 100%',S.R,'var(--sure)',S.R],['높음 ×0.6',S.B*.6,'var(--high)',S.B],['낮음 ×0.3',S.K*.3,'var(--low)',S.K]]}];
+  rows.forEach((r,ri)=>{const y0=4+ri*(rh+gap);let acc=0;
+    svg.append('text').attr('x',m.l-10).attr('y',y0+rh/2+4).attr('text-anchor','end').attr('font-size',13).attr('font-weight',700).attr('fill','var(--ink)').text(r.l);
+    r.segs.forEach(([n,v,c,full])=>{const x0=x(acc),x1=x(acc+v);const rect=svg.append('rect').attr('x',x0+1).attr('y',y0).attr('width',Math.max(0,x1-x0-2)).attr('height',rh).attr('fill',c).attr('rx',4);
+      if(x1-x0>72){svg.append('text').attr('x',(x0+x1)/2).attr('y',y0+rh/2+4).attr('text-anchor','middle').attr('font-size',11.5).attr('font-weight',700).attr('fill',c==='var(--low)'?'var(--ink)':'#fff').attr('pointer-events','none').text(n+' '+man(v));}
+      hover(rect,()=>`<div class="t">${r.l} · ${n}</div>`+row('금액',fmt(v))+(full!==v?row('확률 반영 전',fmt(full)):'')+row(r.l+' 내 비중',pct(v,r.tot)));acc+=v;});
+    svg.append('text').attr('x',x(r.tot)+8).attr('y',y0+rh/2+4).attr('font-size',12.5).attr('font-weight',900).attr('fill','var(--ink)').text(man(r.tot));});
+  svg.append('line').attr('x1',x(S.cons)).attr('x2',x(S.cons)).attr('y1',4).attr('y2',4+rh*2+gap).attr('stroke','var(--rule-2)').attr('stroke-dasharray','3 3');
+}
+
+/* ---------- bridge: 조정 목표(보수) 구성 + 낙관까지 상향 여지, 기존 목표는 참고선 ---------- */
+function drawBridge(){
+  const el=document.querySelector('[data-chart="bridge"]');const w=W(el),h=330,m={t:26,r:12,b:46,l:52};
+  const up=S.annualOpt-S.annualCons;
+  const steps=[{k:'h1',l:'상반기 실적',v:S.h1,c:'var(--actual)'},{k:'R',l:'하반기 확정',v:S.R,c:'var(--sure)'},{k:'B',l:'높음 ×60%',v:S.B*0.6,c:'var(--high)'},{k:'K',l:'낮음 ×30%',v:S.K*0.3,c:'var(--low)'},{k:'cons',l:'연간 조정 목표',v:S.annualCons,total:true,c:'var(--actual)'},{k:'up',l:'상향 여지',v:up,c:'var(--opt)',float:true},{k:'opt',l:'연간 낙관',v:S.annualOpt,total:true,c:'var(--opt)',outline:true}];
+  let run=0;steps.forEach(s=>{if(s.total){s.y0=0;s.y1=s.v;}else if(s.float){s.y0=S.annualCons;s.y1=S.annualOpt;}else{s.y0=run;run+=s.v;s.y1=run;}});
+  const svg=svgIn(el,w,h,'v');const x=d3.scaleBand().domain(steps.map(s=>s.k)).range([m.l,w-m.r]).paddingInner(.4).paddingOuter(.2);
+  const ymax=S.annualOpt*1.08;const y=d3.scaleLinear().domain([0,ymax]).range([h-m.b,m.t]);
+  grid(svg.append('g'),y,m.l,w-m.r,5);yAxisMan(svg.append('g').attr('transform',`translate(${m.l},0)`),y,5);
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).tickFormat(k=>steps.find(s=>s.k===k).l).tickSize(0)).call(a=>a.select('.domain').remove()).selectAll('text').attr('font-size',11).attr('fill','var(--ink-2)');
+  const bw=Math.min(x.bandwidth(),64),bx=s=>x(s.k)+(x.bandwidth()-bw)/2;
+  const g=svg.append('g');
+  steps.forEach((s,i)=>{const gx=g.append('g');
+    const r=gx.append('rect').attr('x',bx(s)).attr('width',bw).attr('y',y(s.y1)).attr('height',Math.max(1,y(s.y0)-y(s.y1))).attr('fill',s.c).attr('rx',3);
+    if(s.float||s.outline)r.attr('stroke','var(--rule-2)').attr('stroke-dasharray',s.float?'3 3':null);
+    gx.append('text').attr('x',bx(s)+bw/2).attr('y',y(s.y1)-6).attr('text-anchor','middle').attr('font-size',11.5).attr('fill','var(--ink)').attr('font-weight',700).text((s.float?'+':'')+man(s.v));
+    if(i<steps.length-1&&!s.total&&!s.float){const n=steps[i+1];svg.append('line').attr('x1',bx(s)+bw).attr('x2',bx(n)).attr('y1',y(s.y1)).attr('y2',y(s.y1)).attr('stroke','var(--rule-2)').attr('stroke-dasharray','2 2');}
+  });
+  svg.append('line').attr('x1',m.l).attr('x2',w-m.r).attr('y1',y(S.annualGoal)).attr('y2',y(S.annualGoal)).attr('stroke','var(--goal)').attr('stroke-width',1.5).attr('stroke-dasharray','6 4');
+  svg.append('text').attr('x',w-m.r).attr('y',y(S.annualGoal)-6).attr('text-anchor','end').attr('font-size',11).attr('fill','var(--muted)').text('기존 연간 목표 '+man(S.annualGoal)+' (참고)');
+  hover(svg.append('g').selectAll('rect').data(steps).join('rect').attr('x',s=>x(s.k)).attr('width',x.bandwidth()).attr('y',m.t).attr('height',h-m.b-m.t).attr('fill','transparent'),s=>{
+    let t=`<div class="t">${s.l}</div>`;
+    if(s.k==='h1')t+=row('4~9월 입금',fmt(s.v))+row('상반기 목표 대비',pct(s.v,S.h1Goal));
+    else if(s.k==='R')t+=row('확정 행 합계',fmt(s.v))+row('하반기 낙관 중 비중',pct(s.v,S.opt));
+    else if(s.k==='B')t+=row('기대값',fmt(s.v))+row('확률 반영 전',fmt(S.B));
+    else if(s.k==='K')t+=row('기대값',fmt(s.v))+row('확률 반영 전',fmt(S.K));
+    else if(s.k==='cons')t+=row('상반기 실적 + 하반기 보수',fmt(s.v))+row('기존 목표 대비',pct(s.v,S.annualGoal));
+    else if(s.k==='up')t+=row('높음 미반영분 (40%)',fmt(S.B*0.4))+row('낮음 미반영분 (70%)',fmt(S.K*0.7));
+    else t+=row('장부 전액 회수 시',fmt(s.v))+row('기존 목표 대비',pct(s.v,S.annualGoal));
+    return t;});
+}
+
+/* ---------- people (simple: 확정 + 기대값 = 보수, light = 낙관, tick = 목표) ---------- */
+function drawPeople(){
+  const el=document.querySelector('[data-chart="people"]');const w=W(el),P=DATA.people,rh=36,m={t:8,r:110,b:28,l:64},h=m.t+m.b+P.length*rh;
+  const A=p=>({sure:p.h1+p.R,cons:p.h1+p.cons,opt:p.h1+p.opt,goal:p.annualGoal});
+  const svg=svgIn(el,w,h,'h');const xmax=d3.max(P,p=>Math.max(A(p).opt,A(p).goal))*1.04;const x=d3.scaleLinear().domain([0,xmax]).range([m.l,w-m.r]);
+  const y=d3.scaleBand().domain(P.map(p=>p.key)).range([m.t,h-m.b]).paddingInner(.3);
+  svg.append('g').attr('class','grid').selectAll('line').data(x.ticks(5)).join('line').attr('y1',m.t).attr('y2',h-m.b).attr('x1',d=>x(d)).attr('x2',d=>x(d));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(v=>v?(v/1e4)+'만':'0').tickSize(0)).call(a=>a.select('.domain').remove());
+  svg.append('g').selectAll('text').data(P).join('text').attr('x',m.l-10).attr('y',p=>y(p.key)+y.bandwidth()/2+4).attr('text-anchor','end').attr('font-size',12.5).attr('font-weight',700).attr('fill','var(--ink)').text(p=>p.name);
+  const bh=Math.min(y.bandwidth(),22),by=p=>y(p.key)+(y.bandwidth()-bh)/2;
+  P.forEach(p=>{const a=A(p);svg.append('rect').attr('y',by(p)).attr('height',bh).attr('x',x(0)).attr('width',x(a.opt)-x(0)).attr('fill','var(--opt)').attr('rx',4);
+    svg.append('rect').attr('y',by(p)).attr('height',bh).attr('x',x(0)).attr('width',Math.max(0,x(a.cons)-x(0))).attr('fill','var(--high)').attr('rx',4);
+    if(a.sure>0)svg.append('rect').attr('y',by(p)).attr('height',bh).attr('x',x(0)).attr('width',Math.max(0,x(a.sure)-x(0))).attr('fill','var(--sure)').attr('rx',4);
+    svg.append('line').attr('x1',x(a.goal)).attr('x2',x(a.goal)).attr('y1',by(p)-5).attr('y2',by(p)+bh+5).attr('stroke','var(--goal)').attr('stroke-width',2.5);
+    const lx=(x(a.goal)>x(a.opt)&&x(a.goal)-x(a.opt)<96)?x(a.goal)+6:x(a.opt)+6;svg.append('text').attr('x',lx).attr('y',by(p)+bh/2+4).attr('font-size',11).attr('fill','var(--ink-2)').text(man(a.cons)+' / '+man(a.opt));});
+  hover(svg.append('g').selectAll('rect').data(P).join('rect').attr('x',m.l).attr('width',w-m.l-m.r).attr('y',p=>y(p.key)-3).attr('height',y.bandwidth()+6).attr('fill','transparent'),p=>{const a=A(p);return `<div class="t">${p.name} · ${p.team}</div>`+row('기존 연간 목표',fmt(a.goal),'var(--goal)')+row('확정성 수입',fmt(a.sure),'var(--sure)')+row('연간 보수',fmt(a.cons)+' <span class="m">('+pct(a.cons,a.goal)+')</span>','var(--high)')+row('연간 낙관',fmt(a.opt),'var(--opt)')+'<div class="sep"></div>'+row('상반기 실적',fmt(p.h1)+' <span class="m">('+pct(p.h1,p.h1Goal)+')</span>')+row('하반기 확정',fmt(p.R))+row('하반기 높음',fmt(p.B))+row('하반기 낮음',fmt(p.K))+row('하반기 보수 / 낙관',fmt(p.cons)+' / '+fmt(p.opt));});
+}
+
+/* ---------- top 10 customers (ranked bars) ---------- */
+function drawPareto(){
+  const el=document.querySelector('[data-chart="pareto"]');const A=DATA.accounts.filter(a=>!a.new&&a.opt>0).slice(0,10);let c=0;A.forEach((a,i)=>{c+=a.cons;a.cum=c/S.cons;a.rank=i+1;});
+  const w=W(el),rh=32,m={t:6,r:Math.min(150,Math.round(w*.26)),b:26,l:Math.min(150,Math.round(w*.26))},h=m.t+m.b+A.length*rh;
+  const svg=svgIn(el,w,h,'h');const xmax=d3.max(A,a=>a.opt)*1.02;const x=d3.scaleLinear().domain([0,xmax]).range([m.l,w-m.r]);const y=d3.scaleBand().domain(A.map(a=>a.rank)).range([m.t,h-m.b]).paddingInner(.32);
+  svg.append('g').attr('class','grid').selectAll('line').data(x.ticks(4)).join('line').attr('y1',m.t).attr('y2',h-m.b).attr('x1',d=>x(d)).attr('x2',d=>x(d));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).ticks(4).tickFormat(v=>v?(v/1e4)+'만':'0').tickSize(0)).call(a=>a.select('.domain').remove());
+  const bh=Math.min(y.bandwidth(),20),by=a=>y(a.rank)+(y.bandwidth()-bh)/2;
+  A.forEach(a=>{const nm=a.name.length>11?a.name.slice(0,10)+'…':a.name;
+    svg.append('text').attr('x',m.l-10).attr('y',by(a)+bh/2+4).attr('text-anchor','end').attr('font-size',12).attr('font-weight',700).attr('fill','var(--ink)').text(a.rank+'. '+nm);
+    svg.append('rect').attr('y',by(a)).attr('height',bh).attr('x',x(0)).attr('width',x(a.opt)-x(0)).attr('fill','var(--opt)').attr('rx',4);
+    svg.append('rect').attr('y',by(a)).attr('height',bh).attr('x',x(0)).attr('width',Math.max(0,x(a.cons)-x(0))).attr('fill',a.R>=a.cons*0.95?'var(--sure)':'var(--high)').attr('rx',4);
+    const t=svg.append('text').attr('x',x(a.opt)+6).attr('y',by(a)+bh/2+4).attr('font-size',11).attr('fill','var(--ink-2)');t.append('tspan').text(man(a.cons)+' / '+man(a.opt));
+    if(a.rank===5||a.rank===10)t.append('tspan').attr('font-weight',900).attr('fill','var(--accent)').text('  누적 '+Math.round(a.cum*100)+'%');});
+  hover(svg.append('g').selectAll('rect').data(A).join('rect').attr('x',0).attr('width',w).attr('y',a=>y(a.rank)-2).attr('height',y.bandwidth()+4).attr('fill','transparent'),a=>`<div class="t">${a.rank}위 ${esc(a.name)}</div>`+row('담당',(MG[a.mgr]||''))+row('지역',a.loc)+'<div class="sep"></div>'+row('확정',fmt(a.R),'var(--sure)')+row('높음',fmt(a.B),'var(--high)')+row('낮음',fmt(a.K),'var(--low)')+'<div class="sep"></div>'+row('보수',fmt(a.cons))+row('낙관',fmt(a.opt))+row('보수 누적 비중',d3.format('.1%')(a.cum)));
+}
+
+/* ---------- roadmap (D-5): monthly 보수 composition + cumulative ---------- */
+function topDeals(mm,n){const list=[];DATA.accounts.forEach(a=>{const v=a.mo&&a.mo[mm];if(!v)return;const o=v.R+v.B+v.K;if(o<=0)return;list.push({name:a.name,c:v.R+v.B*.6+v.K*.3,o,g:v.R>=o*.99?'확정':(v.B>=v.K?'높음':'낮음')});});list.sort((a,b)=>b.c-a.c);return list.slice(0,n);}
+function drawRoadmap(){
+  const el1=document.querySelector('[data-chart="rm-month"]'),el2=document.querySelector('[data-chart="rm-cum"]');if(!el1||!el2)return;
+  const H2=DATA.months.filter(d=>d.cons!=null);
+  { const w=W(el1),h=280,m={t:22,r:10,b:30,l:50};const svg=svgIn(el1,w,h,'v');
+    const x=d3.scaleBand().domain(H2.map(d=>d.m)).range([m.l,w-m.r]).paddingInner(.38).paddingOuter(.2);
+    const y=d3.scaleLinear().domain([0,d3.max(H2,d=>d.opt)*1.12]).range([h-m.b,m.t]);
+    grid(svg.append('g'),y,m.l,w-m.r,4);yAxisMan(svg.append('g').attr('transform',`translate(${m.l},0)`),y,4);
+    svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).tickFormat(mName).tickSize(0)).call(a=>a.select('.domain').attr('stroke','var(--rule-2)'));
+    const bw=Math.min(x.bandwidth(),46),bx=d=>x(d.m)+(x.bandwidth()-bw)/2;
+    H2.forEach(d=>{const g=svg.append('g');g.append('rect').attr('x',bx(d)).attr('width',bw).attr('y',y(d.opt)).attr('height',y(0)-y(d.opt)).attr('fill','var(--opt)').attr('rx',3);
+      let acc=0;[[d.R,'var(--sure)'],[d.B*.6,'var(--high)'],[d.K*.3,'var(--low)']].forEach(([v,c])=>{if(v<=0)return;g.append('rect').attr('x',bx(d)).attr('width',bw).attr('y',y(acc+v)+1).attr('height',Math.max(0,y(acc)-y(acc+v)-2)).attr('fill',c);acc+=v;});
+      g.append('text').attr('x',bx(d)+bw/2).attr('y',y(d.cons)-6).attr('text-anchor','middle').attr('font-size',10.5).attr('font-weight',700).attr('fill','var(--ink)').attr('paint-order','stroke').attr('stroke','var(--surface)').attr('stroke-width',3.5).text(man(d.cons));});
+    svg.append('text').attr('x',m.l+4).attr('y',m.t-8).attr('font-size',11).attr('fill','var(--muted)').text('막대 위 숫자 = 그 달 보수');
+    hover(svg.append('g').selectAll('rect').data(H2).join('rect').attr('x',d=>x(d.m)-x.step()*.19).attr('width',x.step()).attr('y',m.t-6).attr('height',h-m.b-m.t+6).attr('fill','transparent'),d=>{
+      let s=`<div class="t">${mName(d.m)} 계획</div>`+row('보수',fmt(d.cons),'var(--high)')+row('낙관',fmt(d.opt),'var(--opt)')+'<div class="sep"></div>'+row('확정',fmt(d.R),'var(--sure)')+row('높음 ×0.6',fmt(d.B*.6)+' <span class="m">/ '+fmt(d.B)+'</span>','var(--high)')+row('낮음 ×0.3',fmt(d.K*.3)+' <span class="m">/ '+fmt(d.K)+'</span>','var(--low)');
+      const td=topDeals(d.m,5);if(td.length){s+='<div class="sep"></div><div class="m">주요 입금 건 (장부 금액)</div>'+td.map(t=>row(esc(t.name)+' <span class="m">'+t.g+'</span>',fmt(t.o))).join('');}
+      return s;});
+  }
+  { const w=W(el2),h=280,m={t:22,r:92,b:30,l:50};const svg=svgIn(el2,w,h);
+    let c=0,o=0;const C=H2.map(d=>{c+=d.cons;o+=d.opt;return {m:d.m,c,o};});
+    const x=d3.scalePoint().domain(C.map(d=>d.m)).range([m.l+10,w-m.r]);const y=d3.scaleLinear().domain([0,S.opt*1.08]).range([h-m.b,m.t]);
+    grid(svg.append('g'),y,m.l,w-m.r,4);yAxisMan(svg.append('g').attr('transform',`translate(${m.l},0)`),y,4);
+    svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).tickFormat(mName).tickSize(0)).call(a=>a.select('.domain').attr('stroke','var(--rule-2)'));
+    svg.append('path').datum(C).attr('d',d3.area().x(d=>x(d.m)).y0(y(0)).y1(d=>y(d.c)).curve(d3.curveMonotoneX)).attr('fill','var(--high)').attr('opacity',.12);
+    svg.append('path').datum(C).attr('d',d3.line().x(d=>x(d.m)).y(d=>y(d.o)).curve(d3.curveMonotoneX)).attr('fill','none').attr('stroke','var(--goal)').attr('stroke-width',2).attr('stroke-dasharray','5 4');
+    svg.append('path').datum(C).attr('d',d3.line().x(d=>x(d.m)).y(d=>y(d.c)).curve(d3.curveMonotoneX)).attr('fill','none').attr('stroke','var(--high)').attr('stroke-width',2.5);
+    svg.append('g').selectAll('circle').data(C).join('circle').attr('cx',d=>x(d.m)).attr('cy',d=>y(d.c)).attr('r',4).attr('fill','var(--high)').attr('stroke','var(--surface)').attr('stroke-width',2);
+    const last=C[C.length-1];svg.append('text').attr('x',x(last.m)+8).attr('y',y(last.c)+4).attr('font-size',11.5).attr('font-weight',900).attr('fill','var(--ink)').text('보수 '+man(last.c));
+    svg.append('text').attr('x',x(last.m)+8).attr('y',y(last.o)+4).attr('font-size',11).attr('fill','var(--muted)').text('낙관 '+man(last.o));
+    svg.append('text').attr('x',m.l+4).attr('y',m.t-8).attr('font-size',11).attr('fill','var(--muted)').text('10월부터의 누적');
+    hover(svg.append('g').selectAll('rect').data(C).join('rect').attr('x',(d,i)=>x(d.m)-(x.step?x.step()/2:40)).attr('width',x.step?x.step():80).attr('y',m.t).attr('height',h-m.b-m.t).attr('fill','transparent'),d=>`<div class="t">${mName(d.m)} 말 누적</div>`+row('누적 보수',fmt(d.c),'var(--high)')+row('누적 낙관',fmt(d.o),'var(--goal)')+row('하반기 보수 중 진행률',pct(d.c,S.cons)));
+  }
+}
+
+/* ---------- segments (appendix A): three 100% bars ---------- */
+function drawSegments(){
+  const el=document.querySelector('[data-chart="segments"]');if(!el)return;const w=W(el),m={l:92,r:16},rh=30,gap=14,rows=[['ka',['KA','SME'],'대형 / 중소'],['status',['New','Renew'],'신규 / 기존'],['prod',['HW','SW'],'HW / SW']];const h=rows.length*(rh+gap);
+  const svg=svgIn(el,w,h,'h');const KO={KA:'KA',SME:'SME',New:'신규',Renew:'기존',HW:'HW',SW:'SW'};
+  rows.forEach(([dim,keys,label],ri)=>{const y0=ri*(rh+gap);const segs=keys.map(k=>DATA.segments.find(s=>s.dim===dim&&s.key===k)).filter(Boolean);const tot=d3.sum(segs,s=>s.opt);const x=d3.scaleLinear().domain([0,tot]).range([m.l,w-m.r]);let acc=0;
+    svg.append('text').attr('x',m.l-10).attr('y',y0+rh/2+4).attr('text-anchor','end').attr('font-size',12.5).attr('font-weight',700).attr('fill','var(--ink)').text(label);
+    segs.forEach((s,i)=>{const x0=x(acc),x1=x(acc+s.opt);const r=svg.append('rect').attr('x',x0+1).attr('y',y0).attr('width',Math.max(0,x1-x0-2)).attr('height',rh).attr('fill',i===0?'var(--high)':'var(--low)').attr('rx',4);
+      if(x1-x0>90)svg.append('text').attr('x',(x0+x1)/2).attr('y',y0+rh/2+4).attr('text-anchor','middle').attr('font-size',11.5).attr('font-weight',700).attr('fill',i===0?'#fff':'var(--ink)').attr('pointer-events','none').text(`${KO[s.key]} ${pct(s.opt,tot)} · ${man(s.opt)}`);
+      hover(r,()=>`<div class="t">${KO[s.key]}</div>`+row('상반기 실적',fmt(s.h1))+row('하반기 확정',fmt(s.R))+row('보수',fmt(s.cons))+row('낙관',fmt(s.opt))+row('낙관 비중',pct(s.opt,tot)));acc+=s.opt;});});
+}
+
+/* ---------- map ---------- */
+const GN={'서울특별시':'서울','경기도':'경기','인천광역시':'인천','부산광역시':'부산','울산광역시':'울산','경상남도':'경남','경상북도':'경북','대전광역시':'대전','대구광역시':'대구','광주광역시':'광주','충청북도':'충북','충청남도':'충남','세종특별자치시':'세종','제주특별자치도':'제주','전라북도':'전북','전라남도':'전남','강원도':'강원'};
+const ML={cons:'하반기 보수',opt:'하반기 낙관',h1:'상반기 실적'};
+let metric='cons',pinned=null,regionMore=false;
+const RBY=Object.fromEntries(DATA.regions.map(r=>[r.name,r]));
+function regionTip(r,name){if(!r)return `<div class="t">${esc(name||'')}</div><div class="m">장부에 상반기 실적·하반기 예측이 없는 지역입니다</div>`;const cutRow=(metric!=='h1'&&mapCut<5)?(row(MONS[mapCut]+'월까지 누적 보수',fmt(regionVal(r.name,'cons',mapCut)))+row(MONS[mapCut]+'월까지 누적 낙관',fmt(regionVal(r.name,'opt',mapCut)))+'<div class="sep"></div>'):'';if(metric==='h1'){const paid=r.paid||[];return `<div class="t">${r.name}</div>`+row('상반기 실적 (4~9월 입금)',fmt(r.h1),'var(--actual)');}return `<div class="t">${r.name}</div>`+cutRow+row('상반기 실적',fmt(r.h1),'var(--actual)')+'<div class="sep"></div>'+row('확정',fmt(r.R),'var(--sure)')+row('높음',fmt(r.B),'var(--high)')+row('낮음',fmt(r.K),'var(--low)')+row('보수 / 낙관',fmt(r.cons)+' / '+fmt(r.opt))}
+function drawMap(){
+  const el=document.querySelector('[data-chart="map"]');const w=W(el),h=Math.round(w*1.05);const svg=svgIn(el,w,h);
+  const proj=d3.geoMercator().fitExtent([[8,8],[w-8,h-8]],GEO);const path=d3.geoPath(proj);
+  const vals=DATA.regions.filter(r=>GN[Object.keys(GN).find(k=>GN[k]===r.name)]).map(r=>regionVal(r.name,metric,mapCut));const max=d3.max(vals)||1;
+  const mix=v=>v>0?Math.round(12+88*Math.sqrt(v/max)):0;
+  const g=svg.append('g');
+  const paths=g.selectAll('path').data(GEO.features).join('path').attr('class','region').attr('d',path).attr('data-r',f=>GN[f.properties.name]||'')
+    .style('fill',f=>{const rn=GN[f.properties.name],r=RBY[rn];const v=r?regionVal(rn,metric,mapCut):0;return v>0?`color-mix(in srgb, var(--sure) ${mix(v)}%, var(--surface-2))`:'var(--surface-2)';})
+    .classed('on',f=>pinned&&GN[f.properties.name]===pinned);
+  hover(paths,f=>regionTip(RBY[GN[f.properties.name]],GN[f.properties.name]||f.properties.name));
+  paths.on('click',(e,f)=>{const n=GN[f.properties.name];pinned=(pinned===n?null:n);drawMap();renderRegionList();});
+  const LBL={'서울':[-66,-52],'인천':[-78,12],'세종':[-62,4],'대전':[40,26],'광주':[-50,16],'울산':[46,-10],'부산':[34,24],'대구':[40,-24]};const IN={'경기':[2,44]};const k=w/560;
+  const lg=g.append('g');
+  GEO.features.forEach(f=>{const n=GN[f.properties.name],r=RBY[n];const rv=r?regionVal(n,metric,mapCut):0;if(!r||rv<=0)return;const [cx,cy]=path.centroid(f);const off=LBL[n],ins=IN[n];
+    let tx=cx,ty=cy,anchor='middle',fill=mix(rv)>55?'#fff':'var(--ink)';
+    if(ins){tx=cx+ins[0]*k;ty=cy+ins[1]*k;}
+    if(off){tx=cx+off[0]*k;ty=cy+off[1]*k;anchor=off[0]<0?'end':'start';fill='var(--ink)';lg.append('line').attr('pointer-events','none').attr('x1',cx).attr('y1',cy).attr('x2',tx+(off[0]<0?3:-3)).attr('y2',ty).attr('stroke','var(--muted)').attr('stroke-width',1);}
+    const t=lg.append('text').attr('transform',`translate(${tx},${ty})`).attr('text-anchor',anchor).attr('font-size',10.5).attr('fill',fill).attr('paint-order','stroke').attr('stroke',off?'var(--surface)':'none').attr('stroke-width',3).style('cursor','pointer');
+    t.append('tspan').attr('x',0).attr('dy',-2).attr('font-weight',600).text(n);t.append('tspan').attr('x',0).attr('dy',12).text(man(rv));
+    hover(t,()=>regionTip(r,n));t.on('click',()=>{pinned=(pinned===n?null:n);drawMap();renderRegionList();});});
+  d3.select(el).append('div').attr('class','ramp').html(`<span>0</span><i style="background:linear-gradient(90deg,color-mix(in srgb,var(--sure) 12%,var(--surface-2)),var(--sure))"></i><span>${man(max)} (${ML[metric]})</span>`);
+}
+function renderRegionList(){
+  const ul=document.getElementById('region-list');ul.innerHTML='';document.getElementById('map-panel-title').textContent='지역 순위 · '+ML[metric];
+  const rs=DATA.regions.map(r=>Object.assign({},r,{v:regionVal(r.name,metric,mapCut)})).sort((a,b)=>b.v-a.v);const max=rs[0]?rs[0].v:1;const tot=d3.sum(rs,r=>r.v);
+  let shown=0;rs.forEach(r=>{if(r.v<=0)return;shown++;const li=document.createElement('li');li.className=(pinned===r.name?'on':'')+(shown>8&&!regionMore?' more':'');const nShown=metric==='h1'?(r.paid||[]).length:r.n;li.innerHTML=`<span><b>${esc(r.name)}</b></span><span class="num"><b>${fmt(r.v)}</b> <span class="muted">${pct(r.v,tot)}</span></span><span class="bar"><i style="width:${r.v/max*100}%"></i></span>`;
+    li.addEventListener('pointerenter',e=>tipShow(regionTip(r),e));li.addEventListener('pointermove',tipMove);li.addEventListener('pointerleave',tipHide);
+    li.addEventListener('click',()=>{pinned=(pinned===r.name?null:r.name);drawMap();renderRegionList();});ul.appendChild(li);});
+  if(shown>8){const li=document.createElement('li');li.className='toggle';li.innerHTML=`<span>${regionMore?'상위 8개 지역만 보기':'나머지 '+(shown-8)+'개 지역 보기'}</span><span class="muted">${regionMore?'▲':'▼'}</span>`;li.addEventListener('click',()=>{regionMore=!regionMore;renderRegionList();});ul.appendChild(li);}
+  const det=document.getElementById('region-detail');det.innerHTML='지역에 마우스를 올리면 확정·높음·낮음 금액이 표시됩니다.';
+}
+document.querySelectorAll('#fig-map [data-metric]').forEach(b=>b.addEventListener('click',()=>{metric=b.dataset.metric;document.querySelectorAll('#fig-map [data-metric]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawMap();renderRegionList();}));
+
+/* ---------- tables ---------- */
+function td(v,cls){return `<td class="${cls||''}">${v}</td>`}
+function peopleTable(){
+  const tb=document.querySelector('#tbl-people tbody');let html='';
+  const line=(p,cls)=>`<tr class="${cls||''}">${td(p.name,'k')}${td(fmt(p.annualGoal),'n gl b')}${td(fmt(p.h1),'n')}${td(pct(p.h1,p.h1Goal),'n')}${td(fmt(p.R),'n gl')}${td(fmt(p.cons),'n')}${td(fmt(p.opt),'n')}${td(fmt(p.h1+p.R),'n gl')}${td(fmt(p.h1+p.cons),'n b')}${td(fmt(p.h1+p.opt),'n')}${td(pct(p.h1+p.cons,p.annualGoal),'n gl')}</tr>`;
+  ['BD','MKT'].forEach(t=>{html+=`<tr class="grp"><td colspan="11">${t==='BD'?'BD (김도현·이서준)':'MKT (박지호·최유나·정하린·한승민·오지안)'}</td></tr>`;DATA.people.filter(p=>p.team===t).forEach(p=>html+=line(p));const s=S[t];html+=line({name:t+' 소계',annualGoal:s.annualGoal,h1:s.h1,h1Goal:s.h1Goal,R:s.R,cons:s.cons,opt:s.opt},'total');});
+  html+=line({name:'한국지사 합계',annualGoal:S.annualGoal,h1:S.h1,h1Goal:S.h1Goal,R:S.R,cons:S.cons,opt:S.opt},'total');tb.innerHTML=html;
+}
+function segTable(){
+  const tb=document.querySelector('#tbl-seg tbody');const order=[['ka','KA','KA (대형)'],['ka','SME','SME'],['status','New','신규 (New)'],['status','Renew','기존 (Renew)'],['prod','HW','HW'],['prod','SW','SW'],['team','BD','BD'],['team','MK','MKT (CSM 포함)']];
+  tb.innerHTML=order.map(([d,k,l])=>{const s=DATA.segments.find(x=>x.dim===d&&x.key===k);if(!s)return '';return `<tr>${td(l,'k')}${td(fmt(s.h1),'n')}${td(fmt(s.R),'n')}${td(fmt(s.B),'n')}${td(fmt(s.K),'n')}${td(fmt(s.cons),'n')}${td(fmt(s.opt),'n')}${td(pct(s.opt,S.opt),'n')}</tr>`}).join('');
+}
+const accState={q:'',mgr:'',loc:'',st:'',k:'cons',dir:'desc'};
+function accTable(){
+  const A=DATA.accounts.filter(a=>{if(accState.mgr&&!a.mgrs.includes(accState.mgr))return false;if(accState.loc&&a.loc!==accState.loc)return false;if(accState.st&&!(a[accState.st]>0))return false;
+    if(accState.q){const q=accState.q.toLowerCase();const hay=(a.name+' '+a.loc+' '+a.mgrs.map(k=>MG[k]).join(' ')).toLowerCase();if(!hay.includes(q))return false;}return true;});
+  const k=accState.k,dir=accState.dir==='asc'?1:-1;A.sort((a,b)=>typeof a[k]==='string'?dir*a[k].localeCompare(b[k],'ko'):dir*((a[k]||0)-(b[k]||0)));
+  const chips=a=>[a.R>0?'<span class="chip sure">확정</span>':'',a.B>0?'<span class="chip high">높음</span>':'',a.K>0?'<span class="chip low">낮음</span>':''].join(' ');
+  document.querySelector('#tbl-acc tbody').innerHTML=A.map(a=>`<tr>${td(esc(a.name)+(a.new?' <span class="chip lbl">이름 없음</span>':'')+(a.mgrs.length>1?' <span class="chip lbl">공동</span>':''),'k')}${td(a.loc)}${td((MG[a.mgr]||''))}${td(/KA/.test(a.scale)?'<span class="chip lbl">KA</span>':a.scale)}${td(a.prod)}${td(a.h1?fmt(a.h1):'<span class="muted">–</span>','n')}${td(a.R?fmt(a.R):'<span class="muted">–</span>','n')}${td(a.B?fmt(a.B):'<span class="muted">–</span>','n')}${td(a.K?fmt(a.K):'<span class="muted">–</span>','n')}${td('<b>'+fmt(a.cons)+'</b>','n')}${td(fmt(a.opt),'n')}${td(a.months.length?a.months.map(m=>m+'월').join('·'):'<span class="muted">–</span>')}</tr>`).join('');
+  document.getElementById('cnt').textContent=`${A.length}곳 · 보수 ${fmt(d3.sum(A,a=>a.cons))} · 낙관 ${fmt(d3.sum(A,a=>a.opt))}`;
+  document.querySelectorAll('#tbl-acc th.sortable').forEach(th=>{th.dataset.dir=th.dataset.k===k?accState.dir:'';});
+}
+function initAcc(){
+  const mgrs=[...new Set(DATA.accounts.flatMap(a=>a.mgrs))];const sm=document.getElementById('f-mgr');mgrs.forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=MG[k]||k;sm.appendChild(o);});
+  const locs=[...new Set(DATA.accounts.map(a=>a.loc))].sort((a,b)=>a.localeCompare(b,'ko'));const sl=document.getElementById('f-loc');locs.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sl.appendChild(o);});
+  document.getElementById('q').addEventListener('input',e=>{accState.q=e.target.value;accTable();});sm.addEventListener('change',e=>{accState.mgr=e.target.value;accTable();});sl.addEventListener('change',e=>{accState.loc=e.target.value;accTable();});
+  document.getElementById('f-st').addEventListener('change',e=>{accState.st=e.target.value;accTable();});
+  document.querySelectorAll('#tbl-acc th.sortable').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;if(accState.k===k)accState.dir=accState.dir==='asc'?'desc':'asc';else{accState.k=k;accState.dir=k==='name'?'asc':'desc';}accTable();}));
+  accTable();
+}
+function drawAll(){const v=id=>!document.getElementById(id).hidden;const run=fs=>fs.forEach(f=>{try{f()}catch(e){}});if(v('ch1'))run([drawMonths,drawComposition,drawBridge]);if(v('ch2'))run([drawMap,renderRegionList,drawRoadmap]);if(v('apx'))run([drawSegments]);stagger();observeCounts();}
+/* chapters */
+const CH=['ch1','ch2','apx'];
+function showChapter(id,scrollTo){CH.forEach(c=>{document.getElementById(c).hidden=c!==id});document.querySelectorAll('[data-ch]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ch===id)));tipHide();drawAll();
+  const t=scrollTo&&document.getElementById(scrollTo);if(t)t.scrollIntoView({block:'start'});else if(scrollTo!==false){const c=document.querySelector('.cover');window.scrollTo({top:c.offsetTop+c.offsetHeight-8});}}
+document.querySelectorAll('[data-ch]').forEach(b=>b.addEventListener('click',()=>{showChapter(b.dataset.ch);try{history.replaceState(null,'','#'+b.dataset.ch)}catch(e){}}));
+function chapterOf(id){const el=document.getElementById(id);const c=el&&el.closest('.chapter');return c?c.id:null;}
+function fromHash(){const h=(location.hash||'').replace('#','');if(!h)return false;if(CH.includes(h)){showChapter(h);return true;}const c=chapterOf(h);if(c){showChapter(c,h);return true;}return false;}
+addEventListener('hashchange',fromHash);
+/* cover art: static digit matrix + glow (one canvas) and a slowly breathing ring (second canvas, rAF) */
+const RM=matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---------- floating dock: chapter buttons with reading-progress rings, sliding indicator, section spy, keys 1·2·3 ---------- */
+const dock=document.querySelector('.dock');const RING=2*Math.PI*13;const prog={ch1:0,ch2:0,apx:0};
+function dockInd(){if(!dock)return;const b=dock.querySelector('[aria-pressed="true"]'),ind=dock.querySelector('.ind');if(!b||!ind)return;ind.style.left=b.offsetLeft+'px';ind.style.width=b.offsetWidth+'px';}
+function dockSpy(){if(!dock)return;const cur=CH.find(id=>!document.getElementById(id).hidden);if(!cur)return;const el=document.getElementById(cur);const r=el.getBoundingClientRect();
+  const span=Math.max(1,el.offsetHeight-innerHeight*0.5);prog[cur]=Math.min(1,Math.max(0,(innerHeight*0.5-r.top)/span));
+  dock.querySelectorAll('[data-ch]').forEach(b=>{const bar=b.querySelector('.bar');if(bar)bar.style.strokeDashoffset=String(RING*(1-(prog[b.dataset.ch]||0)));});
+  let best=null;el.querySelectorAll('.sec').forEach(s=>{if(s.getBoundingClientRect().top<=innerHeight*0.45)best=s;});
+  const pos=document.getElementById('dock-pos');if(!pos)return;pos.textContent='';
+  if(best){const k=best.querySelector('.sec-kicker'),h=best.querySelector('h2');const b=document.createElement('b');b.textContent=(k&&k.dataset.letter)||'';pos.appendChild(b);pos.appendChild(document.createTextNode(h?h.textContent:''));}
+  else{const b=document.createElement('b');b.textContent='▲';pos.appendChild(b);pos.appendChild(document.createTextNode('표지'));}}
+if(dock){const _show=showChapter;showChapter=function(id,sc){_show(id,sc);dockInd();dockSpy();};
+  addEventListener('scroll',dockSpy,{passive:true});addEventListener('resize',()=>{dockInd();dockSpy();});
+  addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const t=e.target;if(t&&t.matches&&t.matches('input,select,textarea,[contenteditable]'))return;const map={'1':'ch1','2':'ch2','3':'apx'};if(map[e.key]){showChapter(map[e.key]);try{history.replaceState(null,'','#'+map[e.key])}catch(_){}}});
+  document.fonts&&document.fonts.ready.then(()=>dockInd());setTimeout(()=>{dockInd();dockSpy();},50);}
+/* ---------- E 승부처 표 + 부록 B 프로젝트 표: 금액·등급은 장부, 정성 열만 수기 ---------- */
+const DEAL_META={};
+function gradeChips(a){const c=[];if(a.R>0)c.push('<span class="chip sure">확정</span> '+man(a.R));if(a.B>0)c.push('<span class="chip high">높음</span> '+man(a.B));if(a.K>0)c.push('<span class="chip low">낮음</span> '+man(a.K));return c.join(' · ')||'—';}
+function dealsTable(){const tb=document.querySelector('#tbl-deals tbody');if(!tb)return;const A=DATA.accounts.filter(a=>!a.new&&!a.ref&&a.opt>0).sort((a,b)=>b.cons-a.cons);
+  tb.innerHTML=A.slice(0,8).map(a=>{const m=DEAL_META[a.name]||{};return `<tr>${td(esc(a.name)+(m.loc?' ('+m.loc+')':''),'k')}${td(fmt(a.cons)+' / '+fmt(a.opt),'n')}${td(m.hw||'')}${td(gradeChips(a))}${td(MG[a.mgr]||'')}${td(m.who||'')}${td(m.stage||'')}${td(m.next||'')}</tr>`}).join('');
+  const nx=document.getElementById('deals-next');if(nx)nx.textContent='차순위: '+A.slice(8,13).map(a=>`${a.name} ${fmt(a.cons)}(낙관 ${fmt(a.opt)})`).join(' · ')+'. 전체 목록은 부록 D.';
+}
+const PROJ=[];
+function projTable(){const tb=document.querySelector('#tbl-proj tbody');if(!tb)return;const byName=Object.fromEntries(DATA.accounts.map(a=>[a.name,a]));
+  tb.innerHTML=PROJ.map(([n,mg,est,note])=>{const a=byName[n]||{R:0,B:0,K:0,cons:0,opt:0};const m=DEAL_META[n]||{};const chg=est?(a.opt>=est?'유지·확대':'축소 '+pct(a.opt,est)):'9/14 추정액 미확보';return `<tr>${td(esc(n)+(m.loc?' ('+m.loc+')':''),'k')}${td((byName[n]&&byName[n].mgr)?MG[byName[n].mgr]:mg)}${td(est?fmt(est):'—','n')}${td(fmt(a.opt),'n')}${td(fmt(a.cons),'n')}${td(gradeChips(a))}${td(chg+' · '+note)}</tr>`}).join('');}
+/* ---------- dynamic: what-if explorer (E) ---------- */
+const WHAT={ph:60,pl:30,gal:'R',newlow:false};
+function whatCalc(){let R=0,B=0,K=0;DATA.accounts.forEach(a=>{let r=a.R,b=a.B,k=a.K;if(WHAT.newlow&&a.new){k+=b;b=0;}R+=r;B+=b;K+=k;});return {R,B,K,cons:R+B*WHAT.ph/100+K*WHAT.pl/100,opt:R+B+K};}
+function drawWhat(){const el=document.querySelector('[data-chart="what"]');if(!el)return;const w=W(el),m={l:16,r:16},rh=34,h=rh+54;const s=whatCalc();const base=S.cons;
+  const svg=svgIn(el,w,h,null);const x=d3.scaleLinear().domain([0,Math.max(S.opt,s.opt)]).range([m.l,w-m.r]);
+  const segs=[['확정',s.R,'var(--sure)'],['높음 ×'+WHAT.ph+'%',s.B*WHAT.ph/100,'var(--high)'],['낮음 ×'+WHAT.pl+'%',s.K*WHAT.pl/100,'var(--low)']];let acc=0;
+  svg.append('rect').attr('x',x(0)).attr('y',8).attr('width',Math.max(0,x(s.opt)-x(0))).attr('height',rh).attr('fill','var(--opt)').attr('rx',4);
+  segs.forEach(([n,v,c])=>{const x0=x(acc),x1=x(acc+v);const r=svg.append('rect').attr('x',x0+1).attr('y',8).attr('width',Math.max(0,x1-x0-2)).attr('height',rh).attr('fill',c).attr('rx',4);if(x1-x0>84)svg.append('text').attr('x',(x0+x1)/2).attr('y',8+rh/2+4).attr('text-anchor','middle').attr('font-size',11.5).attr('font-weight',700).attr('fill',c==='var(--low)'?'var(--ink)':'#fff').attr('pointer-events','none').text(n+' '+man(v));hover(r,()=>`<div class="t">${n}</div>`+row('기대값',fmt(v)));acc+=v;});
+  svg.append('line').attr('x1',x(base)).attr('x2',x(base)).attr('y1',2).attr('y2',8+rh+8).attr('stroke','var(--ink)').attr('stroke-width',2).attr('stroke-dasharray','4 3');
+  svg.append('text').attr('x',x(base)).attr('y',8+rh+24).attr('text-anchor',x(base)>w*0.7?'end':'middle').attr('font-size',11).attr('fill','var(--ink-2)').text('기본 보수 '+man(base));
+  svg.append('text').attr('x',x(s.opt)).attr('y',8+rh+40).attr('text-anchor','end').attr('font-size',11).attr('fill','var(--muted)').text('낙관 '+man(s.opt));
+  const oc=document.getElementById('what-cons');if(oc){oc.textContent=man(s.cons);document.getElementById('what-cons-d').textContent=(s.cons>=base?'+':'−')+man(Math.abs(s.cons-base))+' vs 기본 · 낙관의 '+pct(s.cons,s.opt);
+    const an=S.h1+s.cons;document.getElementById('what-annual').textContent=man(an);document.getElementById('what-annual-d').textContent='기존 목표 620만의 '+pct(an,S.annualGoal)+' · 낙관 시 '+man(S.h1+s.opt);}
+}
+(function(){const h=document.getElementById('what-high'),l=document.getElementById('what-low');if(!h)return;
+  h.addEventListener('input',()=>{WHAT.ph=+h.value;document.getElementById('what-ph').textContent=h.value+'%';drawWhat();});
+  l.addEventListener('input',()=>{WHAT.pl=+l.value;document.getElementById('what-pl').textContent=l.value+'%';drawWhat();});
+  document.querySelectorAll('#fig-what [data-g]').forEach(b=>b.addEventListener('click',()=>{WHAT.gal=b.dataset.g;document.querySelectorAll('#fig-what [data-g]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));drawWhat();}));
+  document.getElementById('what-newlow').addEventListener('change',e=>{WHAT.newlow=e.target.checked;drawWhat();});
+  document.getElementById('what-reset').addEventListener('click',()=>{WHAT.ph=60;WHAT.pl=30;WHAT.gal='R';WHAT.newlow=false;h.value=60;l.value=30;document.getElementById('what-ph').textContent='60%';document.getElementById('what-pl').textContent='30%';document.getElementById('what-newlow').checked=false;document.querySelectorAll('#fig-what [data-g]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.g==='R')));drawWhat();});})();
+
+/* ---------- dynamic: map month scrubber ---------- */
+const MONS=['10','11','12','1','2','3'];let mapCut=5,mapTimer=null;
+const RMM={};DATA.accounts.forEach(a=>{if(a.new||!a.mo)return;const r=RMM[a.loc]||(RMM[a.loc]={});MONS.forEach(m=>{const v=a.mo[m];if(!v)return;const o=r[m]||(r[m]={R:0,B:0,K:0});o.R+=v.R;o.B+=v.B;o.K+=v.K;});});
+function regionVal(name,metric,cut){const rb=RBY[name];if(!rb)return 0;if(metric==='h1'||cut>=5)return rb[metric];const r=RMM[name];if(!r)return 0;let R=0,B=0,K=0;for(let i=0;i<=cut;i++){const o=r[MONS[i]];if(!o)continue;R+=o.R;B+=o.B;K+=o.K;}return metric==='cons'?R+B*.6+K*.3:R+B+K;}
+(function(){const sl=document.getElementById('map-month'),pl=document.getElementById('map-play'),lb=document.getElementById('map-month-lbl');if(!sl)return;
+  const setCut=c=>{mapCut=c;sl.value=String(c);lb.textContent=(c>=5?'3월까지 누적 (전체)':MONS[c]+'월까지 누적');const prev={};document.querySelectorAll('[data-chart="map"] path.region').forEach(p=>{prev[p.getAttribute('data-r')||'']=p.style.fill;});drawMap();renderRegionList();if(RM.matches)return;document.querySelectorAll('[data-chart="map"] path.region').forEach(p=>{const k=p.getAttribute('data-r')||'',t=p.style.fill;if(prev[k]&&prev[k]!==t){p.style.transition='none';p.style.fill=prev[k];p.getBoundingClientRect();p.style.transition='';p.style.fill=t;}});};
+  sl.addEventListener('input',()=>{if(mapTimer){clearInterval(mapTimer);mapTimer=null;pl.textContent='▶ 월별 재생';}setCut(+sl.value);});
+  pl.addEventListener('click',()=>{if(mapTimer){clearInterval(mapTimer);mapTimer=null;pl.textContent='▶ 월별 재생';return;}let c=0;setCut(0);pl.textContent='■ 정지';mapTimer=setInterval(()=>{c++;if(c>5){clearInterval(mapTimer);mapTimer=null;pl.textContent='▶ 월별 재생';return;}setCut(c);},900);});
+  document.querySelectorAll('#fig-map [data-metric]').forEach(b=>b.addEventListener('click',()=>{const dis=b.dataset.metric==='h1';sl.disabled=dis;pl.disabled=dis;if(dis){lb.textContent='상반기 실적은 누적 재생 없음';}else lb.textContent=(mapCut>=5?'3월까지 누적 (전체)':MONS[mapCut]+'월까지 누적');}));})();
+
+/* ---------- dynamic: region → customer treemap (D②) ---------- */
+let treeMetric='cons';
+function drawTree(){const el=document.querySelector('[data-chart="tree"]');if(!el)return;const w=W(el),h=w<600?620:460;const svg=svgIn(el,w,h,null);
+  const byLoc={};DATA.accounts.forEach(a=>{if(a.new||a[treeMetric]<=0)return;(byLoc[a.loc]||(byLoc[a.loc]=[])).push(a);});
+  const root=d3.hierarchy({children:Object.entries(byLoc).map(([k,v])=>({name:k,children:v}))}).sum(d=>d.children?0:d[treeMetric]).sort((a,b)=>b.value-a.value);
+  d3.treemap().size([w,h]).paddingOuter(3).paddingTop(20).paddingInner(2).round(true)(root);
+  const grade=a=>{const tot=a.R+a.B+a.K||1;return a.R/tot>=.5?'var(--sure)':(a.B/tot>=.5?'var(--high)':'var(--low)');};
+  const g=svg.append('g');
+  root.children.forEach(rg=>{g.append('rect').attr('x',rg.x0).attr('y',rg.y0).attr('width',Math.max(0,rg.x1-rg.x0)).attr('height',Math.max(0,rg.y1-rg.y0)).attr('fill','var(--surface-2)').attr('stroke','var(--rule-2)').attr('rx',4);const rw=rg.x1-rg.x0;if(rw>40)g.append('text').attr('x',rg.x0+5).attr('y',rg.y0+14).attr('font-size',11).attr('font-weight',900).attr('fill','var(--ink-2)').attr('pointer-events','none').text(rw>96?rg.data.name+' '+man(rg.value):rg.data.name);});
+  const leaves=root.leaves();const cell=g.selectAll('g.leaf').data(leaves).join('g').attr('class','leaf');
+  cell.append('rect').attr('x',d=>d.x0).attr('y',d=>d.y0).attr('width',d=>Math.max(0,d.x1-d.x0)).attr('height',d=>Math.max(0,d.y1-d.y0)).attr('fill',d=>grade(d.data)).attr('rx',3).attr('stroke','var(--surface)').attr('stroke-width',1).style('cursor','default');
+  cell.filter(d=>d.x1-d.x0>58&&d.y1-d.y0>26).append('text').attr('x',d=>d.x0+5).attr('y',d=>d.y0+13).attr('font-size',10.5).attr('font-weight',700).attr('fill',d=>grade(d.data)==='var(--low)'?'var(--ink)':'#fff').attr('pointer-events','none').text(d=>{const n=d.data.name;const maxc=Math.floor((d.x1-d.x0-8)/10.5);return n.length>maxc?n.slice(0,Math.max(2,maxc-1))+'…':n;});
+  cell.filter(d=>d.x1-d.x0>58&&d.y1-d.y0>40).append('text').attr('x',d=>d.x0+5).attr('y',d=>d.y0+26).attr('font-size',10).attr('fill',d=>grade(d.data)==='var(--low)'?'var(--ink-2)':'rgba(255,255,255,.85)').attr('pointer-events','none').text(d=>man(d.value));
+  hover(cell.select('rect'),d=>`<div class="t">${esc(d.data.name)}</div>`+row('지역',d.data.loc)+row('담당',(MG[d.data.mgr]||''))+'<div class="sep"></div>'+row('확정',fmt(d.data.R),'var(--sure)')+row('높음',fmt(d.data.B),'var(--high)')+row('낮음',fmt(d.data.K),'var(--low)')+'<div class="sep"></div>'+row('보수',fmt(d.data.cons))+row('낙관',fmt(d.data.opt))+row('하반기 '+(treeMetric==='cons'?'보수':'낙관')+' 비중',pct(d.data[treeMetric],treeMetric==='cons'?S.cons:S.opt)));
+}
+document.querySelectorAll('#fig-tree [data-tm]').forEach(b=>b.addEventListener('click',()=>{treeMetric=b.dataset.tm;document.querySelectorAll('#fig-tree [data-tm]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));drawTree();}));
+
+/* ---------- dynamic: count-up numbers + bar entrance stagger ---------- */
+function countUp(el){if(RM.matches||el.dataset.counted)return;el.dataset.counted='1';const node=[...el.childNodes].find(n=>n.nodeType===3&&/\d/.test(n.textContent));if(!node)return;const raw=node.textContent;const m=raw.match(/^(\s*[+−-]?)([\d,]+)(\.(\d+))?(.*)$/);if(!m)return;const sign=m[1],dec=m[4]||'',suf=m[5];const target=parseFloat(m[2].replace(/,/g,'')+(dec?'.'+dec:''));const decs=dec.length;const t0=performance.now(),dur=700;
+  const step=now=>{const k=Math.min(1,(now-t0)/dur);if(k>=1){node.textContent=raw;return;}const e=1-Math.pow(1-k,3);node.textContent=sign+d3.format(',.'+decs+'f')(target*e)+suf;requestAnimationFrame(step);};requestAnimationFrame(step);setTimeout(()=>{node.textContent=raw;},dur+120);}
+const cio=new IntersectionObserver(es=>{es.forEach(x=>{if(x.isIntersecting){countUp(x.target);cio.unobserve(x.target);}});},{threshold:.4});
+function observeCounts(){document.querySelectorAll('.kpi .v, .scen .v').forEach(el=>{if(!el.dataset.counted&&!el.closest('.what-out'))cio.observe(el);});}
+window.__vp={regionVal,WHAT,drawWhat,whatCalc};
+function stagger(){document.querySelectorAll('.fig svg[class^=anim]').forEach(svg=>{svg.querySelectorAll('rect:not([fill="transparent"])').forEach((r,i)=>{r.style.animationDelay=Math.min(i*14,420)+'ms';});});}
+if(!fromHash())showChapter('ch1',false);
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{animate=false;drawAll();animate=true;},150)});
+addEventListener('scroll',tipHide,{passive:true});
+})();
+</script>
+
+</html>
