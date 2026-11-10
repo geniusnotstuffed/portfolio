@@ -22,7 +22,6 @@
       <a href="#about"><i></i>소개와 지원동기</a>
       <a href="#fit"><i></i>공고 업무와 경험</a>
       <a href="#work"><i></i>경력과 프로젝트</a>
-      <a href="#proposal"><i></i>VC 운용 데이터 구조 초안</a>
       <a href="#edu"><i></i>학력·연구·활동</a>
     </nav>
   </div>
@@ -38,7 +37,7 @@
   <h2 class="st"><span class="k">01 <em>About</em></span>소개와 지원동기</h2>
   <p class="lead">저를 두 마디로 소개하면 <b>맡은 일은 어떻게든 끝내는 사람</b>, 그리고 <b>늘 받는 사람 입장에서 생각하는 사람</b>입니다. 클래스인코리아에서 직함은 Account Executive이자 마케터지만, 세 팀이 각자 엑셀로 들고 있던 고객 데이터를 하나의 데이터베이스로 옮기는 일을 기준 정하기부터 정착까지 끝까지 맡아 회사 전체가 매일 쓰는 도구로 만들었습니다. 그때 제 기준은 하나였습니다. 「이 숫자를 받는 사람이 다시 계산하지 않아도 되는가.」 그래서 판정 규칙을 문서로 남기고, 광고비 표에는 출처·기준일·환율을 같이 적었습니다. 사내에서 「클래스인 통계청장」으로 불리는 이유입니다.</p>
   <p class="lead">사제파트너스 Operations 포지션은 그 일이 직무 자체인 자리입니다. 한국법인이 2026년 8월 벤처투자회사 등록을 마치고 국내 펀드 운용을 넓히는 시점에, VC 데이터베이스와 AI 기반 실무 플랫폼을 함께 만든다는 점에 끌렸습니다. 데이터 구조가 처음 정해지는 시기에 실무를 하면서 그 구조를 함께 다듬는 일은 사내 CRM을 처음부터 만들 때 해 봤고, 그 경험을 정확성이 훨씬 중요한 펀드 운영에서 쓰고 싶습니다.</p>
-  <p class="lead">개발자나 투자심사역이 아닌 관리 업무 포지션이라는 점을 이해하고 지원합니다. 회계와 외국환신고 실무는 해 본 적이 없어, 첫 달에 규정과 은행 절차를 정리하고 건별 진행 단계를 추적하는 표부터 만들며 익히겠습니다. 영어는 중국 본사 개발팀과 기능 요구사항·일정을 주고받으며 실무에서 써 왔습니다. 아래에는 공고의 세 가지 업무와 닿는 작업을 앞에 두었고, 입사 후 계획은 맨 끝 「VC 운용 데이터 구조 초안」에 적었습니다.</p>
+  <p class="lead">개발자나 투자심사역이 아닌 관리 업무 포지션이라는 점을 이해하고 지원합니다. 회계와 외국환신고 실무는 해 본 적이 없어, 첫 달에 규정과 은행 절차를 정리하고 건별 진행 단계를 추적하는 표부터 만들며 익히겠습니다. 영어는 중국 본사 개발팀과 기능 요구사항·일정을 주고받으며 실무에서 써 왔습니다. 아래에는 공고의 세 가지 업무와 닿는 작업을 앞에 두었습니다.</p>
   <div class="hexes">
     <div class="hx"><div class="h"><b>3 → 1</b></div><p>팀별 엑셀 3곳을 데이터베이스 하나로</p></div>
     <div class="hx"><div class="h"><b>매주</b></div><p>매주 쓰는 성과 숫자를 원천 데이터에서 자동 집계</p></div>
@@ -295,65 +294,8 @@
   </div>
 </section>
 
-<section id="proposal" class="sec">
-  <h2 class="st"><span class="k">04 <em>Proposal</em></span>VC 운용 데이터 구조 초안</h2>
-  <p class="prop-lead">공고의 업무 목록을 데이터 항목으로 옮겨 보면 아래와 같은 구조가 됩니다. 실제 펀드 운영을 해 본 적은 없기 때문에, 입사 후 실무를 배우며 함께 고쳐 나갈 <b>출발점</b>으로 그렸습니다.</p>
-  <div class="diagram">
-  <svg viewBox="0 0 700 262" role="img" aria-label="LP 출자자, 출자약정, 펀드, 투자 거래, 포트폴리오사와 LP 보고 이력, Capital Call, Distribution, 외국환신고, 모니터링 자료의 관계도" font-family="Noto Sans KR, sans-serif">
-    <defs><marker id="m" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8d8f9f"/></marker></defs>
-    <g stroke="#8d8f9f" stroke-width="1.2" fill="none">
-      <line x1="116" y1="62" x2="146" y2="62" marker-end="url(#m)"/><line x1="262" y1="62" x2="292" y2="62" marker-end="url(#m)"/><line x1="408" y1="62" x2="438" y2="62" marker-end="url(#m)"/><line x1="554" y1="62" x2="584" y2="62"/>
-      <line x1="350" y1="112" x2="350" y2="150"/><line x1="290" y1="150" x2="410" y2="150"/><line x1="290" y1="150" x2="290" y2="172" marker-end="url(#m)"/><line x1="410" y1="150" x2="410" y2="172" marker-end="url(#m)"/>
-      <line x1="496" y1="112" x2="496" y2="172" marker-end="url(#m)"/><line x1="642" y1="112" x2="642" y2="172" marker-end="url(#m)"/><line x1="58" y1="112" x2="58" y2="172" marker-end="url(#m)"/>
-    </g>
-    <g font-size="11">
-      <rect x="2" y="12" width="114" height="100" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="12" y="32" font-weight="700" fill="#0b0a2d">LP 출자자</text><text x="12" y="52" fill="#5b5e71" font-size="10">출자자명</text><text x="12" y="68" fill="#5b5e71" font-size="10">유형 · 국적</text><text x="12" y="84" fill="#5b5e71" font-size="10">보고 연락처</text>
-      <rect x="148" y="12" width="114" height="100" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="158" y="32" font-weight="700" fill="#0b0a2d">출자약정</text><text x="158" y="45" fill="#8d8f9f" font-size="9">Commitment</text><text x="158" y="62" fill="#5b5e71" font-size="10">LP × 펀드</text><text x="158" y="78" fill="#5b5e71" font-size="10">약정액 · 통화</text><text x="158" y="94" fill="#5b5e71" font-size="10">약정 비율</text>
-      <rect x="294" y="12" width="114" height="100" fill="#eef6ea" stroke="#256856" stroke-width="1.8"/>
-      <text x="304" y="32" font-weight="700" fill="#256856">펀드</text><text x="304" y="45" fill="#8d8f9f" font-size="9">Fund</text><text x="304" y="62" fill="#5b5e71" font-size="10">펀드명 · 결성일</text><text x="304" y="78" fill="#5b5e71" font-size="10">통화(USD · KRW)</text><text x="304" y="94" fill="#5b5e71" font-size="10">약정총액</text>
-      <rect x="440" y="12" width="114" height="100" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="450" y="32" font-weight="700" fill="#0b0a2d">투자 거래</text><text x="450" y="45" fill="#8d8f9f" font-size="9">Investment</text><text x="450" y="62" fill="#5b5e71" font-size="10">투자일 · Round</text><text x="450" y="78" fill="#5b5e71" font-size="10">투자금액 · 주식 수</text><text x="450" y="94" fill="#5b5e71" font-size="10">Valuation · 지분율</text>
-      <rect x="586" y="12" width="112" height="100" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="596" y="32" font-weight="700" fill="#0b0a2d">포트폴리오사</text><text x="596" y="45" fill="#8d8f9f" font-size="9">Portfolio Company</text><text x="596" y="62" fill="#5b5e71" font-size="10">회사명 · 국가</text><text x="596" y="78" fill="#5b5e71" font-size="10">업종 · 담당</text>
-    </g>
-    <g font-size="11">
-      <rect x="2" y="174" width="114" height="84" fill="#f3f3f6" stroke="#c8c9d2"/>
-      <text x="12" y="194" font-weight="700" fill="#0b0a2d">LP 보고 이력</text><text x="12" y="212" fill="#5b5e71" font-size="10">정기 · 수시 구분</text><text x="12" y="228" fill="#5b5e71" font-size="10">기준일 · 발송일</text>
-      <rect x="232" y="174" width="114" height="84" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="242" y="194" font-weight="700" fill="#0b0a2d">Capital Call</text><text x="242" y="212" fill="#5b5e71" font-size="10">회차 · 요청일 · 기한</text><text x="242" y="228" fill="#5b5e71" font-size="10">LP별 요청액</text><text x="242" y="244" fill="#5b5e71" font-size="10">LP별 납입액 · 납입일</text>
-      <rect x="354" y="174" width="114" height="84" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="364" y="194" font-weight="700" fill="#0b0a2d">Distribution</text><text x="364" y="212" fill="#5b5e71" font-size="10">회차 · 분배일</text><text x="364" y="228" fill="#5b5e71" font-size="10">LP별 분배액</text>
-      <rect x="476" y="174" width="102" height="84" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="486" y="194" font-weight="700" fill="#0b0a2d">외국환신고</text><text x="486" y="212" fill="#5b5e71" font-size="10">투자 전 신고</text><text x="486" y="228" fill="#5b5e71" font-size="10">투자 후 보고</text><text x="486" y="244" fill="#5b5e71" font-size="10">기한 · 상태</text>
-      <rect x="586" y="174" width="112" height="84" fill="#fff" stroke="#0b0a2d" stroke-width="1.2"/>
-      <text x="596" y="194" font-weight="700" fill="#0b0a2d">모니터링 자료</text><text x="596" y="212" fill="#5b5e71" font-size="10">기준일 · 재무 · KPI</text><text x="596" y="228" fill="#5b5e71" font-size="10">수집 상태</text>
-    </g>
-  </svg>
-  </div>
-  <p class="foot" style="border:0;padding-top:8px">초록 상자가 기준 항목입니다. 모든 금액은 원 통화와 원화 환산 기준일을 함께 기록합니다.</p>
-
-  <h3 class="sub-h">이관 전에 걸러 낼 검증 규칙</h3>
-  <div class="tw"><table class="t"><thead><tr><th style="width:54%">규칙</th><th>막는 실수</th></tr></thead><tbody>
-    <tr><td>출자자별 약정액 합계(GP 출자 포함) = 펀드 약정총액</td><td>약정 누락, 같은 출자자 이중 입력</td></tr>
-    <tr><td>LP별 누적 납입액 ≤ 약정액</td><td>초과 요청, 입력 단위 오류</td></tr>
-    <tr><td>Capital Call 회차 금액 = LP별 요청액 합계</td><td>LP별 배분 계산 오류</td></tr>
-    <tr><td>투자 후 기업가치 = 투자 전 기업가치 + 라운드 전체 투자금액</td><td>우리 펀드 투자금만 더하는 실수, Valuation 입력 오류</td></tr>
-    <tr><td>지분율은 보유 주식 수 ÷ 발행주식 총수, 기준(희석 여부)을 함께 기록</td><td>건마다 다른 기준이 섞이는 문제</td></tr>
-    <tr><td>송금 전에 투자 전 외국환신고 완료 여부 확인</td><td>신고 누락, 기한 경과</td></tr>
-  </tbody></table></div>
-
-  <h3 class="sub-h">입사 후 첫 3개월</h3>
-  <div class="steps">
-    <div><b>Month 1</b>실제 펀드 운영 업무를 맡아 배우며, 지금 쓰는 스프레드시트와 문서를 목록으로 정리</div>
-    <div><b>Month 2</b>같은 단어가 같은 숫자를 뜻하도록 항목 정의서와 검증 규칙을 작성해 팀과 공유</div>
-    <div><b>Month 3</b>Database 이관 데이터 정리·검증 지원, LP 보고 자료 중 DB에서 바로 나올 수 있는 항목부터 전환</div>
-  </div>
-</section>
-
 <section id="edu" class="sec">
-  <h2 class="st"><span class="k">05 <em>Background</em></span>학력·연구·활동</h2>
+  <h2 class="st"><span class="k">04 <em>Background</em></span>학력·연구·활동</h2>
   <h4 class="gt">학력</h4>
   <div class="list">
     <div><p class="when">2017.02 ~ 2023.08</p><div><h3>인하대학교</h3><p>교육학 · 산업경영공학 복수전공, GPA 3.83 / 4.5</p></div></div>
