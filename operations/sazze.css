@@ -237,6 +237,8 @@ table.t td.k { font-weight:700; color:var(--ink); }
 /* 학력·연구·활동 */
 .gt { font-family:var(--font-display); font-size:16px; font-weight:700; margin:34px 0 6px; }
 .gt:first-of-type { margin-top:0; }
+.done { margin-top:34px; max-width:680px; border-top:1px solid var(--line); padding-top:22px; }
+.done .gt { margin:0 0 4px; }
 .list > div { display:grid; grid-template-columns:150px 1fr; gap:16px; padding:12px 0; border-top:1px solid var(--line); }
 .list > div:first-child { border-top:0; }
 .list .when { padding-top:3px; font-size:13.5px; font-weight:500; color:var(--grey3); font-variant-numeric:tabular-nums; }
