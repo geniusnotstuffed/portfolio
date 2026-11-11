@@ -64,7 +64,7 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 .sec b { color:var(--ink); font-weight:700; }
 
 /* 숫자 육각형 */
-.hexes { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin-top:36px; }
+.hexes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:36px; }
 .hx { display:flex; flex-direction:column; align-items:center; text-align:center; }
 .hx .h { width:118px; height:136px; display:flex; flex-direction:column; align-items:center; justify-content:center; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); background:var(--green); color:#fff; }
 .hx:nth-child(even) .h { background:var(--green-d); }
@@ -259,7 +259,10 @@ table.t td.k { font-weight:700; color:var(--ink); }
 @media (max-width:640px) {
   .side h1 { font-size:27px; }
   .lead { font-size:16px; }
-  .hexes { grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:24px; }
+  .hexes { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  .hx .h { width:92px; height:106px; }
+  .hx .h b { font-size:20px; }
+  .hx p { font-size:12px; }
   .area { grid-template-columns:1fr; gap:16px; padding:20px 18px 10px; }
   .gallery, .figs.two { grid-template-columns:1fr; }
   .timeline .co { padding-left:26px; }
