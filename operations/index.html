@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230b0a2d%27/%3E%3Cpath d=%27M32 12l17 10v20L32 52 15 42V22z%27 fill=%27%236cc05f%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="sazze.css?v=20261113a">
+<link rel="stylesheet" href="sazze.css?v=20261113b">
 </head>
 <body>
 <div class="layout">
@@ -75,7 +75,7 @@
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.09 ~ 2026.10</dd><dt>역할</dt><dd>매출 분석 · 계획 수립 · 본사 보고</dd><dt>관련 업무</dt><dd><span class="tag green">데이터·보고</span></dd></dl>
       <div class="body">
         <h4>배경</h4><ul><li>상반기 실적 진단과 하반기 계획 수립이 필요한 시점</li><li>담당자별 계획서와 매출 장부의 기준이 달라, 같은 고객의 금액·확정 여부가 문서마다 다르게 적힌 상태</li></ul>
-        <h4>주요 업무</h4><ul><li>담당자별·지역별 실적과 고객 집중도 분석</li><li>담당자별 하반기 계획서와 매출 장부를 <b>고객 단위</b>로 통합</li><li>담당자 간 중복 등재, 장부 「확정」과 계획서 「높음」의 불일치를 찾아 확인 필요 항목으로 분리</li><li>확정 100% · 높음 60% · 낮음 30% 확률 가중으로 확정·보수·낙관 3개 시나리오 산출</li><li>장부 집계부터 표·그림·본문 생성까지 자동화, 경영진이 바로 열어 보는 인터랙티브 웹 자료로 공유</li></ul>
+        <h4>주요 업무</h4><ul><li>담당자별·지역별 실적과 고객 집중도 분석</li><li>담당자별 하반기 계획서와 매출 장부를 <b>고객 단위</b>로 통합</li><li>담당자 간 중복 등재, 장부 「확정」과 계획서 「높음」의 불일치를 찾아 확인 필요 항목으로 분리</li><li>확정 100% · 높음 60% · 낮음 30% 확률 가중으로 확정·보수·낙관 3개 시나리오 산출</li><li>시나리오별 하반기 달성 전략 수립</li><li>장부 집계부터 표·그림·본문 생성까지 자동화, 경영진이 바로 열어 보는 인터랙티브 웹 자료로 공유</li></ul>
         <h4>처리 순서</h4>
         <div class="flow"><div>① 통합<small>장부 + 담당자별 계획서 → 고객 단위</small></div><div class="acc">② 대조<small>중복 등재, 등급 불일치 → 확인 항목</small></div><div>③ 가중<small>확정 100 · 높음 60 · 낮음 30</small></div><div>④ 생성<small>표 · 그림 · 본문을 같은 값으로</small></div></div>
         <p class="note">장부가 바뀌면 손으로 고치지 않고 ①부터 다시 실행. 원칙: 숫자는 장부 한 곳에서만, 같은 숫자는 어디서나 같은 값, 확정 건에는 근거 한 줄.</p>
@@ -116,12 +116,32 @@
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.05 ~ 현재</dd><dt>역할</dt><dd>기획 · 바이브 코딩(Claude Code) · 데이터 연결</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
       <div class="body">
         <h4>배경</h4><p>행사마다 초청·신청 페이지를 외주로 만들고, 신청 데이터가 행사별로 흩어지는 상황</p>
-        <h4>주요 업무</h4><ul><li>행사 초청·신청 페이지 6종을 외주 없이 1일 이내 제작</li><li>신청 즉시 행사별 전용 구글 시트에 자동 저장(웹훅)</li><li>한 사이트에 행사 페이지를 더해 가는 구조로 운영</li></ul>
-        <p class="links"><a href="https://meets.classin.co.kr/beijing" target="_blank" rel="noopener">Meets 베이징</a><a href="https://meets.classin.co.kr/0709-10incheon" target="_blank" rel="noopener">Meets 인천</a><a href="https://meets.classin.co.kr/seoul-mokdong" target="_blank" rel="noopener">Meets 목동</a><a href="https://events.classin.ai.kr/2026-asia-ai-busan" target="_blank" rel="noopener">아시아 AI 교육 포럼</a></p>
+        <h4>주요 업무</h4><ul><li>ClassIn Meets 지역 설명회 페이지 제작: 인천(청라·송도), 서울 목동, 송도</li><li>해외 탐방 ClassIn Meets 베이징 초청 페이지 제작(일정·항공·숙소 안내, 참가 신청)</li><li>2026 아시아 AI 교육 포럼(부산) 초청 페이지, 학원전자 공동구매 상담 페이지 제작</li><li>행사별 신청 데이터를 구글 시트로 자동 수집하는 웹훅 연동, 한 사이트에 행사 페이지를 더해 가는 구조로 운영</li></ul>
+        <h4>성과</h4><ul><li>캠페인·행사 페이지를 외주 없이 1일 이내 자체 제작</li></ul>
+        <p class="links"><a href="https://events.classin.ai.kr/2026-asia-ai-busan" target="_blank" rel="noopener">아시아 AI 교육 포럼</a><a href="https://meets.classin.co.kr/0709-10incheon" target="_blank" rel="noopener">Meets 인천</a><a href="https://meets.classin.co.kr/seoul-mokdong" target="_blank" rel="noopener">Meets 목동</a><a href="https://meets.classin.co.kr/songdo" target="_blank" rel="noopener">Meets 송도</a><a href="https://meets.classin.co.kr/beijing" target="_blank" rel="noopener">Meets 베이징</a><a href="https://meets.classin.co.kr/hakwonjeonja" target="_blank" rel="noopener">학원전자 공동구매</a></p>
+        <div class="figs two"><figure class="shot"><span class="bar">meets.classin.co.kr/beijing</span><a href="https://meets.classin.co.kr/beijing" target="_blank" rel="noopener"><img src="../assets/web_beijing.jpg" alt="meets.classin.co.kr/beijing" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure><figure class="shot"><span class="bar">meets.classin.co.kr/hakwonjeonja</span><a href="https://meets.classin.co.kr/hakwonjeonja" target="_blank" rel="noopener"><img src="../assets/web_hakwonjeonja.jpg" alt="meets.classin.co.kr/hakwonjeonja" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
       </div>
     </article>
 
 
+    <article class="proj" id="seminar" data-tone="grey" data-tag="행사·프로그램 운영" data-cover="../assets/web_mokdong.jpg" data-sub="모집부터 사후 연락까지 운영 절차를 세워 전국 설명회·세미나 22회 운영, 학원 원장 약 230명 참석" data-when="2026.05 ~ 2026.10">
+      <h3>전국 설명회 22회 기획과 운영</h3>
+      <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.05 ~ 2026.10</dd><dt>역할</dt><dd>운영 절차 설계 · 모집 · 현장 운영</dd><dt>관련 업무</dt><dd><span class="tag grey">행사·프로그램 운영</span></dd></dl>
+      <div class="body">
+        <h4>주요 업무</h4><ul><li>지역 학원 원장 대상 설명회·세미나 기획 및 운영</li><li>모집 광고, 신청 페이지, 초청·참석 확인, 현장 운영, 사후 연락으로 이어지는 <b>운영 절차</b> 구축</li><li>회차별 초청·신청·참석·유효 리드를 집계해 채널별 성과를 재고, 다음 회차 모집에 반영</li><li>설명회 신청 페이지와 홍보 문안 직접 제작</li></ul>
+        <h4>성과</h4><ul><li>2026년 5~10월 전국 <b>22회</b> 운영, 학원 원장 <b>약 230명</b> 참석</li><li>2026 아시아 AI 교육 포럼(부산) 광고 기획 담당, <b>58개 기관 109명</b> 참석</li></ul>
+        <div class="figs"><figure class="shot"><span class="bar">meets.classin.co.kr/0709-10incheon · 모집 페이지</span><a href="https://meets.classin.co.kr/0709-10incheon" target="_blank" rel="noopener"><img src="../assets/web_incheon.jpg" alt="설명회 모집 페이지" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
+      </div>
+    </article>
+    <article class="proj" id="fair" data-tone="grey" data-tag="행사·프로그램 운영" data-cover="../assets/fair_booth2609.jpg" data-sub="홍보물 설계부터 현장 시연·상담까지 박람회를 맡아 2026년 유효 리드 385명 확보" data-when="2025.09 ~ 2026.09">
+      <h3>박람회 기획과 운영</h3>
+      <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2025.09 ~ 2026.09</dd><dt>역할</dt><dd>기획 · 홍보물 설계 · 현장 상담 · 리드 관리</dd><dt>관련 업무</dt><dd><span class="tag grey">행사·프로그램 운영</span></dd></dl>
+      <div class="body">
+        <h4>주요 업무</h4><ul><li>회사의 첫 참가인 에듀테크 코리아 페어 2025 <b>기획·운영 총괄</b></li><li>본사 자료를 국내 고객에 맞게 다시 짜서 28쪽 브로슈어, 엑스배너, 월배너, 부착 POP 직접 설계(2025)</li><li>제23회 대한민국 교육박람회(2026.01), 2026 에듀테크 코리아 페어 운영</li><li>현장 제품 시연, 상담 및 리드 수집</li></ul>
+        <h4>성과</h4><ul><li>2026 에듀테크 코리아 페어 <b>255개 기관</b>, 무효 응답 제외 <b>유효 리드 385명</b> 확보</li></ul>
+        <div class="figs"><figure class="doc"><img src="../assets/brochure.jpg" alt="직접 설계한 브로슈어 표지와 내지" loading="lazy"></figure><figure class="doc"><img src="../assets/xbanners.jpg" alt="직접 설계한 엑스배너 세 종" loading="lazy"></figure></div>
+      </div>
+    </article>
     <article class="proj" id="nobook" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/mou.jpg" data-sub="학원 중심이던 판매를 공교육으로 넓히려고 파트너 발굴부터 업무협약, Nobook 계약과 첫 매출까지 진행" data-when="2026.01 ~ 2026.08">
       <h3>공교육 시장 진입: 풀리캠퍼스 제휴와 Nobook 계약</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.01 ~ 2026.08</dd><dt>역할</dt><dd>제휴 발굴 · 협업 기획 · 계약</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
@@ -132,12 +152,12 @@
         <p class="links"><a href="https://dhnews.co.kr/news/view/1065580459564328" target="_blank" rel="noopener">대학저널 기사(2026.02.02)</a></p>
       </div>
     </article>
-    <article class="proj" id="sales" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/fair_li.jpg" data-pos="62% 32%" data-sub="입사 때 없던 광고 운영, 설명회·박람회, 리드 관리를 처음부터 세우고, 공교육 제휴와 B2B 세일즈까지" data-when="재직 중">
+    <article class="proj" id="sales" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/fair_li.jpg" data-pos="62% 32%" data-sub="입사 때 없던 광고 운영과 리드 관리를 처음부터 세우고, 신규 고객 발굴부터 계약·도입 운영까지" data-when="재직 중">
       <h3>마케팅 체계 구축과 B2B 세일즈</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>재직 중</dd><dt>역할</dt><dd>Senior Account Executive · 마케터</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
       <div class="body">
         <h4>배경</h4><ul><li>입사 당시 광고·리드 관리·설명회 같은 마케팅 체계가 없어, 고객 발굴부터 성과 집계까지 처음부터 세워야 하는 상황</li></ul>
-        <h4>주요 업무</h4><ul><li>Meta 리드 광고를 처음 열고 기획·소재 제작·운영, 소재별 리드 단가 분석으로 예산 재배분</li><li>광고 리드가 들어와 데모·견적·결제까지 가는 파이프라인을 CRM 「Compass」로 구축(아래 카드)</li><li>학원·교육기관 대상 신규 고객 발굴, 제품 데모, 계약 전환과 도입 초기 운영</li><li>전국 설명회·세미나 22회 운영, 학원 원장 약 230명 참석</li><li>에듀테크 코리아 페어 등 박람회 기획 및 운영, 2026년 유효 리드 385명 확보</li><li>풀리캠퍼스 업무협약(2026.01), 공교육 계약 체결과 첫 매출(2026.08)</li></ul>
+        <h4>주요 업무</h4><ul><li><b>Meta 리드 광고</b>를 처음 열고 기획·소재 제작·운영, 소재별 리드 단가 분석으로 예산 재배분</li><li>광고 리드가 데모·견적·결제까지 가는 파이프라인을 CRM 「Compass」로 구축</li><li>학원·교육기관 신규 고객 발굴과 제품 데모(목동 쇼룸·고객 현장), 맞춤형 수업 운영안 제안</li><li>계약 전환과 도입 초기 운영, 고객 요구를 개발 요구사항으로 정리해 본사 개발팀과 조율</li></ul>
         <h4>성과</h4><ul><li>2026년 4~8월 리드 유입 전년 동기 대비 <b>63%</b> 증가</li></ul>
       </div>
     </article>
@@ -161,9 +181,10 @@
       <h3>유입 채널 데이터 분석과 SEO 최적화</h3>
       <dl class="props"><dt>소속</dt><dd>포켓컴퍼니</dd><dt>기간</dt><dd>2025.02 ~ 2025.03</dd><dt>역할</dt><dd>기획팀 매니저</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
       <div class="body">
-        <h4>주요 업무</h4><ul><li>유입 채널(YouTube, Meta, Naver, Inblog) 퍼널별 데이터 분석, 주요 지표 모니터링 및 외부 요인 분석</li><li>SEO 데일리 트래킹 및 트렌드에 따른 신규 소재 발굴</li><li>지원사업·투자 유치 중심의 블로그 콘텐츠 기획·발행(2개월간 43편)</li></ul>
-        <h4>성과</h4><ul><li>1.5개월 만에 네이버 블로그 지수 준최적 5단계에서 <b>최적 4+</b> 달성(블덱스 기준)</li></ul>
-        <p class="links"><a href="https://m.blog.naver.com/PostList.naver?blogId=pocketcompany1&amp;tab=1" target="_blank" rel="noopener">포켓컴퍼니 블로그</a><a href="https://m.blog.naver.com/pocketcompany1/223749887824" target="_blank" rel="noopener">대표글</a></p>
+        <h4>배경</h4><p>회사 블로그가 준최적 5단계에 머물러 검색 유입이 미미한 상황</p>
+        <h4>주요 업무</h4><ul><li>네이버·구글 SEO 최적화를 위한 키워드 발굴 및 블로그 콘텐츠 기획·발행(2개월간 43편)</li><li>스타트업이 주로 문의하는 지원사업·투자 유치 중심의 콘텐츠 주제 기획</li><li>SEO 데일리 트래킹 및 트렌드에 따른 신규 소재 발굴</li><li>유입 채널(YouTube, Meta, Naver, Inblog) 퍼널별 데이터 분석, 주요 지표 모니터링 및 외부 요인 분석</li></ul>
+        <h4>성과</h4><ul><li>1.5개월 만에 네이버 블로그 지수 준최적 5단계에서 <b>최적 4+</b> 달성(블덱스 기준)</li><li>주요 키워드 네이버 최상단 노출, 작성 글 「스타트업 투자제안서, 혼자서도 만들 수 있을까?」는 현재까지 블로그 대표글로 노출</li></ul>
+        <p class="links"><a href="https://m.blog.naver.com/PostList.naver?blogId=pocketcompany1&tab=1" target="_blank" rel="noopener">포켓컴퍼니 블로그</a><a href="https://m.blog.naver.com/pocketcompany1/223749887824" target="_blank" rel="noopener">대표글</a></p>
       </div>
     </article>
     </div>
@@ -182,18 +203,19 @@
         <h4>주요 업무</h4><ul><li>정부 지원사업 및 나라장터 SI·용역 공고 분석, 사업계획서·제안서 작성</li><li>수주 용역의 프로젝트 계획 수립 및 수행 관리</li><li>발주처와 협력해 요구사항에 부합하는 시스템·서비스 제공</li></ul>
       </div>
     </article>
-    <article class="proj" id="ict" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/ict.jpg" data-sub="참여기업 모집부터 교육 운영, 채용 연계까지 청년 인재 프로젝트 총괄" data-when="2024.11 ~ 2024.12">
+    <article class="proj" id="ict" data-tone="grey" data-tag="행사·프로그램 운영" data-cover="../assets/ict.jpg" data-sub="참여기업 모집부터 교육 운영, 채용 연계까지 청년 인재 프로젝트 총괄" data-when="2024.11 ~ 2024.12">
       <h3>ICT 이노베이션스퀘어 기업협력 프로젝트</h3>
-      <dl class="props"><dt>소속</dt><dd>오오칠팔구</dd><dt>기간</dt><dd>2024.11 ~ 2024.12</dd><dt>역할</dt><dd>기획 · 참여기업 모집 · 운영 총괄</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
+      <dl class="props"><dt>소속</dt><dd>오오칠팔구</dd><dt>기간</dt><dd>2024.11 ~ 2024.12</dd><dt>역할</dt><dd>기획 · 참여기업 모집 · 운영 총괄</dd><dt>관련 업무</dt><dd><span class="tag grey">행사·프로그램 운영</span></dd></dl>
       <div class="body">
-        <h4>주요 업무</h4><ul><li>충청권 참여기업 5곳 모집</li><li>대학생 대상 AI 리터러시·직무교육 프로그램 기획 및 총괄 운영(5주, 청년 15명)</li><li>커리큘럼 설계, 강사 섭외, 운영 관리</li></ul>
+        <h4>배경</h4><p>국립한국교통대학교 산학협력단과 충청권 청년·지역 기업을 연결하는 AI 교육 프로젝트를 신규 기획</p>
+        <h4>주요 업무</h4><ul><li>충청권 참여기업 5곳 모집</li><li>대학생 대상 AI 리터러시·직무교육 프로그램 기획 및 총괄 운영(5주, 청년 15명)</li><li>커리큘럼 설계(AI 리터러시, 서비스 기획, 프론트엔드 기초), 강사 섭외, 운영 관리</li><li>LMS 활용 및 맞춤형 학습 자료 제공, 기업 현장 과제 팀 프로젝트와 AI 활용 해커톤 운영</li></ul>
         <h4>성과</h4><ul><li>참여 청년 15명 중 <b>8명 취업</b>, 4명은 참여기업으로부터 직접 채용 제안</li></ul>
         <p class="links"><a href="https://www.ddaily.co.kr/page/view/2025010711083615068" target="_blank" rel="noopener">디지털데일리 기사</a></p>
       </div>
     </article>
-    <article class="proj" id="edutechasia" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/edutechasia.jpg" data-sub="전시 기획부터 싱가포르 현장 운영까지 총괄" data-when="2024.11">
+    <article class="proj" id="edutechasia" data-tone="grey" data-tag="행사·프로그램 운영" data-cover="../assets/edutechasia.jpg" data-sub="전시 기획부터 싱가포르 현장 운영까지 총괄" data-when="2024.11">
       <h3>EDUTECH ASIA 2024 싱가포르 전시 기획과 운영</h3>
-      <dl class="props"><dt>소속</dt><dd>오오칠팔구</dd><dt>기간</dt><dd>2024.11</dd><dt>역할</dt><dd>박람회 기획 및 운영</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
+      <dl class="props"><dt>소속</dt><dd>오오칠팔구</dd><dt>기간</dt><dd>2024.11</dd><dt>역할</dt><dd>박람회 기획 및 운영</dd><dt>관련 업무</dt><dd><span class="tag grey">행사·프로그램 운영</span></dd></dl>
       <div class="body">
         <h4>주요 업무</h4><ul><li>글로벌 네트워킹·신기술 홍보를 위한 박람회 기획 주도(전시 콘셉트 설계, 콘텐츠 제작, 홍보 전략 수립)</li><li>AI 기반 맞춤형 학습 솔루션 TRIT 전시 현장 운영</li></ul>
         <h4>성과</h4><ul><li>신규 파트너십 구축 및 브랜드 인지도 제고</li></ul>
@@ -204,7 +226,7 @@
       <h3>사내 업무 체계와 GenAI LMS 기획</h3>
       <dl class="props"><dt>소속</dt><dd>오오칠팔구</dd><dt>기간</dt><dd>2024.07 ~ 2024.12</dd><dt>역할</dt><dd>기획 · 운영</dd><dt>관련 업무</dt><dd><span class="tag navy">DB·업무 시스템</span></dd></dl>
       <div class="body">
-        <h4>주요 업무</h4><ul><li>노션 기반 칸반 차트 사내 업무 시스템 구축, 프로젝트·담당·진행 상태를 한 보드에서 추적</li><li>팀원 피드백을 반영한 지속 개선</li><li>학습 데이터 기반 GenAI LMS 기획(기능 요구사항 정의, UX/UI 설계, 개발팀 협업)</li></ul>
+        <h4>주요 업무</h4><ul><li>노션 기반 칸반 차트 사내 업무 시스템 구축, 프로젝트·담당·진행 상태를 한 보드에서 추적</li><li>팀원 피드백을 반영한 지속 개선</li><li>학습 데이터 기반 맞춤형 콘텐츠를 제공하는 GenAI LMS 기획 및 설계(UX/UI 설계, 기능 요구사항 정의, 개발팀 협업)</li><li>기업 랜딩페이지 기획</li></ul>
         <h4>성과</h4><ul><li>체계가 없던 사내 업무 관리 방식 정립, 재택근무 환경의 업무 공유 문제 일부 개선</li></ul>
       </div>
     </article>
@@ -222,9 +244,9 @@
       <dl class="props"><dt>소속</dt><dd>코드잇</dd><dt>기간</dt><dd>2023.11 ~ 2024.02</dd><dt>역할</dt><dd>사업개발 인턴</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
       <div class="body">
         <h4>배경</h4><p>약 200억 원 규모의 국가 직무교육 사업으로, 참여기업과 실제 인재 수요가 사업계획서의 핵심 근거</p>
-        <h4>주요 업무</h4><ul><li>훈련 과정에 적합한 참여기업 리서치·분석 및 제휴</li><li>참여기업 대상 훈련 수요 설문 개발(채용 계획, 인재상, 직무 요구사항), FGI 질문지 제작</li><li>조사 결과로 필요 역량·채용 수요 데이터 도출, 「AI 활용 데이터 분석가 부트캠프」 사업계획서 작성</li></ul>
+        <h4>주요 업무</h4><ul><li>훈련 과정에 적합한 참여기업 리서치·분석 및 제휴</li><li>참여기업 대상 훈련 수요 설문 개발(채용 계획, 인재상, 직무 요구사항)</li><li>FGI 질문지 제작 및 현직자 인터뷰 지원</li><li>조사 결과로 필요 역량·채용 수요 데이터 도출, 2024년 상반기 신기술 아카데미 「AI 활용 데이터 분석가 부트캠프」 사업계획서 작성</li></ul>
         <h4>성과</h4><ul><li>참여기업 <b>9곳</b> 협약 서류를 갖춘 사업계획서 심사 통과, <b>우수 과정</b> 선정</li></ul>
-        <div class="figs"><figure class="shot"><span class="bar">sprint.codeit.kr/track/data · 데이터 분석가 부트캠프</span><a href="https://sprint.codeit.kr/track/data" target="_blank" rel="noopener"><img src="../assets/codeit_track.jpg" alt="코드잇 데이터 분석가 부트캠프 페이지" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
+        <div class="figs"><figure class="shot"><span class="bar">sprint.codeit.kr/track/data · 데이터 분석가 부트캠프</span><a href="https://sprint.codeit.kr/track/data" target="_blank" rel="noopener"><img src="../assets/codeit_track.jpg" alt="sprint.codeit.kr/track/data · 데이터 분석가 부트캠프" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
       </div>
     </article>
     </div>
