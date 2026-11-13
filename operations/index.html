@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230b0a2d%27/%3E%3Cpath d=%27M32 12l17 10v20L32 52 15 42V22z%27 fill=%27%236cc05f%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="sazze.css?v=20261111b">
+<link rel="stylesheet" href="sazze.css?v=20261113a">
 </head>
 <body>
 <div class="layout">
@@ -41,7 +41,8 @@
 
 <section id="work" class="sec">
   <h2 class="st"><span class="k">02 <em>Experience</em></span>경력과 프로젝트</h2>
-  <div class="timeline">
+  <div class="viewtabs" role="tablist" aria-label="보기 방식"><button type="button" role="tab" data-view="timeline" aria-selected="true">회사별 연혁</button><button type="button" role="tab" data-view="dev" aria-selected="false">개발 프로젝트 모아보기</button></div>
+  <div class="timeline" data-panel="timeline">
 
   <div class="co" id="co-classin">
     <p class="when"><b>2025.04 ~ 현재</b><span>1년 8개월</span></p>
@@ -50,7 +51,7 @@
     <div class="gallery"></div>
     <div class="details">
 
-    <article class="proj" id="compass" data-demo="../samples/compass/leads-all.html" data-demo-label="Compass 데모 직접 보기 · 가상 데이터" data-tone="navy" data-tag="DB·업무 시스템" data-cover="../assets/cx_cover_compass.jpg" data-sub="팀별 엑셀 3곳을 하나의 데이터베이스로 옮기고, 집계 기준과 판정 규칙을 세운 사내 CRM" data-when="재직 중">
+    <article class="proj" id="compass" data-dev="1" data-demo="../samples/compass/leads-all.html" data-demo-label="Compass 데모 직접 보기 · 가상 데이터" data-tone="navy" data-tag="DB·업무 시스템" data-cover="../assets/cx_cover_compass.jpg" data-sub="팀별 엑셀 3곳을 하나의 데이터베이스로 옮기고, 집계 기준과 판정 규칙을 세운 사내 CRM" data-when="재직 중">
       <h3>고객 데이터 표준화와 사내 CRM 「Compass」</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>재직 중</dd><dt>역할</dt><dd>기획 · 데이터 기준 설계 · 바이브 코딩(Claude Code)</dd><dt>관련 업무</dt><dd><span class="tag navy">DB·업무 시스템</span></dd></dl>
       <div class="body">
@@ -69,7 +70,7 @@
       </div>
     </article>
 
-    <article class="proj" id="vpreport" data-demo="../samples/vp-report/" data-demo-label="샘플 보고서 직접 보기 · 가상 데이터" data-tone="green" data-tag="데이터·보고" data-cover="../assets/vp_map.jpg" data-sub="담당자별 계획서와 매출 장부를 고객 단위로 맞추고, 확정·보수·낙관 3개 시나리오로 하반기 계획 산출" data-when="2026.09 ~ 2026.10">
+    <article class="proj" id="vpreport" data-dev="2" data-demo="../samples/vp-report/" data-demo-label="샘플 보고서 직접 보기 · 가상 데이터" data-tone="green" data-tag="데이터·보고" data-cover="../assets/vp_map.jpg" data-sub="담당자별 계획서와 매출 장부를 고객 단위로 맞추고, 확정·보수·낙관 3개 시나리오로 하반기 계획 산출" data-when="2026.09 ~ 2026.10">
       <h3>매출 장부·계획서 대조와 하반기 시나리오</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.09 ~ 2026.10</dd><dt>역할</dt><dd>매출 분석 · 데이터 대조 · 시나리오 산출</dd><dt>관련 업무</dt><dd><span class="tag green">데이터·보고</span></dd></dl>
       <div class="body">
@@ -84,7 +85,7 @@
       </div>
     </article>
 
-    <article class="proj" id="reporting" data-tone="green" data-tag="데이터·보고" data-cover="img/reporting_cover.jpg" data-sub="매주 쓰는 성과 숫자를 원천에서 자동으로 다시 뽑고, 달러·원화로 나가는 광고비를 매달 같은 기준으로 정리" data-when="재직 중">
+    <article class="proj" id="reporting" data-dev="3" data-tone="green" data-tag="데이터·보고" data-cover="img/reporting_cover.jpg" data-sub="매주 쓰는 성과 숫자를 원천에서 자동으로 다시 뽑고, 달러·원화로 나가는 광고비를 매달 같은 기준으로 정리" data-when="재직 중">
       <h3>주간 성과 집계 자동화와 광고비 관리</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>재직 중(예산 사용표 2026.10~)</dd><dt>역할</dt><dd>집계 체계 설계 · 데이터 수집 자동화</dd><dt>관련 업무</dt><dd><span class="tag green">데이터·보고</span></dd></dl>
       <div class="body">
@@ -110,7 +111,7 @@
 
 
 
-    <article class="proj" id="webdata" data-demo="https://meets.classin.co.kr/beijing" data-demo-label="행사 페이지 직접 보기" data-tone="deep" data-tag="데이터 취합·관리" data-cover="../assets/web_beijing.jpg" data-sub="행사 초청·신청 페이지 6종을 만들고, 신청 데이터를 행사별 구글 시트로 자동 수집" data-when="2026.05 ~ 현재">
+    <article class="proj" id="webdata" data-dev="4" data-demo="https://meets.classin.co.kr/beijing" data-demo-label="행사 페이지 직접 보기" data-tone="deep" data-tag="데이터 취합·관리" data-cover="../assets/web_beijing.jpg" data-sub="행사 초청·신청 페이지 6종을 만들고, 신청 데이터를 행사별 구글 시트로 자동 수집" data-when="2026.05 ~ 현재">
       <h3>행사 신청 데이터 자동 수집</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.05 ~ 현재</dd><dt>역할</dt><dd>기획 · 바이브 코딩(Claude Code) · 데이터 연결</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
       <div class="body">
@@ -121,6 +122,16 @@
     </article>
 
 
+    <article class="proj" id="nobook" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/mou.jpg" data-sub="풀리캠퍼스 업무협약 체결, Nobook 기반 공교육 협업 모델 기획부터 계약·첫 매출까지" data-when="2026.01 ~ 2026.08">
+      <h3>풀리캠퍼스 × 클래스인 공교육 협업(Nobook)</h3>
+      <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.01 ~ 2026.08</dd><dt>역할</dt><dd>제휴 발굴 · 협업 기획 · 계약</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
+      <div class="body">
+        <h4>배경</h4><p>학원 중심 판매만으로는 시장 확장에 한계가 있어 공교육 시장 진입을 위한 파트너가 필요한 상황</p>
+        <h4>주요 업무</h4><ul><li>국내 에듀테크 기업 매쓰홀릭, 풀리캠퍼스와의 협업 기회 발굴 및 제휴 논의 주도</li><li>풀리캠퍼스와 물리·화학 가상실험 기반 STEM 교육 업무협약 체결(2026.01)</li><li>가상 과학 실험 도구 Nobook 기반 공교육 협업 모델 기획, 학교급별 적용 범위 정리</li><li>계약서 검토 및 체결</li></ul>
+        <h4>성과</h4><ul><li>2026년 6월 계약 체결, 8월 첫 매출 발생</li><li>학원 중심이던 판매를 공교육으로 넓히는 첫 파트너십 확보</li></ul>
+        <p class="links"><a href="https://dhnews.co.kr/news/view/1065580459564328" target="_blank" rel="noopener">대학저널 기사(2026.02.02)</a></p>
+      </div>
+    </article>
     <article class="proj" id="sales" data-tone="grey" data-tag="영업·사업개발" data-cover="../assets/fair_li.jpg" data-pos="62% 32%" data-sub="입사 때 없던 광고 운영, 설명회·박람회, 리드 관리를 처음부터 세우고, 공교육 제휴와 B2B 세일즈까지" data-when="재직 중">
       <h3>마케팅 체계 구축과 B2B 세일즈</h3>
       <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>재직 중</dd><dt>역할</dt><dd>Senior Account Executive · 마케터</dd><dt>관련 업무</dt><dd><span class="tag grey">영업·사업개발</span></dd></dl>
@@ -218,6 +229,29 @@
     </article>
     </div>
   </div>
+  </div>
+  <div class="devview" data-panel="dev" hidden>
+    <p class="dev-lead">업무에서 생긴 문제를 풀려고 직접 기획하고 Claude Code로 만든 도구와 페이지입니다.</p>
+    <div class="gallery dev-gallery"></div>
+    <div class="details dev-details">
+    <article class="proj" id="teachersinn" data-dev="5" data-demo="https://community.classin.co.kr/checkin" data-demo-label="체크인 페이지 직접 보기" data-tone="deep" data-tag="데이터 취합·관리" data-cover="../assets/community_why.jpg" data-sub="1인 강사 커뮤니티 모임의 신청·참석 확인 페이지와 알림톡 안내 흐름 구축" data-when="2026.07">
+      <h3>강사 커뮤니티 Teachers' Inn 체크인</h3>
+      <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.07</dd><dt>역할</dt><dd>기획 · 바이브 코딩(Claude Code)</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
+      <div class="body">
+        <h4>배경</h4><p>1인 강사·소규모 학원 대상 커뮤니티 모임의 신청과 참석 확인을 수기로 관리하는 상황</p>
+        <h4>주요 업무</h4><ul><li>커뮤니티 체크인(모임 신청) 페이지 제작, 회사 도메인 연결</li><li>참석 여부(RSVP) 선택과 신청 정보를 구글 시트로 자동 저장</li><li>신청 즉시 알림톡으로 모임 안내를 보내는 흐름 연동</li></ul>
+        <div class="figs"><figure class="shot"><span class="bar">community.classin.co.kr/checkin · 체크인</span><a href="https://community.classin.co.kr/checkin" target="_blank" rel="noopener"><img src="../assets/community_form.jpg" alt="커뮤니티 체크인 화면" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
+      </div>
+    </article>
+    <article class="proj" id="history" data-dev="6" data-demo="https://classin-event-history.vercel.app/" data-demo-label="행사 연혁 직접 보기" data-tone="deep" data-tag="데이터 취합·관리" data-cover="../assets/web_history.jpg" data-sub="2024~2026 주요 행사 14건을 사진과 함께 정리한 고객용 행사 연혁 페이지" data-when="2026.10">
+      <h3>클래스인 행사 연혁 페이지</h3>
+      <dl class="props"><dt>소속</dt><dd>EEO ClassIn Korea</dd><dt>기간</dt><dd>2026.10</dd><dt>역할</dt><dd>기획 · 사진 선별 · 바이브 코딩(Claude Code)</dd><dt>관련 업무</dt><dd><span class="tag deep">데이터 취합·관리</span></dd></dl>
+      <div class="body">
+        <h4>배경</h4><p>고객에게 그동안의 포럼·설명회·해외 탐방 행사를 한눈에 보여 줄 자료가 없는 상황</p>
+        <h4>주요 업무</h4><ul><li>사내 사진 저장소에서 행사별 대표 사진 선별, 2024~2026 주요 행사 14건 정리</li><li>연도 눈금과 분류 필터로 행사를 골라 보는 연혁 페이지 제작</li><li>카카오톡 공유 미리보기 이미지 설정, 고객 대상 공개 배포</li></ul>
+      </div>
+    </article>
+    </div>
   </div>
 </section>
 
