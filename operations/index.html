@@ -32,11 +32,10 @@
 
 <section id="about" class="sec">
   <h2 class="st"><span class="k">01 <em>About</em></span>소개</h2>
-  <p class="lead">사업개발 담당으로 입사한 회사에서는 사내 업무 보드를, 영업 담당으로 입사한 회사에서는 CRM을 만들었습니다.</p>
-  <p class="lead">클래스인코리아에 입사했을 때는 광고도 설명회도 없었습니다. 영업을 하면서 둘 다 새로 시작했고, 2026년 8월에는 월 매출 목표의 276%를 달성했습니다.</p>
-  <p class="lead">문의가 늘자 다른 문제가 보였습니다. 팀마다 따로 쓰는 엑셀에서 같은 문의를 서로 다르게 세고 있어, 회의 때마다 숫자가 맞지 않았습니다. 무엇을 어떻게 셀지부터 각 팀과 정했습니다. <span class="nw">그 기준대로</span> 사내 CRM <span class="nw">「Compass」를</span> 직접 만들고, 엑셀에 흩어져 있던 데이터를 옮겼습니다. 쓰는 사람들의 요청을 받아 계속 고쳤고, 지금은 회사 전체가 매일 이 CRM으로 일합니다.</p>
-  <p class="lead">앞서 사업개발 담당으로 일한 오오칠팔구에서도 비슷했습니다. 업무를 관리하는 방식이 따로 없어 사내 업무 보드를 만들었고, 회사에 기반이 없던 청년 교육 프로젝트를 처음부터 맡아 운영했습니다. 직무는 사업개발에서 영업, 마케팅으로 바뀌었지만 일한 방식은 같았습니다.</p>
-  <div class="flow" style="margin-top:30px;max-width:680px"><div>문제 정의<small>회의마다 달라지는 숫자</small></div><div>데이터 구조화<small>팀별 엑셀을 한 기준으로</small></div><div>자동화<small>문의 등록 · 주간 집계</small></div><div class="acc">정착<small>회사 전체가 매일 사용</small></div></div>
+  <p class="lead">같은 문제가 반복될 때마다, 사람이 더 애쓰는 대신 다시 생기지 않는 구조를 만들었습니다. 사업개발과 영업, 마케팅을 거치며 맡은 일은 달라졌지만 일하는 방식은 같았습니다.</p>
+  <p class="lead">클래스인코리아에서는 팀마다 다른 엑셀을 써서 회의 때마다 숫자가 달랐습니다. 무엇을 어떻게 셀지부터 각 팀과 정하고, 데이터를 한곳으로 옮겨 사내 CRM <span class="nw">「Compass」를</span> 만들었습니다. 광고로 들어온 문의가 자동으로 등록되게 했고, 매주 보던 성과 숫자도 사람 손을 거치지 않고 집계되게 했습니다. 지금은 회사 전체가 이 CRM으로 일하고 있습니다.</p>
+  <p class="lead">기획만 하고 넘기지 않았습니다. 필요한 화면과 자동화는 직접 만들어 팀이 바로 써 보게 했습니다. 오오칠팔구의 사내 업무 보드도, 클래스인의 행사 신청 페이지와 본사 보고서도 그렇게 만들었습니다.</p>
+  <p class="lead">그렇게 잡아 둔 틀은 제가 자리를 비워도 돌아갔습니다. 어떤 일을 맡든 그 상태가 될 때까지 만들어 왔습니다.</p>
 </section>
 
 <section id="work" class="sec">
@@ -57,13 +56,6 @@
       <div class="body">
         <h4>배경</h4><ul><li>마케팅·영업·BD 세 팀이 고객 데이터를 각자 엑셀로 관리, 같은 「리드」를 팀마다 다르게 집계해 회의 때마다 숫자가 달라지는 상황</li><li>어떤 광고가 실제 결제로 이어졌는지, 고객 이력과 담당이 어디서 끊겼는지 확인할 수 없는 구조</li></ul>
         <h4>주요 업무</h4><ul><li><b>집계 기준 통일:</b> 리드는 광고 API에 들어온 시점 하나로 집계, 재유입·수동 등록 판정 규칙 문서화</li><li><b>데이터 구조 설계:</b> 리드·어카운트·데모·견적·결제 단위로 나누고 단계 이력과 담당자를 함께 기록</li><li><b>이관과 정리:</b> 흩어진 고객 기록을 한 데이터베이스로 옮기고 중복 고객 병합</li><li><b>자동 연결:</b> Meta 광고 API 웹훅으로 광고 리드 실시간 등록, 본사 CRM과 리드 자동 연동(항목 매핑)</li><li><b>활용 화면:</b> 마케팅 성과·매출 대시보드</li></ul>
-        <h4>판정 규칙</h4>
-        <div class="tw"><table class="t"><thead><tr><th>상황</th><th>처리</th><th>이유</th></tr></thead><tbody>
-          <tr><td>광고 신청서로 새 문의가 들어옴</td><td class="k">신규 리드</td><td>집계 시점을 광고 API 기록 하나로 고정해 팀별 숫자 차이 제거</td></tr>
-          <tr><td>이미 등록된 고객이 다시 문의</td><td class="k">재유입</td><td>새 고객으로 세지 않아 리드 수가 부풀지 않게 함</td></tr>
-          <tr><td>담당자가 전화·현장에서 받아 직접 입력</td><td class="k">수동 등록</td><td>광고 성과와 섞이지 않게 출처를 따로 표시</td></tr>
-          <tr><td>같은 원장의 학원이 두 번 등록됨</td><td class="k">하나로 병합</td><td>이력·담당이 둘로 갈라지는 것을 막음</td></tr>
-        </tbody></table></div>
         <h4>성과</h4><ul><li>클래스인코리아 전체가 매일 쓰는 <b>표준 업무 도구</b>로 정착, 매주 쓰는 성과 숫자도 여기서 자동 집계</li><li>단계별 전환율을 근거로 병목 개선, 2026년 4~8월 리드 유입 전년 동기 대비 <b>63%</b> 증가</li></ul>
         <div class="figs"><figure class="shot"><span class="bar">Compass · 전체 리드</span><a href="../samples/compass/leads-all.html" target="_blank" rel="noopener"><img src="../assets/cx_leads_all_sheet.jpg" alt="Compass 전체 리드 화면" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure><figure class="shot natural"><span class="bar">Compass · 마케팅 성과(지표와 단계별 전환율)</span><a href="../samples/compass/index.html" target="_blank" rel="noopener"><img src="img/cx_dash_funnel_crop.jpg" alt="Compass 마케팅 성과 화면" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure><figure class="shot natural"><span class="bar">Compass · 리드 상세(통화·데모·견적·결제 이력)</span><a href="../samples/compass/leads-106.html" target="_blank" rel="noopener"><img src="img/cx_lead_timeline_crop.jpg" alt="Compass 리드 상세 기록" loading="lazy"><span class="go">직접 보기 ↗</span></a></figure></div>
         <p class="credit">화면은 실제 제품을 테스트 데이터로 띄운 읽기 전용 데모이며, 학원명·담당자명·수치는 모두 가상 데이터입니다.</p>
