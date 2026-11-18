@@ -3,12 +3,14 @@
 @font-face { font-family:"Paperlogy"; src:url("../fonts/Paperlogy-6SemiBold.woff2") format("woff2"); font-weight:600; font-display:swap; }
 @font-face { font-family:"Paperlogy"; src:url("../fonts/Paperlogy-7Bold.woff2") format("woff2"); font-weight:700; font-display:swap; }
 @font-face { font-family:"Paperlogy"; src:url("../fonts/Paperlogy-8ExtraBold.woff2") format("woff2"); font-weight:800; font-display:swap; }
+/* 영문·숫자 전용(사제파트너스 사이트 본문과 같은 Source Sans 3). 한글·가운뎃점·띄어쓰기는 뒤의 글꼴이 맡는다 */
+@font-face { font-family:"Source Sans EN"; src:url("../fonts/SourceSans3-latin.woff2") format("woff2"); font-weight:200 900; font-display:swap; unicode-range:U+0021-007E; }
 :root {
   --navy:#0b0a2d; --navy2:#1a1946; --ink:#0b0a2d; --body:#3a3c50; --grey:#5b5e71; --grey3:#8d8f9f; --grey2:#c8c9d2; --grey1:#f3f3f6; --line:#e2e2e8;
   --green:#6cc05f; --green-d:#256856; --green-bg:#eef6ea; --green-line:#cfe6c7;
-  --font-display:"Paperlogy","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  --font-display:"Source Sans EN","Paperlogy","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
   --font:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
-  --serif:"Instrument Serif","Times New Roman",serif;
+  --en:"Source Sans EN","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
@@ -21,7 +23,7 @@ p { margin:0; text-wrap:pretty; }
 h1,h2,h3,h4 { margin:0; letter-spacing:-.02em; line-height:1.35; text-wrap:balance; }
 button { font:inherit; }
 .nw { white-space:nowrap; }
-em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spacing:0; }
+em.s { font-family:var(--en); font-style:normal; font-weight:700; letter-spacing:0; }
 
 /* 두 단: 왼쪽 남색 고정, 오른쪽 흰 본문 */
 .layout { display:grid; grid-template-columns:minmax(340px,40%) minmax(0,1fr); min-height:100vh; }
@@ -33,7 +35,7 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 .id { display:flex; align-items:center; gap:14px; margin-top:26px; }
 .photo { width:54px; height:54px; object-fit:cover; object-position:center top; border:1px solid rgba(255,255,255,.25); }
 .name { font-family:var(--font-display); font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1.2; }
-.name small { display:block; font-family:var(--font); font-size:12.5px; font-weight:500; letter-spacing:.04em; color:rgba(255,255,255,.55); margin-top:3px; }
+.name small { display:block; font-family:var(--en); font-size:13.5px; font-weight:600; letter-spacing:.02em; color:rgba(255,255,255,.55); margin-top:3px; }
 .side h1 { margin-top:34px; font-family:var(--font-display); font-size:clamp(28px,2.6vw,38px); font-weight:400; line-height:1.32; letter-spacing:-.03em; color:#fff; }
 .side h1::after { content:""; display:block; width:72px; height:3px; margin-top:22px; background:var(--green); }
 .apply { margin-top:18px; font-size:14px; color:rgba(255,255,255,.7); line-height:1.6; }
@@ -43,7 +45,7 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 .toc a:hover, .toc a.on { color:#fff; }
 .toc a:hover i, .toc a.on i { width:56px; background:var(--green); }
 .toc a:focus-visible { outline:2px solid var(--green); outline-offset:3px; }
-.contact { font-size:13.5px; color:rgba(255,255,255,.7); line-height:1.75; }
+.contact { font-family:var(--en); font-size:14.5px; color:rgba(255,255,255,.7); line-height:1.7; }
 .contact .li { color:#fff; font-weight:700; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.35); transition:color .15s, border-color .15s; }
 .contact .li:hover { color:var(--green); border-color:var(--green); }
 .btn { display:inline-flex; align-items:center; gap:10px; margin-top:16px; padding:10px 18px; border:1px solid #fff; color:#fff; font-size:14px; font-weight:700; text-decoration:none; transition:background .15s, color .15s, border-color .15s, transform .1s; }
@@ -57,10 +59,18 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 /* 절 */
 .sec { padding-top:24px; padding-bottom:92px; border-top:1px solid var(--navy); scroll-margin-top:32px; }
 .st { margin-bottom:24px; font-family:var(--font-display); font-size:28px; font-weight:700; letter-spacing:-.02em; color:var(--navy); }
-.st .k { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; font-family:var(--font); font-size:12.5px; font-weight:700; letter-spacing:.1em; color:var(--green-d); }
-.st .k em { font-family:var(--serif); font-style:italic; font-size:21px; font-weight:400; letter-spacing:0; color:var(--navy); }
+.st .k { display:flex; align-items:baseline; gap:9px; margin-bottom:8px; font-family:var(--en); font-size:13.5px; font-weight:700; letter-spacing:.08em; color:var(--green-d); }
+.st .k em { font-family:var(--en); font-style:normal; font-size:16px; font-weight:700; letter-spacing:0; color:var(--navy); }
 .lead { font-size:17px; line-height:1.85; color:var(--body); max-width:680px; }
 .lead + .lead { margin-top:14px; }
+/* 소개: 강점 세 개(왼쪽 영문 이름, 오른쪽 한 줄 풀이와 사례 하나) */
+.strengths { max-width:780px; margin-top:4px; }
+.sg { display:grid; grid-template-columns:214px minmax(0,1fr); column-gap:26px; align-items:baseline; padding:24px 0; border-top:1px solid var(--line); }
+.sg:first-child { border-top:0; padding-top:6px; }
+.sg:last-child { padding-bottom:0; }
+.sg .kw { font-family:var(--en); font-size:25px; font-weight:700; line-height:1.2; letter-spacing:-.01em; color:var(--navy); text-wrap:wrap; }
+.sg .gl { font-size:16.5px; font-weight:700; line-height:1.5; color:var(--ink); }
+.sg .ev { margin-top:8px; font-size:16px; line-height:1.85; color:var(--body); }
 .sec b { color:var(--ink); font-weight:700; }
 
 /* 숫자 육각형 */
@@ -76,7 +86,7 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 .area { display:grid; grid-template-columns:minmax(0,4fr) minmax(0,7fr); gap:28px; padding:24px 26px 14px; border:1px solid var(--line); transition:border-color .18s; }
 .area + .area { margin-top:14px; }
 .area:hover { border-color:var(--grey2); }
-.area .en { font-family:var(--serif); font-style:italic; font-size:21px; line-height:1.25; color:var(--navy); }
+.area .en { font-family:var(--en); font-style:normal; font-weight:700; font-size:19px; line-height:1.25; color:var(--navy); }
 .area h3 { margin-top:10px; font-family:var(--font-display); font-size:18px; font-weight:700; }
 .area .why { margin-top:12px; padding-top:12px; border-top:1px solid var(--line); font-size:13.5px; line-height:1.65; color:var(--grey); }
 .area .why::before { content:"공고 업무와 닿는 점"; display:block; margin-bottom:3px; font-size:11.5px; font-weight:700; letter-spacing:.04em; color:var(--green-d); }
@@ -110,7 +120,7 @@ em.s { font-family:var(--serif); font-style:italic; font-weight:400; letter-spac
 .co .when { display:flex; align-items:baseline; gap:10px; font-size:13.5px; font-weight:500; color:var(--grey3); font-variant-numeric:tabular-nums; }
 .co .when b { font-size:14.5px; font-weight:700; color:var(--ink); }
 .co h3 { margin-top:6px; font-family:var(--font-display); font-size:24px; font-weight:700; }
-.co h3 .role { margin-left:10px; font-family:var(--font); font-size:15px; font-weight:600; color:var(--grey); letter-spacing:-.01em; }
+.co h3 .role { margin-left:10px; font-family:var(--en); font-size:15.5px; font-weight:600; color:var(--grey); letter-spacing:-.01em; }
 .co .sum { margin-top:10px; font-size:15.5px; line-height:1.75; color:var(--body); max-width:680px; }
 .gallery { margin-top:22px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 
@@ -241,7 +251,7 @@ table.t td.k { font-weight:700; color:var(--ink); }
 .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border-top:1.5px solid var(--navy); }
 .steps > div { padding:14px 16px 4px 0; font-size:14.5px; line-height:1.7; color:var(--body); }
 .steps > div + div { padding-left:16px; border-left:1px solid var(--line); }
-.steps b { display:block; margin-bottom:4px; font-family:var(--serif); font-style:italic; font-size:20px; font-weight:400; color:var(--green-d); }
+.steps b { display:block; margin-bottom:4px; font-family:var(--en); font-style:normal; font-size:18px; font-weight:700; color:var(--green-d); }
 
 /* 학력·연구·활동 */
 .gt { font-family:var(--font-display); font-size:16px; font-weight:700; margin:34px 0 6px; }
@@ -270,6 +280,9 @@ table.t td.k { font-weight:700; color:var(--ink); }
 @media (max-width:640px) {
   .side h1 { font-size:27px; }
   .lead { font-size:16px; }
+  .sg { grid-template-columns:1fr; row-gap:6px; padding:20px 0; }
+  .sg .kw { font-size:23px; }
+  .sg .kw br { display:none; }
   .hexes { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
   .hx .h { width:92px; height:106px; }
   .hx .h b { font-size:20px; }
