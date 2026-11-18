@@ -35,10 +35,9 @@ em.s { font-family:var(--font-display); font-style:normal; font-weight:700; lett
 .name small { display:block; font-family:var(--font); font-size:12.5px; font-weight:500; letter-spacing:.04em; color:rgba(255,255,255,.55); margin-top:3px; }
 .side h1 { margin-top:34px; font-family:var(--font-display); font-size:clamp(28px,2.6vw,38px); font-weight:400; line-height:1.32; letter-spacing:-.03em; color:#fff; }
 .side h1::after { content:""; display:block; width:72px; height:3px; margin-top:22px; background:var(--green); }
-.apply { margin-top:18px; font-size:14px; color:rgba(255,255,255,.7); line-height:1.6; }
-.apply.more { margin-top:10px; max-width:430px; line-height:1.7; }
+.apply { margin-top:18px; font-size:14px; color:rgba(255,255,255,.7); line-height:1.95; }
+.apply.more { margin-top:0; max-width:430px; }
 .apply.more span { display:block; }
-.apply.more span + span { margin-top:6px; }
 .apply.more i { display:inline-block; font-style:normal; }
 .toc { margin-top:34px; display:flex; flex-direction:column; gap:2px; }
 .toc a { display:flex; align-items:center; gap:14px; padding:6px 0; font-size:13.5px; font-weight:600; color:rgba(255,255,255,.5); text-decoration:none; transition:color .2s; }
