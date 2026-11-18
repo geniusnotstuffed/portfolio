@@ -60,14 +60,15 @@ em.s { font-family:var(--font-display); font-style:normal; font-weight:700; lett
 .st .k em { font-family:var(--font-display); font-style:normal; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--navy); }
 .lead { font-size:17px; line-height:1.85; color:var(--body); max-width:680px; }
 .lead + .lead { margin-top:14px; }
-/* 소개: 강점 세 개(왼쪽 영문 이름, 오른쪽 한 줄 풀이와 사례 하나) */
+/* 소개: 강점 세 개(왼쪽 영문 이름, 오른쪽 한 줄 풀이·설명·경험 하나) */
 .strengths { max-width:780px; margin-top:4px; }
 .sg { display:grid; grid-template-columns:214px minmax(0,1fr); column-gap:26px; align-items:baseline; padding:24px 0; border-top:1px solid var(--line); }
 .sg:first-child { border-top:0; padding-top:6px; }
 .sg:last-child { padding-bottom:0; }
 .sg h3 { font-family:var(--font-display); font-size:22px; font-weight:700; letter-spacing:0; line-height:1.25; color:var(--navy); text-wrap:wrap; }
 .sg .gl { font-size:16.5px; font-weight:700; line-height:1.5; color:var(--ink); }
-.sg .ev { margin-top:8px; font-size:16px; line-height:1.85; color:var(--body); }
+.sg .ds { margin-top:8px; font-size:16px; line-height:1.85; color:var(--body); }
+.sg .ev { margin-top:12px; padding-left:14px; border-left:2px solid var(--green); font-size:15px; line-height:1.8; color:var(--grey); }
 .sec b { color:var(--ink); font-weight:700; }
 
 /* 숫자 육각형 */
