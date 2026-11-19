@@ -72,8 +72,8 @@ em.s { font-family:var(--font-display); font-style:normal; font-weight:700; lett
 .sg .src { margin-top:10px; font-size:13px; line-height:1.6; color:var(--grey); }
 .sg .src span { display:block; }
 .sg.why { margin-top:14px; border-top:1px solid var(--navy); }
-.sg.why .ev { margin-top:0; color:var(--ink); }
-.sg.why .ev + .ev { margin-top:12px; }
+.sg.why .ev { margin-top:12px; color:var(--ink); }
+.sg.why .gl + .ev { margin-top:10px; }
 .sg .gl { font-size:16.5px; font-weight:700; line-height:1.5; color:var(--ink); }
 .sg .ev { margin-top:8px; font-size:16px; line-height:1.85; color:var(--body); }
 .sec b { color:var(--ink); font-weight:700; }
